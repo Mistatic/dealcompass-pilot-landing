@@ -51,9 +51,10 @@
     .section h3{margin:0 0 10px;font-size:1.15rem}
 
     .pickList{display:grid;grid-template-columns:1fr;gap:10px}
-    .pick{background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:12px}
-    .pick a{color:#cfe1ff;text-decoration:none;font-weight:600}
+    .pick{display:block;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:12px;text-decoration:none;cursor:pointer}
+    .pick .title{color:#cfe1ff;text-decoration:none;font-weight:600;display:block}
     .pick small{display:block;color:var(--muted);margin-top:5px}
+    .pick:hover{border-color:rgba(124,92,255,.55);transform:translateY(-1px)}
 
     .disclosure{margin-top:20px;font-size:.93rem;color:var(--muted);border-top:1px solid var(--border);padding-top:14px}
     .kicker{font-size:.92rem;color:var(--muted)}
@@ -87,26 +88,26 @@
     <section class="section">
       <h3>Pilot picks (v1)</h3>
       <div class="pickList">
-        <div class="pick">
-          <a href="https://amzn.to/40mvPHU" target="_blank" rel="nofollow sponsored noopener">GravaStar Mercury K1 75% Wireless Mechanical Keyboard</a>
+        <a class="pick" href="https://amzn.to/40mvPHU" target="_blank" rel="nofollow sponsored noopener">
+          <span class="title">GravaStar Mercury K1 75% Wireless Mechanical Keyboard</span>
           <small>Premium keyboard option for focused desk setups.</small>
-        </div>
-        <div class="pick">
-          <a href="https://amzn.to/4qVgWHo" target="_blank" rel="nofollow sponsored noopener">GravaStar Mercury M1 Pro Wireless Mouse</a>
+        </a>
+        <a class="pick" href="https://amzn.to/4qVgWHo" target="_blank" rel="nofollow sponsored noopener">
+          <span class="title">GravaStar Mercury M1 Pro Wireless Mouse</span>
           <small>Companion productivity mouse for same setup style.</small>
-        </div>
-        <div class="pick">
-          <a href="https://amzn.to/4caLLEh" target="_blank" rel="nofollow sponsored noopener">Gogoonike Adjustable Laptop Stand</a>
+        </a>
+        <a class="pick" href="https://amzn.to/4caLLEh" target="_blank" rel="nofollow sponsored noopener">
+          <span class="title">Gogoonike Adjustable Laptop Stand</span>
           <small>High-utility ergonomic baseline item.</small>
-        </div>
-        <div class="pick">
-          <a href="https://amzn.to/4qXCnaX" target="_blank" rel="nofollow sponsored noopener">UGREEN Revodok Pro USB-C Hub (6-in-1)</a>
+        </a>
+        <a class="pick" href="https://amzn.to/4qXCnaX" target="_blank" rel="nofollow sponsored noopener">
+          <span class="title">UGREEN Revodok Pro USB-C Hub (6-in-1)</span>
           <small>Useful connectivity upgrade for most desks.</small>
-        </div>
-        <div class="pick">
-          <a href="https://amzn.to/4laCb73" target="_blank" rel="nofollow sponsored noopener">Quntis Monitor Light Bar</a>
+        </a>
+        <a class="pick" href="https://amzn.to/4laCb73" target="_blank" rel="nofollow sponsored noopener">
+          <span class="title">Quntis Monitor Light Bar</span>
           <small>Comfort/visibility boost for long work sessions.</small>
-        </div>
+        </a>
       </div>
     </section>
 
