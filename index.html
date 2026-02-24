@@ -174,7 +174,7 @@
 
     <section class="section">
       <h3 class="section-title">Current picks (up to 10)</h3>
-      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit.</p>
+      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals.</p>
       <div class="pick-list">
         <!-- DEALCOMPASS_LINKS_START -->
         <a class="pick" href="https://amzn.to/4car3Vd" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) ASUS ROG Harpe Ace Mini Wireless Gaming Mouse – Small Compact Design, 49g Lightweight, 36K D…</span><small>Ergonomic, precision-focused pick that reduces hand fatigue and improves control during high-hour desk use.</small></a>
@@ -228,22 +228,59 @@
     return 'Best for Tech Upgrades';
   }
 
-  function classifyConfidence(text) {
-    const t = text.toLowerCase();
-    if (t.includes('strong value') || t.includes('best') || t.includes('high-value')) return 'High confidence';
-    if (t.includes('balanced') || t.includes('reliable')) return 'Good value';
-    return 'Solid pick';
+  function scoreDeal(title, blurb, url, originalRank) {
+    const t = `${title} ${blurb}`.toLowerCase();
+    let score = 50;
+
+    // Utility signal
+    if (/ergonomic|comfort|reduce|fatigue|workflow|productivity|utility/.test(t)) score += 12;
+    if (/reliable|balanced|value|strong value|day-to-day|useful/.test(t)) score += 10;
+    if (/best|top|high-signal|high-value/.test(t)) score += 6;
+
+    // Category fit signal
+    if (/keyboard|mouse|usb-c|hub|dock|stand|controller/.test(t)) score += 8;
+    if (/robot vacuum|vacuum/.test(t)) score += 4;
+
+    // Trust/fit penalties
+    if (/ebay/.test(t) || /refurbished|used/.test(t)) score -= 10;
+    if (/candidate slot|refreshing/.test(t)) score -= 30;
+
+    // Slight preference to prior top ranks unless strong counter-signal exists
+    score += Math.max(0, 5 - originalRank);
+
+    return Math.max(1, Math.min(100, score));
+  }
+
+  function confidenceLabel(score, idx) {
+    const high = ['High confidence', 'Strong value', 'Top utility'];
+    const mid = ['Reliable pick', 'Practical upgrade', 'Good fit'];
+    const low = ['Worth a look', 'Solid pick', 'Niche fit'];
+    if (score >= 72) return high[idx % high.length];
+    if (score >= 60) return mid[idx % mid.length];
+    return low[idx % low.length];
   }
 
   document.querySelectorAll('a[data-link-id]').forEach((a) => {
     a.href = appendTokens(a.href, a.dataset.linkId || 'unknown');
   });
 
-  document.querySelectorAll('.pick-list a.pick').forEach((pick) => {
-    const title = pick.querySelector('.title')?.textContent || '';
+  const pickList = document.querySelector('.pick-list');
+  const picks = Array.from(document.querySelectorAll('.pick-list a.pick'));
+  const ranked = picks.map((pick, i) => {
+    const titleNode = pick.querySelector('.title');
+    const rawTitle = titleNode?.textContent || '';
+    const cleanTitle = rawTitle.replace(/^\s*\d+\)\s*/, '').trim();
     const blurb = pick.querySelector('small')?.textContent || '';
-    const useCase = classifyUseCase(`${title} ${blurb}`);
-    const confidence = classifyConfidence(`${title} ${blurb}`);
+    const score = scoreDeal(cleanTitle, blurb, pick.getAttribute('href') || '', i + 1);
+    return { pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 };
+  }).sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
+
+  ranked.forEach((row, idx) => {
+    const rank = idx + 1;
+    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
+    const confidence = confidenceLabel(row.score, idx);
+
+    row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
 
     const meta = document.createElement('div');
     meta.className = 'pick-meta';
@@ -253,8 +290,9 @@
     cta.className = 'pick-cta';
     cta.textContent = 'See pick details →';
 
-    pick.appendChild(meta);
-    pick.appendChild(cta);
+    row.pick.appendChild(meta);
+    row.pick.appendChild(cta);
+    pickList.appendChild(row.pick);
   });
 })();
 </script>
