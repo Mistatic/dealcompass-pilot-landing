@@ -104,6 +104,10 @@
     .chip { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:.72rem; font-weight:700; border:1px solid var(--border); color:#d5e3ff; background:rgba(255,255,255,.04); }
     .chip-confidence { color:#d8f8e8; border-color:rgba(143,228,186,.35); background:rgba(101,191,154,.14); }
     .pick-cta { display:inline-block; margin-top:8px; font-size:.8rem; font-weight:700; color:#bcd1ff; }
+    .top-pick-card { border:1px solid rgba(120,165,255,.45); background:linear-gradient(135deg,rgba(95,141,255,.16),rgba(20,31,61,.94)); border-radius:18px; padding:14px; box-shadow:var(--shadow-card); margin-top:10px; }
+    .top-pick-label { font-size:.75rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#cfe0ff; }
+    .top-pick-title { margin:6px 0 6px; font-size:1rem; font-weight:800; color:#e8f0ff; }
+    .top-pick-reason { margin:0; color:var(--muted); font-size:.9rem; }
     .feedback {
       margin-top: 18px; border: 1px solid var(--border); border-radius: var(--radius-md);
       padding: 14px; background: rgba(11, 18, 36, 0.9); box-shadow: var(--shadow-card);
@@ -175,6 +179,14 @@
     <section class="section">
       <h3 class="section-title">Current picks (up to 10)</h3>
       <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals.</p>
+      <article class="top-pick-card" id="topPickCard" hidden>
+        <div class="top-pick-label">⭐ Top Pick</div>
+        <div class="top-pick-title" id="topPickTitle"></div>
+        <p class="top-pick-reason" id="topPickReason">Top utility-to-value pick this cycle.</p>
+        <div class="cta-row" style="margin-top:10px;">
+          <a class="btn btn-primary" id="topPickLink" href="#" target="_blank" rel="nofollow sponsored noopener">View Top Pick</a>
+        </div>
+      </article>
       <div class="pick-list">
         <!-- DEALCOMPASS_LINKS_START -->
         <a class="pick" href="https://amzn.to/4car3Vd" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) ASUS ROG Harpe Ace Mini Wireless Gaming Mouse – Small Compact Design, 49g Lightweight, 36K D…</span><small>Ergonomic, precision-focused pick that reduces hand fatigue and improves control during high-hour desk use.</small></a>
@@ -275,6 +287,18 @@
     return { pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 };
   }).sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
 
+  const top = ranked[0];
+  if (top) {
+    const topCard = document.getElementById('topPickCard');
+    const topTitle = document.getElementById('topPickTitle');
+    const topReason = document.getElementById('topPickReason');
+    const topLink = document.getElementById('topPickLink');
+    topTitle.textContent = top.cleanTitle;
+    topReason.textContent = 'Top utility-to-value pick this cycle.';
+    topLink.href = top.pick.getAttribute('href') || '#';
+    topCard.hidden = false;
+  }
+
   ranked.forEach((row, idx) => {
     const rank = idx + 1;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
@@ -292,7 +316,9 @@
 
     row.pick.appendChild(meta);
     row.pick.appendChild(cta);
-    pickList.appendChild(row.pick);
+
+    // Keep list focused on alternatives; top pick is highlighted above.
+    if (idx > 0) pickList.appendChild(row.pick);
   });
 })();
 </script>
