@@ -100,6 +100,10 @@
     .pick:hover { border-color: rgba(120, 165, 255, 0.62); transform: translateY(-1px); }
     .pick .title { display: block; color: #dbe7ff; font-size: 0.96rem; font-weight: 700; line-height: 1.35; }
     .pick small { display: block; margin-top: 6px; color: var(--muted); font-size: 0.88rem; line-height: 1.4; }
+    .pick-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .chip { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:.72rem; font-weight:700; border:1px solid var(--border); color:#d5e3ff; background:rgba(255,255,255,.04); }
+    .chip-confidence { color:#d8f8e8; border-color:rgba(143,228,186,.35); background:rgba(101,191,154,.14); }
+    .pick-cta { display:inline-block; margin-top:8px; font-size:.8rem; font-weight:700; color:#bcd1ff; }
     .feedback {
       margin-top: 18px; border: 1px solid var(--border); border-radius: var(--radius-md);
       padding: 14px; background: rgba(11, 18, 36, 0.9); box-shadow: var(--shadow-card);
@@ -170,7 +174,7 @@
 
     <section class="section">
       <h3 class="section-title">Current picks (up to 10)</h3>
-      <p class="section-sub">Updated list of tracked picks from the current batch.</p>
+      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit.</p>
       <div class="pick-list">
         <!-- DEALCOMPASS_LINKS_START -->
         <a class="pick" href="https://amzn.to/4car3Vd" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) ASUS ROG Harpe Ace Mini Wireless Gaming Mouse – Small Compact Design, 49g Lightweight, 36K D…</span><small>Ergonomic, precision-focused pick that reduces hand fatigue and improves control during high-hour desk use.</small></a>
@@ -215,8 +219,42 @@
     }
   }
 
+  function classifyUseCase(text) {
+    const t = text.toLowerCase();
+    if (t.includes('gaming') || t.includes('controller')) return 'Best for Gaming';
+    if (t.includes('keyboard') || t.includes('mouse')) return 'Best for Daily Use';
+    if (t.includes('hub') || t.includes('dock') || t.includes('usb-c')) return 'Best for Laptop Setups';
+    if (t.includes('vacuum') || t.includes('robot')) return 'Best for Home Automation';
+    return 'Best for Tech Upgrades';
+  }
+
+  function classifyConfidence(text) {
+    const t = text.toLowerCase();
+    if (t.includes('strong value') || t.includes('best') || t.includes('high-value')) return 'High confidence';
+    if (t.includes('balanced') || t.includes('reliable')) return 'Good value';
+    return 'Solid pick';
+  }
+
   document.querySelectorAll('a[data-link-id]').forEach((a) => {
     a.href = appendTokens(a.href, a.dataset.linkId || 'unknown');
+  });
+
+  document.querySelectorAll('.pick-list a.pick').forEach((pick) => {
+    const title = pick.querySelector('.title')?.textContent || '';
+    const blurb = pick.querySelector('small')?.textContent || '';
+    const useCase = classifyUseCase(`${title} ${blurb}`);
+    const confidence = classifyConfidence(`${title} ${blurb}`);
+
+    const meta = document.createElement('div');
+    meta.className = 'pick-meta';
+    meta.innerHTML = `<span class="chip">${useCase}</span><span class="chip chip-confidence">${confidence}</span>`;
+
+    const cta = document.createElement('span');
+    cta.className = 'pick-cta';
+    cta.textContent = 'See pick details →';
+
+    pick.appendChild(meta);
+    pick.appendChild(cta);
   });
 })();
 </script>
