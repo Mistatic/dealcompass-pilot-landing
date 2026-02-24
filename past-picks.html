@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DealCompass — Past Picks Archive</title>
+  <meta name="description" content="DealCompass past picks archive: historical ranked recommendations and affiliate links." />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <style>
+    :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; --radius:14px; }
+    *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
+    .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
+    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem}
+    .top-links{display:flex;gap:8px}
+    .pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
+    h1{margin:8px 0 8px;font-size:clamp(1.5rem,5vw,2.2rem)}
+    .sub{margin:0 0 14px;color:var(--muted)}
+    .batch{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:14px;margin-top:14px}
+    .batch h2{margin:0 0 4px;font-size:1.05rem}
+    .batch .meta{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+    .pick{display:block;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:rgba(20,31,61,.9);margin-top:8px}
+    .pick .title{display:block;font-weight:700;color:#dbe7ff}
+    .pick small{display:block;color:var(--muted);margin-top:6px}
+    .note{margin-top:16px;color:#91a7d8;font-size:.8rem}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand">DealCompass</div>
+      <div class="top-links">
+        <a class="pill" href="/">Current Picks</a>
+      </div>
+    </header>
+
+    <h1>Past Picks Archive</h1>
+    <p class="sub">Historical recommendation batches. This gives a persistent location for prior picks and affiliate links.</p>
+
+    <div id="archive"></div>
+
+    <p class="note"><strong>Affiliate disclosure:</strong> DealCompass may earn a commission from qualifying purchases made through partner links.</p>
+  </main>
+
+  <script>
+    (async () => {
+      const root = document.getElementById('archive');
+      try {
+        const res = await fetch('/assets/past-picks.json', { cache: 'no-store' });
+        const data = await res.json();
+        const batches = (data && data.batches) || [];
+        if (!batches.length) {
+          root.innerHTML = '<p class="sub">No archived batches yet.</p>';
+          return;
+        }
+        root.innerHTML = batches.map((b) => `
+          <section class="batch">
+            <h2>${b.label || 'Pick batch'}</h2>
+            <p class="meta">${b.date || ''} • ${Array.isArray(b.items) ? b.items.length : 0} picks</p>
+            ${((b.items || []).map((p) => `
+              <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
+                <span class="title">${p.title}</span>
+                <small>${p.blurb || ''}</small>
+              </a>
+            `).join(''))}
+          </section>
+        `).join('');
+      } catch (e) {
+        root.innerHTML = '<p class="sub">Unable to load archive right now.</p>';
+      }
+    })();
+  </script>
+</body>
+</html>
