@@ -7,58 +7,375 @@
   <meta name="description" content="DealCompass helps shoppers find high-signal deals with clear buy/no-buy context." />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png" />
   <style>
-    :root{--bg:#0b1020;--card:#151f3d;--text:#ecf1ff;--muted:#b5c1df;--border:rgba(255,255,255,.14);--brand:#7c5cff}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(900px 500px at 20% -10%, #1a2852 0%, var(--bg) 60%), var(--bg);color:var(--text)}
-    .wrap{max-width:920px;margin:0 auto;padding:20px 16px 56px}
-    .hero{background:linear-gradient(135deg, rgba(124,92,255,.2), rgba(90,208,255,.16));border:1px solid var(--border);border-radius:18px;padding:22px 18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
-    h1{font-size:clamp(1.8rem,5.6vw,2.7rem);line-height:1.12;margin:12px 0 8px}.sub{color:var(--muted);margin:0 0 14px}
-    .ctaRow{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px}
-    .btnPrimary{background:linear-gradient(135deg,var(--brand),#5a62ff);color:#fff}.btnGhost{border:1px solid var(--border);color:var(--text);background:rgba(255,255,255,.04)}
-    .section{margin-top:18px}.section h3{margin:0 0 10px;font-size:1.15rem}.small{color:var(--muted);font-size:.92rem}
-    .pickList{display:grid;grid-template-columns:1fr;gap:10px}.pick{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-decoration:none;cursor:pointer}
-    .pick .title{color:#cfe1ff;font-weight:600;display:block}.pick small{display:block;color:var(--muted);margin-top:5px}
-    .pick:hover{border-color:rgba(124,92,255,.55)} .disclosure{margin-top:20px;font-size:.78rem;line-height:1.45;color:#97a6cd;border-top:1px solid var(--border);padding-top:14px}
+    :root {
+      --bg: #070b16;
+      --bg-soft: #0d1427;
+      --surface: rgba(19, 28, 51, 0.88);
+      --surface-strong: #141f3d;
+      --text: #f4f7ff;
+      --muted: #a9b7dc;
+      --border: rgba(174, 195, 255, 0.2);
+      --border-strong: rgba(174, 195, 255, 0.32);
+      --brand: #5f8dff;
+      --brand-strong: #78a5ff;
+      --success: #9ce0c1;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.35);
+      --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 620px at 10% -18%, rgba(107, 138, 255, 0.26), transparent 52%),
+        radial-gradient(760px 440px at 98% 6%, rgba(68, 107, 223, 0.2), transparent 56%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(100%, 1020px);
+      margin: 0 auto;
+      padding: 18px 14px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(8, 14, 29, 0.7);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #d9e4ff;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.75rem;
+      color: #d4f7e5;
+      background: rgba(101, 191, 154, 0.12);
+      border: 1px solid rgba(137, 218, 182, 0.3);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8fe4ba;
+      box-shadow: 0 0 10px rgba(143, 228, 186, 0.7);
+    }
+
+    .hero {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 24px 16px;
+      background:
+        linear-gradient(135deg, rgba(95, 141, 255, 0.18), rgba(95, 141, 255, 0.05) 45%, rgba(19, 30, 53, 0.92));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #c7d6ff;
+      font-size: 0.79rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 10px 0 10px;
+      font-size: clamp(1.85rem, 6.9vw, 3.1rem);
+      line-height: 1.09;
+      letter-spacing: -0.01em;
+      max-width: 18ch;
+    }
+
+    .sub {
+      margin: 0;
+      color: #d5dff8;
+      font-size: clamp(1rem, 3.5vw, 1.16rem);
+      max-width: 56ch;
+    }
+
+    .trust {
+      margin: 14px 0 0;
+      color: #c2d0f1;
+      font-size: 0.9rem;
+    }
+
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.89rem;
+      line-height: 1.2;
+      transition: transform 0.16s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: #f7fbff;
+      border: 1px solid rgba(137, 170, 255, 0.45);
+      background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+      box-shadow: 0 10px 24px rgba(78, 122, 236, 0.4);
+    }
+
+    .btn-ghost {
+      color: #d7e2ff;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(174, 195, 255, 0.45);
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      line-height: 1.25;
+    }
+
+    .section-sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.04rem;
+      line-height: 1.3;
+    }
+
+    .card p {
+      margin: 0;
+      color: #ccd8f5;
+      font-size: 0.94rem;
+    }
+
+    .pick-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pick {
+      display: block;
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      padding: 13px;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.2s ease, transform 0.16s ease;
+    }
+
+    .pick:hover {
+      border-color: rgba(120, 165, 255, 0.62);
+      transform: translateY(-1px);
+    }
+
+    .pick .title {
+      display: block;
+      color: #dbe7ff;
+      font-size: 0.96rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .pick small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: rgba(11, 18, 36, 0.9);
+      box-shadow: var(--shadow-card);
+    }
+
+    .feedback .title {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #dce8ff;
+    }
+
+    .feedback p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .disclosure {
+      margin-top: 22px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: #8ea1cf;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .disclosure a {
+      color: #cfe0ff;
+    }
+
+    @media (min-width: 760px) {
+      .wrap {
+        padding: 28px 24px 72px;
+      }
+
+      .topbar {
+        padding: 13px 16px;
+      }
+
+      .hero {
+        padding: 30px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .pick-list {
+        gap: 12px;
+      }
+
+      .section {
+        margin-top: 24px;
+      }
+
+      .feedback {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
+    <header class="topbar" aria-label="DealCompass status">
+      <div class="brand">DealCompass</div>
+      <div class="status-pill">Internal Pilot</div>
+    </header>
+
     <section class="hero">
-      <h1>High-signal deal picks for productivity gear</h1>
-      <p class="sub">We filter noisy listings into concise buy/no-buy recommendations for busy shoppers.</p>
-      <div class="ctaRow">
-        <a class="btn btnPrimary" href="https://tally.so/r/RG0ygJ" target="_blank" rel="noopener">Get the next 3 decision-ready picks (free pilot)</a>
-        <a class="btn btnGhost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Score this batch in 30 seconds</a>
+      <p class="eyebrow">Decision-Ready Product Picks</p>
+      <h1>Find the best productivity deals without the research overload.</h1>
+      <p class="sub">DealCompass filters noisy listings into concise buy/no-buy context so you can make faster, clearer purchase decisions.</p>
+      <p class="trust">Built for internal pilot testing with transparent feedback loops and direct user scoring.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://tally.so/r/RG0ygJ" target="_blank" rel="noopener">Get the next 3 decision-ready picks (free pilot)</a>
+        <a class="btn btn-ghost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Score this batch in 30 seconds</a>
       </div>
-      <p class="kicker" style="margin-top:10px">Internal pilot validated; external batch tuning in progress. Current pilot objective: maximize usefulness and click intent before external rollout.</p>
     </section>
 
-    <section class="grid" aria-label="benefits">
-      <article class="card">
-        <h2>What you get</h2>
-        <p>• Curated picks (not endless lists)<br/>• Quick reasoning behind each pick<br/>• Clear next action</p>
-      </article>
-      <article class="card">
-        <h2>Who this is for</h2>
-        <p>Remote workers, founders, and professionals who want practical home-office upgrades without research overload.</p>
-      </article>
+    <section class="section" aria-label="overview">
+      <div class="cards">
+        <article class="card">
+          <h2>What you get</h2>
+          <p>Curated picks, concise reasoning, and a clear next action for every recommendation.</p>
+        </article>
+        <article class="card">
+          <h2>Who this is for</h2>
+          <p>Remote workers, founders, and professionals who want practical home-office upgrades without endless scrolling.</p>
+        </article>
+      </div>
     </section>
 
-    <section class="grid" aria-label="social-proof-and-how-it-works" style="margin-top:14px">
-      <article class="card">
-        <h2>Social proof (pilot placeholder)</h2>
-        <p>Early internal reviewers report stronger clarity and faster buy/no-buy decisions versus generic deal feeds.
-        Public user testimonials will be added after external pilot validation.</p>
-      </article>
-      <article class="card">
-        <h2>How it works (3 steps)</h2>
-        <p>1) We scan and shortlist high-signal deals.<br/>2) We attach quick reasoning + risk note.<br/>3) You decide fast and submit feedback to improve the next batch.</p>
-      </article>
+    <section class="section" aria-label="process">
+      <h2 class="section-title">How the pilot works</h2>
+      <p class="section-sub">Each daily batch is selected, scored, and improved with short feedback cycles.</p>
+      <div class="cards">
+        <article class="card">
+          <h2>1) Shortlist high-signal deals</h2>
+          <p>We scan and rank offers to surface the strongest options for productivity-focused setups.</p>
+        </article>
+        <article class="card">
+          <h2>2) Explain buy/no-buy context</h2>
+          <p>Every pick includes quick rationale and risk notes so decisions are easier to make.</p>
+        </article>
+      </div>
     </section>
 
     <section class="section">
-      <h3>Daily picks (up to 10)</h3>
-      <p class="small">DealCompass supports up to 10 ranked products per daily batch.</p>
-      <div class="pickList">
+      <h3 class="section-title">Daily picks (up to 10)</h3>
+      <p class="section-sub">DealCompass supports up to 10 ranked products per daily batch.</p>
+      <div class="pick-list">
         <a class="pick" href="https://amzn.to/40mvPHU" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) GravaStar Mercury K1 75% Wireless Mechanical Keyboard</span><small>Premium keyboard option for focused desk setups.</small></a>
         <a class="pick" href="https://amzn.to/4qVgWHo" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) GravaStar Mercury M1 Pro Wireless Mouse</span><small>Companion productivity mouse for same setup style.</small></a>
         <a class="pick" href="https://amzn.to/4caLLEh" target="_blank" rel="nofollow sponsored noopener"><span class="title">3) Gogoonike Adjustable Laptop Stand</span><small>High-utility ergonomic baseline item.</small></a>
@@ -72,16 +389,16 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="pick">
-        <span class="title">How pilot feedback works</span>
-        <small>Submit quick feedback (1–5 usefulness + click intent). We use that to improve ranking logic and next-batch quality before public testing.</small>
-        <div style="margin-top:10px"><a class="btn btnGhost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Rate this batch</a></div>
+    <section class="feedback" aria-label="pilot feedback">
+      <p class="title">How pilot feedback works</p>
+      <p>Submit quick feedback (1-5 usefulness + click intent). We use that signal to improve ranking logic and next-batch quality before broader rollout.</p>
+      <div class="cta-row">
+        <a class="btn btn-ghost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Rate this batch</a>
       </div>
     </section>
 
-    <p class="disclosure"><strong>Affiliate disclosure:</strong> As an Amazon Associate, I earn from qualifying purchases.<br/>
-      Contact: <a href="mailto:help@dealcompass.app" style="color:#cfe1ff">help@dealcompass.app</a>
+    <p class="disclosure"><strong>Affiliate disclosure:</strong> As an Amazon Associate, I earn from qualifying purchases.<br />
+      Contact: <a href="mailto:help@dealcompass.app">help@dealcompass.app</a>
     </p>
   </main>
 </body>
