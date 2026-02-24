@@ -3,74 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DealCompass — Smart Deal Picks for Productivity Gear</title>
-  <meta name="description" content="DealCompass helps busy professionals find high-signal home office deals with clear buy/no-buy context." />
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <title>DealCompass — Smart Deal Picks</title>
+  <meta name="description" content="DealCompass helps shoppers find high-signal deals with clear buy/no-buy context." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png" />
   <style>
-    :root{
-      --bg:#0b1020;
-      --bg-soft:#111831;
-      --text:#ecf1ff;
-      --muted:#b5c1df;
-      --brand:#7c5cff;
-      --brand-2:#5ad0ff;
-      --card:#151f3d;
-      --border:rgba(255,255,255,.14);
-      --ok:#37d39a;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background:radial-gradient(900px 500px at 20% -10%, #1a2852 0%, var(--bg) 60%), var(--bg);
-      color:var(--text);
-      line-height:1.5;
-    }
-    .wrap{max-width:960px;margin:0 auto;padding:22px 16px 56px}
-    .brandRow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .brandRow img{width:28px;height:28px;display:block}
-    .brandName{font-weight:700;letter-spacing:.2px;color:#d9e5ff}
-    .hero{
-      background:linear-gradient(135deg, rgba(124,92,255,.2), rgba(90,208,255,.16));
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:22px 18px;
-      box-shadow:0 12px 30px rgba(0,0,0,.25);
-    }
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(55,211,154,.14);border:1px solid rgba(55,211,154,.35);color:#a8f0d4}
-    h1{font-size:clamp(1.8rem,5.6vw,2.7rem);line-height:1.12;margin:12px 0 8px}
-    .sub{color:var(--muted);font-size:1rem;margin:0 0 16px}
-    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-    .btn{display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px}
-    .btnPrimary{background:linear-gradient(135deg,var(--brand),#5a62ff);color:#fff}
-    .btnGhost{border:1px solid var(--border);color:var(--text);background:rgba(255,255,255,.04)}
-
-    .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
-    @media(min-width:760px){.grid{grid-template-columns:1fr 1fr}}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
-    .card h2{font-size:1.02rem;margin:0 0 8px}
-    .card p{margin:0;color:var(--muted)}
-
-    .section{margin-top:18px}
-    .section h3{margin:0 0 10px;font-size:1.15rem}
-
-    .pickList{display:grid;grid-template-columns:1fr;gap:10px}
-    .pick{display:block;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:12px;text-decoration:none;cursor:pointer}
-    .pick .title{color:#cfe1ff;text-decoration:none;font-weight:600;display:block}
-    .pick small{display:block;color:var(--muted);margin-top:5px}
-    .pick:hover{border-color:rgba(124,92,255,.55);transform:translateY(-1px)}
-
-    .disclosure{margin-top:20px;font-size:.78rem;line-height:1.45;color:#97a6cd;border-top:1px solid var(--border);padding-top:14px;opacity:.95}
-    .kicker{font-size:.92rem;color:var(--muted)}
-    .ok{color:#9df0cf}
+    :root{--bg:#0b1020;--card:#151f3d;--text:#ecf1ff;--muted:#b5c1df;--border:rgba(255,255,255,.14);--brand:#7c5cff}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(900px 500px at 20% -10%, #1a2852 0%, var(--bg) 60%), var(--bg);color:var(--text)}
+    .wrap{max-width:920px;margin:0 auto;padding:20px 16px 56px}
+    .hero{background:linear-gradient(135deg, rgba(124,92,255,.2), rgba(90,208,255,.16));border:1px solid var(--border);border-radius:18px;padding:22px 18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+    h1{font-size:clamp(1.8rem,5.6vw,2.7rem);line-height:1.12;margin:12px 0 8px}.sub{color:var(--muted);margin:0 0 14px}
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px}
+    .btnPrimary{background:linear-gradient(135deg,var(--brand),#5a62ff);color:#fff}.btnGhost{border:1px solid var(--border);color:var(--text);background:rgba(255,255,255,.04)}
+    .section{margin-top:18px}.section h3{margin:0 0 10px;font-size:1.15rem}.small{color:var(--muted);font-size:.92rem}
+    .pickList{display:grid;grid-template-columns:1fr;gap:10px}.pick{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-decoration:none;cursor:pointer}
+    .pick .title{color:#cfe1ff;font-weight:600;display:block}.pick small{display:block;color:var(--muted);margin-top:5px}
+    .pick:hover{border-color:rgba(124,92,255,.55)} .disclosure{margin-top:20px;font-size:.78rem;line-height:1.45;color:#97a6cd;border-top:1px solid var(--border);padding-top:14px}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <span class="badge">DealCompass Pilot • Internal Validation Phase</span>
       <h1>High-signal deal picks for productivity gear</h1>
-      <p class="sub">We filter noisy listings into concise buy/no-buy recommendations for busy professionals.</p>
+      <p class="sub">We filter noisy listings into concise buy/no-buy recommendations for busy shoppers.</p>
       <div class="ctaRow">
         <a class="btn btnPrimary" href="https://tally.so/r/RG0ygJ" target="_blank" rel="noopener">Get the next 3 decision-ready picks (free pilot)</a>
         <a class="btn btnGhost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Score this batch in 30 seconds</a>
@@ -89,8 +43,6 @@
       </article>
     </section>
 
-
-
     <section class="grid" aria-label="social-proof-and-how-it-works" style="margin-top:14px">
       <article class="card">
         <h2>Social proof (pilot placeholder)</h2>
@@ -104,42 +56,32 @@
     </section>
 
     <section class="section">
-      <h3>Pilot picks (v1)</h3>
+      <h3>Daily picks (up to 10)</h3>
+      <p class="small">DealCompass supports up to 10 ranked products per daily batch.</p>
       <div class="pickList">
-        <a class="pick" href="https://amzn.to/40mvPHU" target="_blank" rel="nofollow sponsored noopener">
-          <span class="title">GravaStar Mercury K1 75% Wireless Mechanical Keyboard</span>
-          <small>Premium keyboard option for focused desk setups.</small>
-        </a>
-        <a class="pick" href="https://amzn.to/4qVgWHo" target="_blank" rel="nofollow sponsored noopener">
-          <span class="title">GravaStar Mercury M1 Pro Wireless Mouse</span>
-          <small>Companion productivity mouse for same setup style.</small>
-        </a>
-        <a class="pick" href="https://amzn.to/4caLLEh" target="_blank" rel="nofollow sponsored noopener">
-          <span class="title">Gogoonike Adjustable Laptop Stand</span>
-          <small>High-utility ergonomic baseline item.</small>
-        </a>
-        <a class="pick" href="https://amzn.to/4qXCnaX" target="_blank" rel="nofollow sponsored noopener">
-          <span class="title">UGREEN Revodok Pro USB-C Hub (6-in-1)</span>
-          <small>Useful connectivity upgrade for most desks.</small>
-        </a>
-        <a class="pick" href="https://amzn.to/4laCb73" target="_blank" rel="nofollow sponsored noopener">
-          <span class="title">Quntis Monitor Light Bar</span>
-          <small>Comfort/visibility boost for long work sessions.</small>
-        </a>
+        <a class="pick" href="https://amzn.to/40mvPHU" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) GravaStar Mercury K1 75% Wireless Mechanical Keyboard</span><small>Premium keyboard option for focused desk setups.</small></a>
+        <a class="pick" href="https://amzn.to/4qVgWHo" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) GravaStar Mercury M1 Pro Wireless Mouse</span><small>Companion productivity mouse for same setup style.</small></a>
+        <a class="pick" href="https://amzn.to/4caLLEh" target="_blank" rel="nofollow sponsored noopener"><span class="title">3) Gogoonike Adjustable Laptop Stand</span><small>High-utility ergonomic baseline item.</small></a>
+        <a class="pick" href="https://amzn.to/4qXCnaX" target="_blank" rel="nofollow sponsored noopener"><span class="title">4) UGREEN Revodok Pro USB-C Hub (6-in-1)</span><small>Useful connectivity upgrade for most desks.</small></a>
+        <a class="pick" href="https://amzn.to/4laCb73" target="_blank" rel="nofollow sponsored noopener"><span class="title">5) Quntis Monitor Light Bar</span><small>Comfort/visibility boost for long work sessions.</small></a>
+        <div class="pick"><span class="title">6) Candidate slot (refreshing)</span><small>Auto-filled from ranked pipeline outputs.</small></div>
+        <div class="pick"><span class="title">7) Candidate slot (refreshing)</span><small>Auto-filled from ranked pipeline outputs.</small></div>
+        <div class="pick"><span class="title">8) Candidate slot (refreshing)</span><small>Auto-filled from ranked pipeline outputs.</small></div>
+        <div class="pick"><span class="title">9) Candidate slot (refreshing)</span><small>Auto-filled from ranked pipeline outputs.</small></div>
+        <div class="pick"><span class="title">10) Candidate slot (refreshing)</span><small>Auto-filled from ranked pipeline outputs.</small></div>
       </div>
     </section>
 
-    <section class="section card" style="margin-top:14px">
-      <h2 style="margin-top:0">How pilot feedback works</h2>
-      <p>Submit quick feedback (<span class="ok">1–5 usefulness + click intent</span>). We use that to improve ranking logic and next-batch quality before public testing.</p>
-      <div class="ctaRow" style="margin-top:10px">
-        <a class="btn btnGhost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Rate this batch</a>
+    <section class="section">
+      <div class="pick">
+        <span class="title">How pilot feedback works</span>
+        <small>Submit quick feedback (1–5 usefulness + click intent). We use that to improve ranking logic and next-batch quality before public testing.</small>
+        <div style="margin-top:10px"><a class="btn btnGhost" href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Rate this batch</a></div>
       </div>
     </section>
 
-    <p class="disclosure">
-      <strong>Affiliate disclosure:</strong> As an Amazon Associate, I earn from qualifying purchases.<br/>
-      Contact: hello@dealcompass.io (placeholder)
+    <p class="disclosure"><strong>Affiliate disclosure:</strong> As an Amazon Associate, I earn from qualifying purchases.<br/>
+      Contact: <a href="mailto:help@dealcompass.app" style="color:#cfe1ff">help@dealcompass.app</a>
     </p>
   </main>
 </body>
