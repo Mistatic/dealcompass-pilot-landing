@@ -16,9 +16,9 @@
     .pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
     h1{margin:8px 0 8px;font-size:clamp(1.5rem,5vw,2.2rem)}
     .sub{margin:0 0 14px;color:var(--muted)}
-    .batch{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:14px;margin-top:14px}
-    .batch h2{margin:0 0 4px;font-size:1.05rem}
-    .batch .meta{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+    .list-wrap{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:14px;margin-top:14px}
+    .list-meta{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+    .scroll-list{max-height:70vh;overflow-y:auto;padding-right:4px}
     .pick{display:block;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:rgba(20,31,61,.9);margin-top:8px}
     .pick .title{display:block;font-weight:700;color:#dbe7ff}
     .pick small{display:block;color:var(--muted);margin-top:6px}
@@ -35,9 +35,12 @@
     </header>
 
     <h1>Past Picks Archive</h1>
-    <p class="sub">Historical recommendation batches.</p>
+    <p class="sub">Historical recommendations (running list).</p>
 
-    <div id="archive"></div>
+    <section class="list-wrap">
+      <p class="list-meta" id="listMeta">Loading…</p>
+      <div id="archive" class="scroll-list"></div>
+    </section>
 
     <p class="note"><strong>Affiliate disclosure:</strong> DealCompass may earn a commission from qualifying purchases made through partner links.</p>
   </main>
@@ -45,27 +48,41 @@
   <script>
     (async () => {
       const root = document.getElementById('archive');
+      const meta = document.getElementById('listMeta');
       try {
         const res = await fetch('/assets/past-picks.json', { cache: 'no-store' });
         const data = await res.json();
-        const batches = (data && data.batches) || [];
-        if (!batches.length) {
-          root.innerHTML = '<p class="sub">No archived batches yet.</p>';
+
+        const rawItems = Array.isArray(data?.items)
+          ? data.items
+          : (Array.isArray(data?.batches)
+              ? data.batches.flatMap((b) => Array.isArray(b?.items) ? b.items : [])
+              : []);
+
+        const seen = new Set();
+        const items = [];
+        for (const p of rawItems) {
+          const key = `${(p?.url || '').trim()}|${(p?.title || '').trim().toLowerCase()}`;
+          if (!p?.url || !p?.title || seen.has(key)) continue;
+          seen.add(key);
+          items.push(p);
+        }
+
+        if (!items.length) {
+          meta.textContent = '0 unique picks';
+          root.innerHTML = '<p class="sub">No archived picks yet.</p>';
           return;
         }
-        root.innerHTML = batches.map((b) => `
-          <section class="batch">
-            <h2>${b.label || 'Pick batch'}</h2>
-            <p class="meta">${b.date || ''} • ${Array.isArray(b.items) ? b.items.length : 0} picks</p>
-            ${((b.items || []).map((p) => `
-              <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
-                <span class="title">${p.title}</span>
-                <small>${p.blurb || ''}</small>
-              </a>
-            `).join(''))}
-          </section>
+
+        meta.textContent = `${items.length} unique picks`;
+        root.innerHTML = items.map((p) => `
+          <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
+            <span class="title">${p.title}</span>
+            <small>${p.blurb || ''}</small>
+          </a>
         `).join('');
       } catch (e) {
+        meta.textContent = 'Archive unavailable';
         root.innerHTML = '<p class="sub">Unable to load archive right now.</p>';
       }
     })();
