@@ -57,8 +57,7 @@ module.exports = async (req, res) => {
   const webhookToken = process.env.DEALCOMPASS_FORM_WEBHOOK_TOKEN || '';
   const sheetResp = await postJson(
     webhook,
-    { action: 'signup', row },
-    webhookToken ? { Authorization: `Bearer ${webhookToken}` } : {}
+    { action: 'signup', row, token: webhookToken || undefined }
   );
 
   if (!sheetResp.ok) {
