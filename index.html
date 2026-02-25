@@ -274,6 +274,143 @@
     return 'Best for Tech Upgrades';
   }
 
+  function hashText(text) {
+    let hash = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash);
+  }
+
+  function extractBrand(title) {
+    const brands = [
+      ['logitech', 'Logitech'],
+      ['ugreen', 'UGREEN'],
+      ['anker', 'Anker'],
+      ['asus', 'ASUS'],
+      ['redragon', 'Redragon'],
+      ['yunzii', 'YUNZII'],
+      ['vicsoon', 'Vicsoon'],
+      ['amazon', 'Amazon'],
+      ['fire', 'Amazon'],
+      ['samsung', 'Samsung'],
+      ['apple', 'Apple'],
+      ['lenovo', 'Lenovo'],
+      ['dell', 'Dell'],
+      ['hp', 'HP']
+    ];
+    const t = title.toLowerCase();
+    for (const [needle, label] of brands) {
+      if (t.includes(needle)) return label;
+    }
+    const first = title.match(/^\s*([A-Za-z0-9][A-Za-z0-9+\-]{1,})/);
+    return first ? first[1] : '';
+  }
+
+  function detectProductCategory(title) {
+    const t = title.toLowerCase();
+    if (t.includes('trackball')) return 'trackball';
+    if ((t.includes('keyboard') && t.includes('mouse')) || t.includes('combo')) return 'combo';
+    if (t.includes('keyboard')) return 'keyboard';
+    if (t.includes('mouse')) return 'mouse';
+    if (t.includes('hub') || t.includes('dock') || t.includes('multiport')) return 'hub';
+    if (t.includes('desk lamp') || /\blamp\b/.test(t) || t.includes('light bar')) return 'deskLamp';
+    if (t.includes('robot vacuum') || (t.includes('robot') && t.includes('vacuum')) || t.includes('roborock')) return 'robotVacuum';
+    if (t.includes('tablet') || t.includes('ipad') || t.includes('fire hd') || t.includes('galaxy tab')) return 'tablet';
+    if (t.includes('monitor arm') || (t.includes('monitor') && t.includes('arm')) || t.includes('vesa')) return 'monitorArm';
+    if (t.includes('charger') || t.includes('charging') || t.includes('power adapter') || /\bpd\b/.test(t)) return 'charger';
+    return 'general';
+  }
+
+  function chooseBlurbVariant(title, variants, usedBlurbs, brand) {
+    const seed = hashText(title);
+    const suffixes = [
+      'Good fit for routine desk workflows.',
+      'Well suited to practical day-to-day use.',
+      'Balanced option for mixed-device setups.'
+    ];
+    for (let attempt = 0; attempt < variants.length + suffixes.length; attempt += 1) {
+      const base = variants[(seed + attempt) % variants.length]
+        .replace('{brand}', brand || 'This')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const candidate = attempt < variants.length
+        ? base
+        : `${base} ${suffixes[(seed + attempt) % suffixes.length]}`;
+      const key = candidate.toLowerCase();
+      if (!usedBlurbs.has(key)) {
+        usedBlurbs.add(key);
+        return candidate;
+      }
+    }
+    const fallback = `${brand ? `${brand} ` : ''}pick suited to steady productivity use.`;
+    usedBlurbs.add(fallback.toLowerCase());
+    return fallback;
+  }
+
+  function buildProductBlurb(title, usedBlurbs) {
+    const brand = extractBrand(title);
+    const category = detectProductCategory(title);
+    const variantsByCategory = {
+      trackball: [
+        '{brand} trackball design limits wrist movement and supports precise cursor control in long sessions.',
+        '{brand} trackball layout helps reduce repetitive hand strain while keeping pointer movement stable.',
+        '{brand} option is tuned for controlled navigation when fine selection accuracy matters.'
+      ],
+      combo: [
+        '{brand} keyboard-and-mouse bundle gives a consistent input setup for home and office desks.',
+        '{brand} combo streamlines multi-device typing and pointer work without extra pairing steps.',
+        '{brand} set covers core input needs with a single, workspace-ready bundle.'
+      ],
+      keyboard: [
+        '{brand} keyboard supports comfortable, consistent typing across long writing and planning blocks.',
+        '{brand} keyboard is built for reliable daily input with clear key feel and practical layout.',
+        '{brand} keyboard fits focused desk work where typing comfort and stability matter.'
+      ],
+      mouse: [
+        '{brand} mouse prioritizes accurate cursor control and low-fatigue handling for extended use.',
+        '{brand} mouse provides dependable tracking suited to routine office and productivity tasks.',
+        '{brand} mouse is a practical fit for precise navigation in dense documents and dashboards.'
+      ],
+      hub: [
+        '{brand} hub adds essential ports for laptop desks and reduces constant cable swapping.',
+        '{brand} hub consolidates charging, display, and accessory connections into one dock point.',
+        '{brand} hub helps keep a cleaner workstation by centralizing common USB-C expansions.'
+      ],
+      deskLamp: [
+        '{brand} desk lamp improves task visibility with adjustable light for low-glare evening work.',
+        '{brand} lamp supports focused desk sessions with controllable brightness and color temperature.',
+        '{brand} lighting option is useful for reducing eye strain in dim workspaces.'
+      ],
+      robotVacuum: [
+        '{brand} robot vacuum handles routine floor cleaning with minimal day-to-day supervision.',
+        '{brand} robot vacuum helps maintain cleaner work and living areas between manual deep cleans.',
+        '{brand} robot vacuum is practical for recurring cleanup in busy home-office environments.'
+      ],
+      tablet: [
+        '{brand} tablet is useful for reading, notes, and light workflow tasks away from a full desktop.',
+        '{brand} tablet offers a compact screen option for meetings, docs, and media review on the move.',
+        '{brand} tablet works well as a secondary device for quick research and communication tasks.'
+      ],
+      monitorArm: [
+        '{brand} monitor arm helps set ergonomic screen height and reclaim desk surface space.',
+        '{brand} arm mount supports cleaner cable routing and easier monitor repositioning during work.',
+        '{brand} monitor arm is a practical upgrade for posture, adjustability, and desk organization.'
+      ],
+      charger: [
+        '{brand} charger delivers steady power for phones, tablets, and laptops in a single desk setup.',
+        '{brand} charging solution reduces adapter clutter while keeping core devices topped up.',
+        '{brand} charger is a reliable fit for shared charging needs across daily productivity gear.'
+      ],
+      general: [
+        '{brand} pick is selected for practical daily utility and clean integration into desk workflows.',
+        '{brand} option focuses on reliable performance without adding unnecessary setup complexity.',
+        '{brand} deal is a balanced choice for routine productivity and home-office use.'
+      ]
+    };
+    return chooseBlurbVariant(title, variantsByCategory[category], usedBlurbs, brand);
+  }
+
   function scoreDeal(title, blurb, url, originalRank) {
     const t = `${title} ${blurb}`.toLowerCase();
     let score = 50;
@@ -343,12 +480,17 @@
 
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
   pickList.innerHTML = '';
+  const usedBlurbs = new Set();
   ranked.forEach((row, idx) => {
     const rank = idx + 1;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
     const confidence = confidenceLabel(row.score, idx);
+    const generatedBlurb = buildProductBlurb(row.cleanTitle, usedBlurbs);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
+    const blurbNode = row.pick.querySelector('small');
+    if (blurbNode) blurbNode.textContent = generatedBlurb;
+    row.blurb = generatedBlurb;
 
     // remove old meta/cta if script reruns
     row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach(el => el.remove());
