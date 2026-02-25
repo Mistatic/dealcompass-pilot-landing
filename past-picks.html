@@ -63,7 +63,10 @@
         const normalizeKey = (p) => {
           const url = String(p?.url || '').trim();
           const title = String(p?.title || '').trim().toLowerCase();
-          // Prefer ASIN-based dedupe so the same product with different Amazon URL params doesn't duplicate.
+          // Prefer explicit ASIN when present in JSON.
+          const asinField = String(p?.asin || '').trim().toUpperCase();
+          if (asinField) return `asin:${asinField}`;
+          // Fallback: infer ASIN from URL when possible.
           const asinMatch = url.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
           if (asinMatch) return `asin:${asinMatch[1].toUpperCase()}`;
           // Fallback: strip query/hash and normalize trailing slash.
