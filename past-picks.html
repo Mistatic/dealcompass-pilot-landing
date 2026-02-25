@@ -60,11 +60,24 @@
               ? data.batches.flatMap((b) => Array.isArray(b?.items) ? b.items : [])
               : []);
 
+        const normalizeKey = (p) => {
+          const url = String(p?.url || '').trim();
+          const title = String(p?.title || '').trim().toLowerCase();
+          // Prefer ASIN-based dedupe so the same product with different Amazon URL params doesn't duplicate.
+          const asinMatch = url.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+          if (asinMatch) return `asin:${asinMatch[1].toUpperCase()}`;
+          // Fallback: strip query/hash and normalize trailing slash.
+          let cleanUrl = url.replace(/[?#].*$/, '');
+          cleanUrl = cleanUrl.replace(/\/$/, '');
+          return `url:${cleanUrl}|title:${title}`;
+        };
+
         const seen = new Set();
         const items = [];
         for (const p of rawItems) {
-          const key = `${(p?.url || '').trim()}|${(p?.title || '').trim().toLowerCase()}`;
-          if (!p?.url || !p?.title || seen.has(key)) continue;
+          if (!p?.url || !p?.title) continue;
+          const key = normalizeKey(p);
+          if (seen.has(key)) continue;
           seen.add(key);
           items.push(p);
         }
