@@ -3,26 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DealCompass | Join the Free Pilot</title>
-  <meta name="description" content="Join the DealCompass free pilot and get decision-ready tech picks with clear buy/skip context." />
+  <title>DealCompass | Join Free Pilot</title>
+  <meta name="description" content="Join the DealCompass pilot for concise, decision-ready picks with buy/skip context." />
   <link rel="icon" type="image/png" href="/assets/favicon-logo.png" />
   <style>
-    :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); }
-    *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
-    .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
+    :root{--bg:#070b16;--bg-soft:#0d1427;--surface:rgba(19,28,51,.88);--text:#f4f7ff;--muted:#a9b7dc;--border:rgba(174,195,255,.2);--brand:#5f8dff}
+    *{box-sizing:border-box}body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
+    .wrap{width:min(100%,900px);margin:0 auto;padding:22px 14px 60px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:18px}
     .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}
     .pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
-    h1{margin:10px 0 8px;font-size:clamp(1.6rem,4.5vw,2.3rem)} .sub{margin:0 0 14px;color:var(--muted)}
-    .panel{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:12px}
-    iframe{width:100%;height:980px;border:0;border-radius:12px;background:#fff}
-    .fallback{margin-top:10px;color:var(--muted);font-size:.88rem}
-    .fallback a{color:#cfe0ff}
+    h1{margin:8px 0 6px;font-size:clamp(1.7rem,4.8vw,2.35rem)}.sub{margin:0 0 14px;color:var(--muted)}
+    .panel{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:18px}
+    form{display:grid;gap:12px}
+    label{font-size:.88rem;color:#d7e2ff;font-weight:700}
+    input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:#0f1830;color:#f4f7ff;font-size:.95rem}
+    .row{display:grid;gap:12px;grid-template-columns:1fr}
+    @media(min-width:760px){.row.two{grid-template-columns:1fr 1fr}}
+    .checkbox{display:flex;align-items:flex-start;gap:10px;color:#d7e2ff;font-size:.9rem}
+    .checkbox input{width:auto;margin-top:2px}
+    .btn{border:1px solid rgba(137,170,255,.45);background:linear-gradient(135deg,var(--brand),#78a5ff);color:#fff;padding:11px 14px;border-radius:11px;font-weight:800;cursor:pointer}
+    .status{min-height:22px;font-size:.9rem}.ok{color:#9ee3b5}.err{color:#ffb0b0}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <header class="topbar" aria-label="DealCompass signup header">
+    <header class="topbar">
       <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
       <a class="pill" href="/">Back to Home</a>
     </header>
@@ -30,14 +36,63 @@
     <h1>Join the Free Pilot</h1>
     <p class="sub">Get concise, decision-ready picks with practical buy/skip context.</p>
 
-    <section class="panel" aria-label="DealCompass signup form">
-      <iframe
-        src="https://tally.so/embed/RG0ygJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-        title="DealCompass Signup Form"
-        loading="lazy"
-      ></iframe>
-      <p class="fallback">If the form doesn’t load, open it directly: <a href="https://tally.so/r/RG0ygJ" target="_blank" rel="noopener">Signup Form</a>.</p>
+    <section class="panel" aria-label="signup form">
+      <form id="signupForm" novalidate>
+        <div class="row two">
+          <div><label for="email">Email *</label><input id="email" name="email" type="email" required /></div>
+          <div><label for="first_name">First Name</label><input id="first_name" name="first_name" type="text" /></div>
+        </div>
+        <div class="row two">
+          <div>
+            <label for="interest_category">Primary Interest Category</label>
+            <select id="interest_category" name="interest_category">
+              <option value="">Select…</option><option>Keyboard</option><option>Mouse</option><option>Ergonomic</option><option>Desk Lighting</option><option>Docks/Hubs</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="budget_range">Budget Range</label>
+            <select id="budget_range" name="budget_range">
+              <option value="">Select…</option><option>Under $25</option><option>$25–$50</option><option>$50–$100</option><option>$100+</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="preferred_channel">Preferred Channel</label>
+          <select id="preferred_channel" name="preferred_channel">
+            <option value="">Select…</option><option>Email</option><option>Discord</option><option>Telegram</option>
+          </select>
+        </div>
+        <label class="checkbox"><input id="consent" name="consent" type="checkbox" required /> I consent to receive DealCompass pilot updates.</label>
+        <button class="btn" type="submit">Join Free Now</button>
+        <div id="status" class="status" aria-live="polite"></div>
+      </form>
     </section>
   </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const form = document.getElementById('signupForm');
+    const statusEl = document.getElementById('status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.className = 'status';
+      statusEl.textContent = 'Submitting…';
+      const payload = Object.fromEntries(new FormData(form).entries());
+      payload.consent = document.getElementById('consent').checked;
+      payload.dc_campaign = params.get('dc_campaign') || '';
+      payload.dc_channel = params.get('dc_channel') || '';
+      payload.dc_variant = params.get('dc_variant') || '';
+      try {
+        const r = await fetch('/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const j = await r.json();
+        if (!r.ok || !j.ok) throw new Error(j.error || 'submit_failed');
+        statusEl.className = 'status ok';
+        statusEl.textContent = 'You’re in. We’ll send concise picks soon.';
+        form.reset();
+      } catch (err) {
+        statusEl.className = 'status err';
+        statusEl.textContent = 'Could not submit right now. Please try again in a moment.';
+      }
+    });
+  </script>
 </body>
 </html>

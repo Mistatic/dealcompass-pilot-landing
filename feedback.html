@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DealCompass | Quick Feedback</title>
+  <title>DealCompass | Feedback</title>
   <meta name="description" content="Share quick DealCompass feedback to improve ranking quality and future picks." />
   <link rel="icon" type="image/png" href="/assets/favicon-logo.png" />
   <style>
-    :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); }
-    *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
-    .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
+    :root{--bg:#070b16;--bg-soft:#0d1427;--surface:rgba(19,28,51,.88);--text:#f4f7ff;--muted:#a9b7dc;--border:rgba(174,195,255,.2);--brand:#5f8dff}
+    *{box-sizing:border-box}body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
+    .wrap{width:min(100%,900px);margin:0 auto;padding:22px 14px 60px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:18px}
     .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}
     .pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
-    h1{margin:10px 0 8px;font-size:clamp(1.6rem,4.5vw,2.3rem)} .sub{margin:0 0 14px;color:var(--muted)}
-    .panel{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:12px}
-    iframe{width:100%;height:980px;border:0;border-radius:12px;background:#fff}
-    .fallback{margin-top:10px;color:var(--muted);font-size:.88rem}
-    .fallback a{color:#cfe0ff}
+    h1{margin:8px 0 6px;font-size:clamp(1.7rem,4.8vw,2.35rem)}.sub{margin:0 0 14px;color:var(--muted)}
+    .panel{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:18px}
+    form{display:grid;gap:12px}
+    label{font-size:.88rem;color:#d7e2ff;font-weight:700}
+    input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:#0f1830;color:#f4f7ff;font-size:.95rem}
+    textarea{min-height:110px;resize:vertical}
+    .row{display:grid;gap:12px;grid-template-columns:1fr}
+    @media(min-width:760px){.row.two{grid-template-columns:1fr 1fr}}
+    .btn{border:1px solid rgba(137,170,255,.45);background:linear-gradient(135deg,var(--brand),#78a5ff);color:#fff;padding:11px 14px;border-radius:11px;font-weight:800;cursor:pointer}
+    .status{min-height:22px;font-size:.9rem}.ok{color:#9ee3b5}.err{color:#ffb0b0}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <header class="topbar" aria-label="DealCompass feedback header">
+    <header class="topbar">
       <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
       <a class="pill" href="/">Back to Home</a>
     </header>
@@ -30,14 +35,54 @@
     <h1>Quick Feedback (30 Seconds)</h1>
     <p class="sub">Your response helps improve ranking quality and tomorrow’s picks.</p>
 
-    <section class="panel" aria-label="DealCompass feedback form">
-      <iframe
-        src="https://tally.so/embed/KY6Kg7?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-        title="DealCompass Feedback Form"
-        loading="lazy"
-      ></iframe>
-      <p class="fallback">If the form doesn’t load, open it directly: <a href="https://tally.so/r/KY6Kg7" target="_blank" rel="noopener">Feedback Form</a>.</p>
+    <section class="panel" aria-label="feedback form">
+      <form id="feedbackForm" novalidate>
+        <div class="row two">
+          <div>
+            <label for="usefulness_score">Usefulness Score (1–5) *</label>
+            <select id="usefulness_score" name="usefulness_score" required>
+              <option value="">Select…</option><option value="5">5 - Very useful</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1 - Not useful</option>
+            </select>
+          </div>
+          <div>
+            <label for="buy_intent">Would You Consider Buying?</label>
+            <select id="buy_intent" name="buy_intent"><option value="">Select…</option><option>Yes</option><option>Maybe</option><option>No</option></select>
+          </div>
+        </div>
+        <div class="row two">
+          <div><label for="reviewed_pick">Which Pick Did You Review?</label><input id="reviewed_pick" name="reviewed_pick" type="text" /></div>
+          <div><label for="clicked_link">Did You Click a Link?</label><select id="clicked_link" name="clicked_link"><option value="">Select…</option><option>Yes</option><option>No</option></select></div>
+        </div>
+        <div><label for="missing_or_confusing">What Was Missing or Confusing?</label><textarea id="missing_or_confusing" name="missing_or_confusing"></textarea></div>
+        <button class="btn" type="submit">Submit Feedback</button>
+        <div id="status" class="status" aria-live="polite"></div>
+      </form>
     </section>
   </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const form = document.getElementById('feedbackForm');
+    const statusEl = document.getElementById('status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.className = 'status';
+      statusEl.textContent = 'Submitting…';
+      const payload = Object.fromEntries(new FormData(form).entries());
+      payload.dc_campaign = params.get('dc_campaign') || '';
+      payload.dc_channel = params.get('dc_channel') || '';
+      payload.dc_variant = params.get('dc_variant') || '';
+      try {
+        const r = await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const j = await r.json();
+        if (!r.ok || !j.ok) throw new Error(j.error || 'submit_failed');
+        statusEl.className = 'status ok';
+        statusEl.textContent = 'Thanks — feedback recorded.';
+        form.reset();
+      } catch (err) {
+        statusEl.className = 'status err';
+        statusEl.textContent = 'Could not submit right now. Please try again in a moment.';
+      }
+    });
+  </script>
 </body>
 </html>
