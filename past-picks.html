@@ -22,6 +22,7 @@
     .pick{display:block;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:rgba(20,31,61,.9);margin-top:8px}
     .pick .title{display:block;font-weight:700;color:#dbe7ff}
     .pick small{display:block;color:var(--muted);margin-top:6px}
+    .pick-cta{display:inline-block;margin-top:8px;font-size:.8rem;font-weight:700;color:#bcd1ff}
     .note{margin-top:16px;color:#91a7d8;font-size:.8rem}
   </style>
 </head>
@@ -79,6 +80,7 @@
           <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
             <span class="title">${p.title}</span>
             <small>${p.blurb || ''}</small>
+            <span class="pick-cta">See pick details →</span>
           </a>
         `).join('');
       } catch (e) {
