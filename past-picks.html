@@ -94,7 +94,7 @@
         meta.textContent = `${items.length} unique picks`;
         root.innerHTML = items.map((p) => `
           <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
-            <span class="title">${p.title}</span>
+            <span class="title">${String(p.title || '').replace(/^\s*\d+\)\s*/, '')}</span>
             <small>${p.blurb || ''}</small>
             <span class="pick-cta">See pick details →</span>
           </a>
