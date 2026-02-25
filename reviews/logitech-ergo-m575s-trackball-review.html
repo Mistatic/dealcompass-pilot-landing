@@ -22,7 +22,7 @@
     :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; }
     *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));line-height:1.58}
     .wrap{width:min(100%,960px);margin:0 auto;padding:22px 14px 60px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
-    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
+    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
     .hero,.section{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface);margin-top:12px}
     h1{margin:8px 0 10px;font-size:clamp(1.6rem,5vw,2.2rem)} h2{margin:0 0 8px;font-size:1.06rem} p{margin:0;color:#d5dff8} ul{margin:0;padding-left:18px} li{margin:7px 0;color:#d5dff8}
     .cta{display:inline-flex;margin-top:12px;text-decoration:none;font-weight:800;background:linear-gradient(135deg,var(--brand),#78a5ff);color:#f7fbff;padding:10px 14px;border-radius:12px;border:1px solid rgba(137,170,255,.45)}
@@ -32,7 +32,7 @@
 <body>
   <main class="wrap">
     <header class="topbar">
-      <div class="brand">DealCompass</div>
+      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
       <nav class="top-links"><a class="pill" href="/">Home</a><a class="pill" href="/reviews.html">Our Verdicts</a><a class="pill" href="/past-picks.html">Past Picks</a></nav>
     </header>
 
