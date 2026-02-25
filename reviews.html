@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DealCompass Reviews | Product-by-Product Buying Reviews</title>
+  <meta name="description" content="Browse DealCompass product reviews sourced from current and past picks, each with practical fit notes, tradeoffs, and direct affiliate links." />
+  <link rel="canonical" href="https://dealcompass.app/reviews.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta property="og:title" content="DealCompass Reviews" />
+  <meta property="og:description" content="Practical product reviews with clear fit/tradeoff guidance and direct links." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealcompass.app/reviews.html" />
+  <meta property="og:image" content="https://dealcompass.app/assets/share-card.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DealCompass Reviews" />
+  <meta name="twitter:description" content="Practical product reviews sourced from current and past picks." />
+  <meta name="twitter:image" content="https://dealcompass.app/assets/share-card.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <script defer src="/_vercel/insights/script.js"></script>
+  <style>
+    :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; }
+    *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
+    .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
+    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
+    h1{margin:8px 0 8px;font-size:clamp(1.6rem,5vw,2.35rem)} .sub{margin:0 0 16px;color:var(--muted)}
+    .cards{display:grid;gap:12px}.card{border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--surface)}
+    .card h2{margin:0 0 6px;font-size:1.02rem}.meta{font-size:.8rem;color:var(--muted);margin-bottom:8px}.cta{display:inline-flex;margin-top:10px;text-decoration:none;font-size:.82rem;font-weight:800;color:#dbe7ff;border:1px solid var(--border);padding:7px 10px;border-radius:10px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar" aria-label="DealCompass reviews header">
+      <div class="brand">DealCompass</div>
+      <nav class="top-links" aria-label="Primary">
+        <a class="pill" href="/">Home</a>
+        <a class="pill" href="/past-picks.html">Past Picks</a>
+      </nav>
+    </header>
+    <h1>DealCompass Product Reviews</h1>
+    <p class="sub">Review pages are published from current/past picks so traffic content and on-site SEO stay aligned.</p>
+    <section id="reviews" class="cards" aria-live="polite"></section>
+  </main>
+  <script>
+    (async () => {
+      const root = document.getElementById('reviews');
+      try {
+        const res = await fetch('/assets/reviews.json', { cache: 'no-store' });
+        const data = await res.json();
+        const rows = Array.isArray(data?.reviews) ? data.reviews : [];
+        if (!rows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages will appear here as they are released.</p></div>'; return; }
+        root.innerHTML = rows.map((r) => `
+          <article class="card">
+            <h2>${r.title}</h2>
+            <div class="meta">${r.published_at} • ${r.category || 'Review'}</div>
+            <p>${r.summary || ''}</p>
+            <a class="cta" href="${r.path}">Read full review →</a>
+          </article>
+        `).join('');
+      } catch (e) {
+        root.innerHTML = '<div class="card"><h2>Review feed unavailable</h2><p class="sub">Please try again later.</p></div>';
+      }
+    })();
+  </script>
+</body>
+</html>
