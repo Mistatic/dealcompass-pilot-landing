@@ -60,11 +60,27 @@
               ? data.batches.flatMap((b) => Array.isArray(b?.items) ? b.items : [])
               : []);
 
+        const normalizeKey = (p) => {
+          const url = String(p?.url || '').trim();
+          const title = String(p?.title || '').trim().toLowerCase();
+          // Prefer explicit ASIN when present in JSON.
+          const asinField = String(p?.asin || '').trim().toUpperCase();
+          if (asinField) return `asin:${asinField}`;
+          // Fallback: infer ASIN from URL when possible.
+          const asinMatch = url.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+          if (asinMatch) return `asin:${asinMatch[1].toUpperCase()}`;
+          // Fallback: strip query/hash and normalize trailing slash.
+          let cleanUrl = url.replace(/[?#].*$/, '');
+          cleanUrl = cleanUrl.replace(/\/$/, '');
+          return `url:${cleanUrl}|title:${title}`;
+        };
+
         const seen = new Set();
         const items = [];
         for (const p of rawItems) {
-          const key = `${(p?.url || '').trim()}|${(p?.title || '').trim().toLowerCase()}`;
-          if (!p?.url || !p?.title || seen.has(key)) continue;
+          if (!p?.url || !p?.title) continue;
+          const key = normalizeKey(p);
+          if (seen.has(key)) continue;
           seen.add(key);
           items.push(p);
         }
@@ -78,7 +94,7 @@
         meta.textContent = `${items.length} unique picks`;
         root.innerHTML = items.map((p) => `
           <a class="pick" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
-            <span class="title">${p.title}</span>
+            <span class="title">${String(p.title || '').replace(/^\s*\d+\)\s*/, '')}</span>
             <small>${p.blurb || ''}</small>
             <span class="pick-cta">See pick details →</span>
           </a>
