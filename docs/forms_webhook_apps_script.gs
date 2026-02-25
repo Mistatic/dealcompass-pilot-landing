@@ -13,15 +13,39 @@ const SHEET_ID = '1KrZTuMTPY6bQACR0HVO9pUfIxkyC1dM1sY84TyjCmpc';
 const SIGNUP_TAB = 'Sheet1';
 const FEEDBACK_TAB = 'DealCompass Feedback';
 
-function jsonOut(code, payload) {
+function jsonOut(payload) {
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: code >= 200 && code < 300, ...payload }))
+    .createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
 function safe(v) {
   if (v === null || v === undefined) return '';
   return String(v).replace(/[\r\n]+/g, ' ').trim();
+}
+
+function normalize(h) {
+  return safe(h).toLowerCase();
+}
+
+function headerIndexMap(sheet) {
+  const headers = sheet.getRange(1, 1, 1, Math.max(1, sheet.getLastColumn())).getValues()[0];
+  const map = {};
+  headers.forEach((h, i) => {
+    const k = normalize(h);
+    if (k) map[k] = i;
+  });
+  return { headers, map };
+}
+
+function appendByHeaders(sheet, valuesByHeader) {
+  const { headers, map } = headerIndexMap(sheet);
+  const row = new Array(Math.max(1, headers.length)).fill('');
+  Object.keys(valuesByHeader).forEach((key) => {
+    const idx = map[normalize(key)];
+    if (idx !== undefined) row[idx] = safe(valuesByHeader[key]);
+  });
+  sheet.appendRow(row);
 }
 
 function doPost(e) {
@@ -33,56 +57,58 @@ function doPost(e) {
 
     const expected = PropertiesService.getScriptProperties().getProperty('DEALCOMPASS_WEBHOOK_TOKEN') || '';
     if (!expected || token !== expected) {
-      return jsonOut(401, { error: 'unauthorized' });
+      return jsonOut({ ok: false, error: 'unauthorized' });
     }
 
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
     if (action === 'signup') {
       const sh = ss.getSheetByName(SIGNUP_TAB);
-      if (!sh) return jsonOut(500, { error: 'missing_signup_sheet' });
+      if (!sh) return jsonOut({ ok: false, error: 'missing_signup_sheet' });
 
-      sh.appendRow([
-        safe(row.submission_id),
-        safe(row.submitted_at),
-        safe(row.user_email),
-        safe(row.user_name),
-        safe(row.interest_category),
-        safe(row.budget_range),
-        safe(row.preferred_channel),
-        safe(row.consent),
-        safe(row.campaign_id),
-        safe(row.campaign_channel),
-        safe(row.campaign_variant),
-        safe(row.source),
-      ]);
+      appendByHeaders(sh, {
+        'Submission ID': row.submission_id,
+        'Respondent ID': row.submitted_at,
+        'Submitted at': row.submitted_at,
+        'E-mail': row.user_email,
+        'First Name': row.user_name,
+        'Primary Interest Category': row.interest_category,
+        'Budget Range': row.budget_range,
+        'Preferred Channel': row.preferred_channel || 'Email',
+        "Type 'Yes' to consent to pilot updates": row.consent,
+        'dc_campaign': row.campaign_id,
+        'dc_channel': row.campaign_channel,
+        'dc_variant': row.campaign_variant,
+        'source': row.source,
+      });
 
-      return jsonOut(200, { action: 'signup', written: true });
+      return jsonOut({ ok: true, action: 'signup', written: true });
     }
 
     if (action === 'feedback') {
       const sh = ss.getSheetByName(FEEDBACK_TAB);
-      if (!sh) return jsonOut(500, { error: 'missing_feedback_sheet' });
+      if (!sh) return jsonOut({ ok: false, error: 'missing_feedback_sheet' });
 
-      sh.appendRow([
-        safe(row.submission_id),
-        safe(row.submitted_at),
-        safe(row.usefulness_score),
-        safe(row.reviewed_pick),
-        safe(row.clicked_link),
-        safe(row.buy_intent),
-        safe(row.missing_or_confusing),
-        safe(row.campaign_id),
-        safe(row.campaign_channel),
-        safe(row.campaign_variant),
-        safe(row.source),
-      ]);
+      appendByHeaders(sh, {
+        'Submission ID': row.submission_id,
+        'Respondent ID': row.submitted_at,
+        'Submitted at': row.submitted_at,
+        'Usefulness Score (1-5)': row.usefulness_score,
+        'Which pick did you review?': row.reviewed_pick,
+        'Did you click a link?': row.clicked_link,
+        'Would you consider buying?': row.buy_intent,
+        'What was missing or confusing?': row.missing_or_confusing,
+        'dc_campaign': row.campaign_id,
+        'dc_channel': row.campaign_channel,
+        'dc_variant': row.campaign_variant,
+        'source': row.source,
+      });
 
-      return jsonOut(200, { action: 'feedback', written: true });
+      return jsonOut({ ok: true, action: 'feedback', written: true });
     }
 
-    return jsonOut(400, { error: 'invalid_action' });
+    return jsonOut({ ok: false, error: 'invalid_action' });
   } catch (err) {
-    return jsonOut(500, { error: 'server_error', detail: String(err && err.message || err) });
+    return jsonOut({ ok: false, error: 'server_error', detail: String((err && err.message) || err) });
   }
 }
