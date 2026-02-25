@@ -38,13 +38,43 @@ function headerIndexMap(sheet) {
   return { headers, map };
 }
 
-function appendByHeaders(sheet, valuesByHeader) {
-  const { headers, map } = headerIndexMap(sheet);
-  const row = new Array(Math.max(1, headers.length)).fill('');
-  Object.keys(valuesByHeader).forEach((key) => {
-    const idx = map[normalize(key)];
-    if (idx !== undefined) row[idx] = safe(valuesByHeader[key]);
+function ensureHeaders(sheet, requiredHeaders) {
+  const state = headerIndexMap(sheet);
+  const missing = requiredHeaders.filter((h) => !(normalize(h) in state.map));
+  if (!missing.length) return headerIndexMap(sheet);
+
+  const startCol = Math.max(1, state.headers.length) + 1;
+  sheet.getRange(1, startCol, 1, missing.length).setValues([missing]);
+  return headerIndexMap(sheet);
+}
+
+function setByAliases(row, map, aliases, value) {
+  for (let i = 0; i < aliases.length; i += 1) {
+    const idx = map[normalize(aliases[i])];
+    if (idx !== undefined) {
+      row[idx] = safe(value);
+      return;
+    }
+  }
+}
+
+function appendMappedRow(sheet, fieldMap) {
+  const required = [];
+  Object.keys(fieldMap).forEach((k) => {
+    const aliases = fieldMap[k] && fieldMap[k].headers ? fieldMap[k].headers : [];
+    if (aliases.length) required.push(aliases[0]);
   });
+
+  const { headers, map } = ensureHeaders(sheet, required);
+  const row = new Array(Math.max(1, headers.length)).fill('');
+
+  Object.keys(fieldMap).forEach((k) => {
+    const spec = fieldMap[k] || {};
+    const aliases = spec.headers || [];
+    const value = spec.value;
+    setByAliases(row, map, aliases, value);
+  });
+
   sheet.appendRow(row);
 }
 
@@ -66,20 +96,23 @@ function doPost(e) {
       const sh = ss.getSheetByName(SIGNUP_TAB);
       if (!sh) return jsonOut({ ok: false, error: 'missing_signup_sheet' });
 
-      appendByHeaders(sh, {
-        'Submission ID': row.submission_id,
-        'Respondent ID': row.submitted_at,
-        'Submitted at': row.submitted_at,
-        'E-mail': row.user_email,
-        'First Name': row.user_name,
-        'Primary Interest Category': row.interest_category,
-        'Budget Range': row.budget_range,
-        'Preferred Channel': row.preferred_channel || 'Email',
-        "Type 'Yes' to consent to pilot updates": row.consent,
-        'dc_campaign': row.campaign_id,
-        'dc_channel': row.campaign_channel,
-        'dc_variant': row.campaign_variant,
-        'source': row.source,
+      appendMappedRow(sh, {
+        submission_id: { headers: ['Submission ID'], value: row.submission_id },
+        respondent_id: { headers: ['Respondent ID'], value: row.submitted_at },
+        submitted_at: { headers: ['Submitted at'], value: row.submitted_at },
+        email: { headers: ['E-mail', 'Email'], value: row.user_email },
+        first_name: { headers: ['First Name'], value: row.user_name },
+        interest: { headers: ['Primary Interest Category'], value: row.interest_category },
+        budget: { headers: ['Budget Range'], value: row.budget_range },
+        preferred_channel: { headers: ['Preferred Channel'], value: row.preferred_channel || 'Email' },
+        consent: {
+          headers: ["Type 'Yes' to consent to pilot updates", 'Type ‘Yes’ to consent to pilot updates', 'Consent'],
+          value: 'YES',
+        },
+        campaign_id: { headers: ['dc_campaign', 'campaign_id', 'campaign'], value: row.campaign_id },
+        campaign_channel: { headers: ['dc_channel', 'campaign_channel', 'channel'], value: row.campaign_channel },
+        campaign_variant: { headers: ['dc_variant', 'campaign_variant', 'variant'], value: row.campaign_variant },
+        source: { headers: ['source'], value: row.source || 'dealcompass_native_form' },
       });
 
       return jsonOut({ ok: true, action: 'signup', written: true });
@@ -89,19 +122,19 @@ function doPost(e) {
       const sh = ss.getSheetByName(FEEDBACK_TAB);
       if (!sh) return jsonOut({ ok: false, error: 'missing_feedback_sheet' });
 
-      appendByHeaders(sh, {
-        'Submission ID': row.submission_id,
-        'Respondent ID': row.submitted_at,
-        'Submitted at': row.submitted_at,
-        'Usefulness Score (1-5)': row.usefulness_score,
-        'Which pick did you review?': row.reviewed_pick,
-        'Did you click a link?': row.clicked_link,
-        'Would you consider buying?': row.buy_intent,
-        'What was missing or confusing?': row.missing_or_confusing,
-        'dc_campaign': row.campaign_id,
-        'dc_channel': row.campaign_channel,
-        'dc_variant': row.campaign_variant,
-        'source': row.source,
+      appendMappedRow(sh, {
+        submission_id: { headers: ['Submission ID'], value: row.submission_id },
+        respondent_id: { headers: ['Respondent ID'], value: row.submitted_at },
+        submitted_at: { headers: ['Submitted at'], value: row.submitted_at },
+        usefulness_score: { headers: ['Usefulness Score (1-5)'], value: row.usefulness_score },
+        reviewed_pick: { headers: ['Which pick did you review?'], value: row.reviewed_pick },
+        clicked_link: { headers: ['Did you click a link?'], value: row.clicked_link },
+        buy_intent: { headers: ['Would you consider buying?'], value: row.buy_intent },
+        missing: { headers: ['What was missing or confusing?'], value: row.missing_or_confusing },
+        campaign_id: { headers: ['dc_campaign', 'campaign_id', 'campaign'], value: row.campaign_id },
+        campaign_channel: { headers: ['dc_channel', 'campaign_channel', 'channel'], value: row.campaign_channel },
+        campaign_variant: { headers: ['dc_variant', 'campaign_variant', 'variant'], value: row.campaign_variant },
+        source: { headers: ['source'], value: row.source || 'dealcompass_native_form' },
       });
 
       return jsonOut({ ok: true, action: 'feedback', written: true });
