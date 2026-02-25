@@ -3,9 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DealCompass — Past Picks Archive</title>
-  <meta name="description" content="DealCompass past picks archive: historical ranked recommendations and affiliate links." />
+  <title>DealCompass Past Picks | Historical Tech Deal Archive</title>
+  <meta name="description" content="Browse the DealCompass past picks archive for historical productivity and home office tech deal recommendations with concise summaries." />
+  <link rel="canonical" href="https://dealcompass.app/past-picks.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta property="og:title" content="DealCompass Past Picks Archive" />
+  <meta property="og:description" content="Historical DealCompass recommendations for productivity and home office tech deals." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealcompass.app/past-picks.html" />
+  <meta property="og:site_name" content="DealCompass" />
+  <meta property="og:image" content="https://dealcompass.app/assets/logo-mark.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DealCompass Past Picks Archive" />
+  <meta name="twitter:description" content="Explore historical ranked deal picks from DealCompass." />
+  <meta name="twitter:image" content="https://dealcompass.app/assets/logo-mark.svg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": "https://dealcompass.app/past-picks.html#collectionpage",
+          "url": "https://dealcompass.app/past-picks.html",
+          "name": "DealCompass Past Picks Archive",
+          "description": "Historical productivity and home office tech deal recommendations from DealCompass.",
+          "isPartOf": {
+            "@id": "https://dealcompass.app/#website"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://dealcompass.app/past-picks.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://dealcompass.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Past Picks",
+              "item": "https://dealcompass.app/past-picks.html"
+            }
+          ]
+        }
+      ]
+    }
+  </script>
   <style>
     :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; --radius:14px; }
     *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
@@ -24,21 +71,23 @@
     .pick small{display:block;color:var(--muted);margin-top:6px}
     .pick-cta{display:inline-block;margin-top:8px;font-size:.8rem;font-weight:700;color:#bcd1ff}
     .note{margin-top:16px;color:#91a7d8;font-size:.8rem}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <header class="topbar">
+    <header class="topbar" aria-label="DealCompass archive header">
       <div class="brand">DealCompass</div>
-      <div class="top-links">
+      <nav class="top-links" aria-label="Primary">
         <a class="pill" href="/">Current Picks</a>
-      </div>
+      </nav>
     </header>
 
     <h1>Past Picks Archive</h1>
-    <p class="sub">Historical recommendations (running list).</p>
+    <p class="sub">Historical recommendations (running list). For the latest ranked deals, see <a href="/">current picks</a>.</p>
 
-    <section class="list-wrap">
+    <section class="list-wrap" aria-labelledby="archiveHeading">
+      <h2 class="sr-only" id="archiveHeading">Archived picks list</h2>
       <p class="list-meta" id="listMeta">Loading…</p>
       <div id="archive" class="scroll-list"></div>
     </section>

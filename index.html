@@ -3,13 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DealCompass — Public Pilot | Top Productivity Deals</title>
-  <meta name="description" content="DealCompass helps you discover high-signal home-office and productivity deals with clear, concise buy/no-buy context." />
-  <meta property="og:title" content="DealCompass Public Pilot" />
-  <meta property="og:description" content="Get concise, high-signal productivity deal picks and weekly updates." />
+  <title>DealCompass | Productivity &amp; Home Office Tech Deals, Ranked</title>
+  <meta name="description" content="DealCompass helps professionals find high-signal productivity and home office tech deals with clear buy/no-buy context, ranked picks, and concise weekly updates." />
+  <link rel="canonical" href="https://dealcompass.app/" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta property="og:title" content="DealCompass | Productivity &amp; Home Office Tech Deals" />
+  <meta property="og:description" content="Discover ranked, high-signal productivity and home office tech deals with concise decision context." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dealcompass.app" />
+  <meta property="og:url" content="https://dealcompass.app/" />
+  <meta property="og:site_name" content="DealCompass" />
+  <meta property="og:image" content="https://dealcompass.app/assets/logo-mark.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DealCompass | Productivity &amp; Home Office Tech Deals" />
+  <meta name="twitter:description" content="Ranked, high-signal tech deal picks with concise buy/no-buy context." />
+  <meta name="twitter:image" content="https://dealcompass.app/assets/logo-mark.svg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://dealcompass.app/#organization",
+          "name": "DealCompass",
+          "url": "https://dealcompass.app/",
+          "logo": "https://dealcompass.app/assets/logo-mark.svg",
+          "email": "help@dealcompass.app"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://dealcompass.app/#website",
+          "url": "https://dealcompass.app/",
+          "name": "DealCompass",
+          "publisher": {
+            "@id": "https://dealcompass.app/#organization"
+          }
+        }
+      ]
+    }
+  </script>
   <style>
     :root {
       --bg: #070b16;
@@ -132,7 +164,9 @@
     <header class="topbar" aria-label="DealCompass status">
       <div class="brand">DealCompass</div>
       <div class="topbar-right">
-        <a class="nav-pill" href="/past-picks.html">Past Picks</a>
+        <nav aria-label="Primary">
+          <a class="nav-pill" href="/past-picks.html">Past Picks</a>
+        </nav>
         <div class="status-pill">Public Pilot Open</div>
       </div>
     </header>
@@ -177,8 +211,8 @@
     </section>
 
     <section class="section">
-      <h3 class="section-title">Current picks (up to 10)</h3>
-      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals.</p>
+      <h2 class="section-title">Current picks (up to 10)</h2>
+      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a href="/past-picks.html">View our past deal archive</a>.</p>
       <article class="top-pick-card" id="topPickCard" hidden>
         <div class="top-pick-label">⭐ Top Pick</div>
         <div class="top-pick-title" id="topPickTitle"></div>
