@@ -278,14 +278,22 @@
 
   const pickList = document.querySelector('.pick-list');
   const picks = Array.from(document.querySelectorAll('.pick-list a.pick'));
-  const ranked = picks.map((pick, i) => {
+  const deduped = [];
+  const seen = new Set();
+  picks.forEach((pick, i) => {
     const titleNode = pick.querySelector('.title');
     const rawTitle = titleNode?.textContent || '';
     const cleanTitle = rawTitle.replace(/^\s*\d+\)\s*/, '').trim();
+    const href = pick.getAttribute('href') || '';
+    if (!cleanTitle || /^(Amazon Item|Amazon Product)/i.test(cleanTitle)) return;
+    const key = `${href}|${cleanTitle.toLowerCase()}`;
+    if (seen.has(key)) return;
+    seen.add(key);
     const blurb = pick.querySelector('small')?.textContent || '';
-    const score = scoreDeal(cleanTitle, blurb, pick.getAttribute('href') || '', i + 1);
-    return { pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 };
-  }).sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
+    const score = scoreDeal(cleanTitle, blurb, href, i + 1);
+    deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 });
+  });
+  const ranked = deduped.sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
 
   const top = ranked[0];
   if (top) {
@@ -299,12 +307,17 @@
     topCard.hidden = false;
   }
 
+  // Rebuild list from ranked items to avoid duplicates / stale DOM order.
+  pickList.innerHTML = '';
   ranked.forEach((row, idx) => {
     const rank = idx + 1;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
     const confidence = confidenceLabel(row.score, idx);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
+
+    // remove old meta/cta if script reruns
+    row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach(el => el.remove());
 
     const meta = document.createElement('div');
     meta.className = 'pick-meta';
