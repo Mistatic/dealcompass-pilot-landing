@@ -84,20 +84,12 @@
       background: rgba(8, 14, 29, 0.7); backdrop-filter: blur(8px); box-shadow: var(--shadow-soft); margin-bottom: 18px;
     }
     .brand { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #d9e4ff; }
-    .topbar-right { display: inline-flex; align-items: center; gap: 8px; }
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 7px; font-size: 0.75rem; color: #d4f7e5;
-      background: rgba(101, 191, 154, 0.12); border: 1px solid rgba(137, 218, 182, 0.3);
-      border-radius: 999px; padding: 6px 10px; font-weight: 700; white-space: nowrap;
-    }
+    .topbar-right { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    .topbar-right nav { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .nav-pill {
       display: inline-flex; align-items: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;
       color: #dbe7ff; border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px;
       background: rgba(255,255,255,0.03);
-    }
-    .status-pill::before {
-      content: ""; width: 7px; height: 7px; border-radius: 50%;
-      background: #8fe4ba; box-shadow: 0 0 10px rgba(143, 228, 186, 0.7);
     }
     .hero {
       border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 24px 16px;
@@ -153,6 +145,11 @@
     .feedback p { margin: 8px 0 0; color: var(--muted); font-size: 0.9rem; }
     .disclosure { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border); color: #8ea1cf; font-size: 0.78rem; line-height: 1.5; }
     .disclosure a { color: #cfe0ff; }
+    @media (max-width: 640px) {
+      .topbar { align-items: flex-start; border-radius: 24px; }
+      .topbar-right { width: 100%; justify-content: flex-start; }
+      .topbar-right nav { justify-content: flex-start; }
+    }
     @media (min-width: 760px) {
       .wrap { padding: 28px 24px 72px; }
       .topbar { padding: 13px 16px; }
@@ -173,7 +170,6 @@
           <a class="nav-pill" href="/past-picks.html">Past Picks</a>
           <a class="nav-pill" href="/reviews.html">Our Verdicts</a>
         </nav>
-        <div class="status-pill">Public Pilot Open</div>
       </div>
     </header>
 
