@@ -1008,7 +1008,8 @@
     const rank = idx + 2;
     const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
-    const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, { category: selectedCategory, signalText: row.blurb, state: blurbDiversityState });
+    const generatedBlurb = (row.blurb || '').trim()
+      || window.DCBlurbEngine.generateBlurb(row.cleanTitle, { category: selectedCategory, signalText: row.blurb, state: blurbDiversityState });
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');

@@ -378,7 +378,8 @@
               const m = String(p.url || '').match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
               if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
             }
-            const blurb = window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: String(p.blurb || ''), state: diversityState });
+            const blurb = String(p.blurb || '').trim()
+              || window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: String(p.blurb || ''), state: diversityState });
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>
