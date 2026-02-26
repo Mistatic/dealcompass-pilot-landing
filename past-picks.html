@@ -113,7 +113,8 @@
     <p class="note"><strong>Affiliate disclosure:</strong> DealCompass may earn a commission from qualifying purchases made through partner links.</p>
   </main>
 
-  <script>
+  <script src="/assets/blurb-engine.js"></script>
+<script>
     (() => {
       const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
       const getSelectedCategory = () => {
@@ -377,7 +378,7 @@
               const m = String(p.url || '').match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
               if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
             }
-            const blurb = buildProductBlurb(cleanTitle, diversityState, selectedCategory);
+            const blurb = window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: String(p.blurb || ''), state: diversityState });
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>

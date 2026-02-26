@@ -274,6 +274,7 @@
     </p>
   </main>
 
+<script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
@@ -1130,9 +1131,9 @@
   };
   filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
+    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
-    const generatedBlurb = buildProductBlurb(row.cleanTitle, blurbDiversityState);
+    const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, { category: selectedCategory, signalText: row.blurb, state: blurbDiversityState });
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');
