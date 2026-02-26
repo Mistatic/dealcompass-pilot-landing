@@ -673,7 +673,7 @@
         }
       }
       const role = fillTemplate(roleTemplate, brand);
-      const roleLine = role.toLowerCase();
+      const roleLine = role.toLowerCase().replace(/\b(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)\b/g, 'brand');
       const openerVariants = [
         'Operational fit:',
         'Day-to-day impact:',
@@ -807,6 +807,36 @@
       }
       diversityState.lastOpeningBigram = candidateBigram;
       return candidate;
+    }
+
+    if (category === 'hub') {
+      const usedHubAngles = diversityState.usedAnglesByCategory.hub || new Set();
+      const hubAngles = ['display', 'power', 'io', 'cable', 'travel', 'network'];
+      const fallbackAngle = selectedAngle || hubAngles.find((a) => !usedHubAngles.has(a)) || 'cable';
+      const hubLeadByAngle = {
+        display: '{brand} hub is optimized for cleaner external-display workflows with reliable HDMI routing',
+        power: '{brand} hub is optimized to keep laptop charging stable while peripherals stay attached',
+        io: '{brand} hub is optimized for broader port coverage to reduce adapter shuffling',
+        cable: '{brand} hub is optimized to simplify desk wiring through one main connection point',
+        travel: '{brand} hub is optimized for portable setups that move between desk and travel bags',
+        network: '{brand} hub is optimized for steadier wired connectivity in high-traffic Wi-Fi environments'
+      };
+      const hubDetailByAngle = {
+        display: 'It emphasizes display compatibility for monitor-heavy desk setups.',
+        power: 'It emphasizes power-delivery headroom for all-day laptop use.',
+        io: 'It emphasizes practical I/O mix for mixed accessory workflows.',
+        cable: 'It emphasizes reduced plug-swapping and lower cable clutter.',
+        travel: 'It emphasizes compact carry and quick setup in changing work locations.',
+        network: 'It emphasizes more stable networking for calls, syncs, and uploads.'
+      };
+      const hubFallback = `${fillTemplate(hubLeadByAngle[fallbackAngle], brand)}. ${hubDetailByAngle[fallbackAngle]}`;
+      diversityState.blurbs.push(hubFallback);
+      diversityState.patterns.push(normalizeBlurbPattern(hubFallback));
+      diversityState.usedRoleTemplates.add(`hub|angle:${fallbackAngle}`);
+      diversityState.usedRoleLines.add(fillTemplate(hubLeadByAngle[fallbackAngle], brand).toLowerCase().replace(/(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)/g, 'brand'));
+      (diversityState.usedAnglesByCategory.hub ||= new Set()).add(fallbackAngle);
+      diversityState.lastOpeningBigram = openingBigram(hubFallback);
+      return hubFallback;
     }
 
     diversityState.blurbs.push(bestCandidate);
