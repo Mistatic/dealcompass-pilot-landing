@@ -363,10 +363,8 @@
             const rawTitle = String(p.title || '').trim();
             if (!rawTitle || /^amazon product\s+[a-z0-9]{10}$/i.test(rawTitle)) return false;
             const explicit = String(p.category || '').trim().toLowerCase();
-            const inferred = topLevelCategoryFromTitle(rawTitle);
-            // Prefer inferred when explicit seems stale/wrong.
-            const category = inferred || ((explicit === 'tech' || explicit === 'home') ? explicit : 'tech');
-            return category === selectedCategory;
+            if (!(explicit === 'tech' || explicit === 'home')) return false;
+            return explicit === selectedCategory;
           });
 
           if (!filteredItems.length) {
