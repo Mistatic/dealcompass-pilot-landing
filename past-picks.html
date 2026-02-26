@@ -371,6 +371,11 @@
           }
 
           const diversityState = { blurbs: [], lastOpeningBigram: '' };
+          const needsBlurbRefresh = (blurb) => {
+            const b = String(blurb || '').toLowerCase().trim();
+            if (!b) return true;
+            return /chosen for|practical daily|repeatable way|workflow consistency|low-regret|high-signal shortlist/.test(b);
+          };
           meta.textContent = `${filteredItems.length} ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
           root.innerHTML = filteredItems.map((p) => {
             let cleanTitle = String(p.title || '').replace(/^\s*\d+\)\s*/, '').trim();
@@ -378,8 +383,8 @@
               const m = String(p.url || '').match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
               if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
             }
-            const blurb = String(p.blurb || '').trim()
-              || window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: String(p.blurb || ''), state: diversityState });
+            const rawBlurb = String(p.blurb || '').trim();
+            const blurb = (!needsBlurbRefresh(rawBlurb) ? rawBlurb : window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: rawBlurb, state: diversityState }));
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>
