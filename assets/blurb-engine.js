@@ -53,9 +53,18 @@
     return max;
   }
 
+  // Helper to make "Space option" less robotic.
+  // If brand is "Space" or suspicious, fallback to "This unit" or "It".
   function fillTemplate(template, brand, type) {
-    const brandLabel = brand || 'This';
-    const brandOption = brand ? `${brand} option` : 'this option';
+    let brandLabel = brand || 'This';
+    let brandOption = brand ? `${brand} option` : 'this choice';
+    
+    // Fix: "Space option" -> "This heater"
+    if (!brand || brand.toLowerCase() === 'space' || brand.toLowerCase() === 'generic') {
+      brandLabel = 'This';
+      brandOption = `this ${type || 'unit'}`;
+    }
+
     const typeLabel = type || 'pick';
     return template
       .replaceAll('{brand}', brandLabel)
@@ -72,7 +81,9 @@
       ['fire', 'Amazon'], ['samsung', 'Samsung'], ['apple', 'Apple'], ['lenovo', 'Lenovo'],
       ['dell', 'Dell'], ['hp', 'HP'], ['ninja', 'Ninja'], ['shark', 'Shark'], ['dyson', 'Dyson'],
       ['instant pot', 'Instant Pot'], ['keurig', 'Keurig'], ['irobot', 'iRobot'], ['roborock', 'Roborock'],
-      ['eufy', 'eufy'], ['wyze', 'Wyze'], ['ring', 'Ring'], ['blink', 'Blink'], ['tp-link', 'TP-Link']
+      ['eufy', 'eufy'], ['wyze', 'Wyze'], ['ring', 'Ring'], ['blink', 'Blink'], ['tp-link', 'TP-Link'],
+      ['coway', 'Coway'], ['honeywell', 'Honeywell'], ['levoit', 'Levoit'], ['breville', 'Breville'],
+      ['vitamix', 'Vitamix'], ['kitchenaid', 'KitchenAid']
     ];
     const t = String(title || '').toLowerCase();
     for (const [needle, label] of brands) {
@@ -164,7 +175,9 @@
       ['smart', /\bsmart\b|app control|alexa|google assistant/],
       ['quiet', /\bquiet\b|silent|low noise/],
       ['capacity', /\bcapacity\b|large|qt|quart|liter/],
-      ['adjustable', /\badjustable\b|height|angle/]
+      ['adjustable', /\badjustable\b|height|angle|tilt|swivel/],
+      ['fast-heat', /\b2s|fast heat|quick heat|instant/],
+      ['oscillation', /\boscillation\b|70°|rotatable/]
     ];
 
     const features = featurePatterns
@@ -177,11 +190,13 @@
     else if (/office|home office|productivity|ergonomic|keyboard|mouse|desk/.test(t)) intendedUse = 'office';
     else if (/portable|travel|mobile|mini|compact|tablet|wireless/.test(t)) intendedUse = 'mobile';
     
-    // Home uses
+    // Home uses - reordered to catch comfort/cooking before generic organizing
     else if (/kitchen|cooking|meal|bake|fry/.test(t)) intendedUse = 'cooking';
+    else if (/comfort|warm|cool|air|sleep|heater|fan/.test(t)) intendedUse = 'comfort';
     else if (/clean|vacuum|mop|dust|wash/.test(t)) intendedUse = 'cleaning';
-    else if (/organize|storage|declutter|space/.test(t)) intendedUse = 'organizing';
-    else if (/comfort|warm|cool|air|sleep/.test(t)) intendedUse = 'comfort';
+    
+    // Make organize stricter to avoid "Space Heater" matching "space"
+    else if (/organize|storage|declutter|shelf|shelving|bin|rack/.test(t)) intendedUse = 'organizing';
 
     const suspiciousSource = /ebay|refurbished|renewed|used|open box|pre-?owned/.test(t);
     return { features, intendedUse, suspiciousSource };
@@ -220,166 +235,170 @@
     const { features, intendedUse, suspiciousSource } = detectTitleSignals(title);
     const seed = hashText(title);
 
+    // Natural Language Update: Removed passive "As a [X]..." and "Buyer takeaway:" labels.
+    // Focus on direct benefits and active verbs.
     const roleTemplatesByCategory = {
       // Tech
       trackball: [
-        '{brand} trackball is positioned for precise cursor work with reduced wrist travel',
-        'As a trackball option, {brandOption} favors controlled navigation over fast sweeping motion'
+        'Precise cursor control with less wrist movement.',
+        'Steady control for long sessions without the arm fatigue.'
       ],
       combo: [
-        '{brand} combo is built to standardize input behavior across one desk',
-        'As an input combo, {brandOption} reduces setup friction for daily routines'
+        'A simple way to standardize your desk input.',
+        'Reduces setup friction for daily mixed-use work.'
       ],
       keyboard: [
-        '{brand} keyboard is intended for consistent typing comfort in long writing blocks',
-        'As a primary keyboard, {brandOption} focuses on stable input quality for daily desk use'
+        'Consistent typing feel for long writing blocks.',
+        'Stable key response for daily desk work.'
       ],
       mouse: [
-        '{brand} mouse is aimed at controlled, repeatable pointer movement for daily tasks',
-        'As a daily-use mouse, {brandOption} prioritizes reliable tracking over unnecessary extras'
+        'Reliable tracking for daily tasks, no extra fluff.',
+        'Controlled movement for standard desk work.'
       ],
       hub: [
-        '{brand} hub is built to centralize laptop connectivity in a single desk anchor point',
-        'As a port-expansion option, {brandOption} targets cleaner, more stable workstation wiring'
+        'Centralizes connections to clean up your workspace.',
+        'One cable to rule your monitor and accessories.'
       ],
       tablet: [
-        '{brand} tablet is intended for light productivity and reading away from a full desktop',
-        'As a secondary-screen option, {brandOption} supports flexible work around meetings and travel'
+        'Good for reading and notes away from the main desk.',
+        'Flexible screen for travel or secondary tasks.'
       ],
       monitorArm: [
-        '{brand} monitor arm is designed to improve screen positioning and free desk surface area',
-        'As a workspace ergonomics option, {brandOption} focuses on adjustability and cable order'
+        'Clears up desk space and fixes screen height.',
+        'Better ergonomics for long viewing sessions.'
       ],
       charger: [
-        '{brand} charger is built to streamline power delivery across core desk devices',
-        'As a power-management choice, {brandOption} keeps charging steadier across daily gear'
+        'Streamlines power for your phone and accessories.',
+        'Keeps daily gear charged with less adapter clutter.'
       ],
       
       // Home - Kitchen
       airFryer: [
-        '{brand} air fryer is designed to speed up meal prep with faster, more consistent heating',
-        'As a kitchen upgrade, {brandOption} focuses on reducing cooking time for daily meals'
+        'Speeds up meal prep with faster, crisper heating.',
+        'Great for quick sides and reheating without the big oven.'
       ],
       coffeeMaker: [
-        '{brand} coffee maker is built to streamline your morning routine with consistent brewing',
-        'As a daily appliance, {brandOption} prioritizes ease of use and repeatable results'
+        'Consistent brewing for a streamlined morning routine.',
+        'Reliable daily operation for your caffeine fix.'
       ],
       blender: [
-        '{brand} blender is aimed at smooth consistency for daily shakes and food prep',
-        'As a counter staple, {brandOption} focuses on reliable power for routine blending tasks'
+        'Smooth blending for daily shakes and prep.',
+        'Reliable power for routine kitchen blending.'
       ],
       toasterOven: [
-        '{brand} toaster oven is designed to handle small baking tasks without heating the whole kitchen',
-        'As a versatile oven option, {brandOption} targets convenience for quick reheating and cooking'
+        'Handles small baking tasks without heating the whole kitchen.',
+        'Convenient for quick reheating and small meals.'
       ],
       cookware: [
-        '{brand} cookware is built for consistent heat distribution during daily meal prep',
-        'As a kitchen essential, {brandOption} prioritizes durability and easy cleanup'
+        'Consistent heat distribution for everyday cooking.',
+        'Durable build for daily meal prep.'
       ],
       
       // Home - Cleaning
       robotVacuum: [
-        '{brand} robot vacuum is positioned to automate recurring floor cleanup with low supervision',
-        'As a home-office cleaning option, {brandOption} aims to reduce routine maintenance overhead'
+        'Automates floor upkeep so you clean less often.',
+        'Maintains baseline cleanliness between deep cleans.'
       ],
       vacuum: [
-        '{brand} vacuum is designed to handle deeper cleaning tasks with sustained suction power',
-        'As a floor-care tool, {brandOption} focuses on efficiency for weekly cleanup routines'
+        'Strong suction for efficient weekly cleanup.',
+        'Reliable power for handling routine messes.'
       ],
       mop: [
-        '{brand} mop is built to tackle hard floor cleaning with less manual effort',
-        'As a cleaning aid, {brandOption} aims to speed up surface washing for high-traffic areas'
+        'Speeds up hard floor cleaning with less effort.',
+        'Makes washing high-traffic areas faster.'
       ],
       
       // Home - Comfort
       airPurifier: [
-        '{brand} air purifier is designed to maintain consistent air quality in living or work spaces',
-        'As an environment tool, {brandOption} focuses on reducing dust and allergens in daily-use rooms'
+        'Reduces dust and allergens for better room air quality.',
+        'Helps keep air cleaner in stuffy rooms or offices.'
       ],
       heater: [
-        '{brand} heater is aimed at providing supplemental warmth for drafty or cold rooms',
-        'As a comfort addition, {brandOption} prioritizes fast, localized heating for immediate effect'
+        'Provides fast, localized warmth for drafty rooms.',
+        'Takes the chill off cold corners quickly.'
       ],
       fan: [
-        '{brand} fan is built to improve air circulation and cooling in stuffy areas',
-        'As a cooling option, {brandOption} focuses on airflow consistency for steady comfort'
+        'Improves airflow to keep stuffy rooms comfortable.',
+        'Consistent air circulation for daily comfort.'
       ],
       humidifier: [
-        '{brand} humidifier is designed to stabilize moisture levels for better breathing comfort',
-        'As an air-quality tool, {brandOption} aims to reduce dryness in climate-controlled rooms'
+        'Stabilizes moisture levels for better breathing comfort.',
+        'Helps reduce dryness in climate-controlled rooms.'
       ],
       deskLamp: [
-        '{brand} lamp is designed to support clearer visibility through variable lighting needs',
-        'As a task-light option, {brandOption} focuses on practical illumination control for work or reading'
+        'Better visibility for reading and work focus.',
+        'Adjustable light to reduce eye strain.'
       ],
       
       // Home - Organization
       shelving: [
-        '{brand} shelving is built to maximize vertical storage in cluttered areas',
-        'As a storage solution, {brandOption} prioritizes stability and easy access for stored items'
+        'Maximizes vertical storage in cluttered spots.',
+        'Sturdy storage to keep essentials accessible.'
       ],
       organizer: [
-        '{brand} organizer is designed to keep small items sorted and accessible',
-        'As a decluttering tool, {brandOption} helps maintain order in busy drawers or shelves'
+        'Keeps small items sorted and easy to find.',
+        'Declutters busy drawers or shelves effectively.'
       ],
       
       // Generic Fallback
       general: [
-        '{brand} pick is selected for reliable day-to-day usefulness in its category',
-        'This option improves routine consistency without unnecessary complexity',
-        '{brandOption} prioritizes practical value for regular use'
+        'A practical pick for reliable daily use.',
+        'Improves routine consistency without complexity.',
+        'Focuses on functional value for regular tasks.'
       ]
     };
 
     const featureClauses = {
       // Tech
-      wireless: ['wireless operation keeps movement unrestricted', 'wireless connectivity helps keep cable clutter lower'],
-      wired: ['wired connectivity avoids battery interruptions', 'wired operation is useful when you want stable performance without charging'],
-      bluetooth: ['Bluetooth pairing simplifies switching between devices', 'Bluetooth support reduces dependence on extra receivers'],
-      ergonomic: ['ergonomic shaping can reduce strain across extended use', 'ergonomic design supports lower fatigue during repetitive tasks'],
-      compact: ['compact sizing fits tighter spaces easily', 'compact footprint leaves more room for other essentials'],
-      lightweight: ['lightweight construction lowers fatigue during use', 'lower weight supports easier handling'],
-      'usb-c': ['USB-C support modernizes connectivity', 'USB-C charging simplifies cable management'],
+      wireless: ['Wireless freedom keeps your desk looking cleaner', 'No cables to snag or clutter the workspace'],
+      wired: ['Wired connection means no battery anxiety', 'Stable performance without charging breaks'],
+      bluetooth: ['Bluetooth makes switching devices easy', 'Pairs quickly without needing a dongle'],
+      ergonomic: ['Ergonomic shape reduces strain over time', 'Designed to keep fatigue low during long blocks'],
+      compact: ['Compact size fits tight spaces easily', 'Small footprint saves valuable surface area'],
+      lightweight: ['Lightweight build is easier to handle', 'Low weight reduces fatigue during use'],
+      'usb-c': ['Modern USB-C connectivity', 'USB-C simplifies your cable situation'],
       
       // Home - General
-      hepa: ['HEPA filtration captures fine dust and allergens effectively', 'HEPA standards help ensure cleaner air output'],
-      programmable: ['programmable settings let you automate routine tasks', 'timer functions help align operation with your schedule'],
-      cordless: ['cordless operation allows free movement around the room', 'battery power removes the hassle of finding outlets'],
-      'non-stick': ['non-stick coating simplifies cleanup after use', 'non-stick surface helps prevent food adhesion'],
-      stainless: ['stainless steel build adds durability for daily use', 'metal construction usually resists wear better over time'],
-      waterproof: ['waterproof design handles wet environments without issue', 'water resistance adds peace of mind near sinks or outdoors'],
-      smart: ['smart features allow remote control via app or voice', 'app connectivity lets you monitor status from anywhere'],
-      quiet: ['quiet operation minimizes disruption in shared spaces', 'low-noise output is better for evening or work-hours use'],
-      capacity: ['large capacity reduces the frequency of refills or emptying', 'generous capacity handles bigger batches or messes'],
-      adjustable: ['adjustable settings let you tune performance to the task', 'adjustable design helps fit the tool to your specific need']
+      hepa: ['HEPA filtration captures fine dust effectively', 'HEPA standard ensures cleaner output air'],
+      programmable: ['Programmable timer automates the routine', 'Set the schedule and forget it'],
+      cordless: ['Cordless design lets you move freely', 'Battery power means no outlet hunting'],
+      'non-stick': ['Non-stick surface makes cleanup simple', 'Easy-release coating saves scrubbing time'],
+      stainless: ['Stainless build adds daily durability', 'Metal construction resists wear better'],
+      waterproof: ['Waterproof design handles splashes easily', 'Safe for use in wet environments'],
+      smart: ['App control lets you monitor it remotely', 'Smart features add convenient voice control'],
+      quiet: ['Quiet operation won\'t disturb the house', 'Low noise level is great for work hours'],
+      capacity: ['Large capacity means fewer refills', 'Big tank handles larger jobs easily'],
+      adjustable: ['Adjustable settings tune it to your needs', 'Customizable fit for better performance'],
+      'fast-heat': ['Heats up in seconds for instant effect', 'Quick heat-up time reduces waiting'],
+      oscillation: ['Oscillation spreads coverage evenly', 'Rotates to cover more of the room']
     };
 
     const intendedUseClauses = {
       // Tech
-      gaming: ['its fit is strongest when responsiveness and control matter most', 'it is best matched to gaming-leaning workflows'],
-      office: ['its fit is strongest for office-heavy workflows where consistency is priority', 'it aligns well with practical office routines'],
-      mobile: ['its fit is strongest for mobile workflows that shift locations', 'it is better suited to portable setups'],
+      gaming: ['Best when responsiveness matters most', 'Matches well with gaming setups'],
+      office: ['Fits perfectly in a steady office workflow', 'Ideal for practical, low-friction work'],
+      mobile: ['Great for mobile setups that move around', 'Suits portable workflows well'],
       
       // Home
-      cooking: ['its fit is strongest for streamlining daily meal preparation', 'it aligns well with kitchens that need consistent cooking results'],
-      cleaning: ['its fit is strongest for maintaining tidy floors with less effort', 'it is best suited to homes that need efficient routine cleanup'],
-      organizing: ['its fit is strongest for decluttering busy storage areas', 'it aligns well with spaces that need better item accessibility'],
-      comfort: ['its fit is strongest for stabilizing room environment quality', 'it is best suited to rooms that need consistent temperature or air quality'],
+      cooking: ['Streamlines daily meal preparation', 'Consistent results for home cooking'],
+      cleaning: ['Keeps floors tidy with less effort', 'Efficient for routine home cleanup'],
+      organizing: ['Declutters busy storage areas', 'Makes items easier to grab and go'],
+      comfort: ['Stabilizes room temperature and quality', 'Great for maintaining a comfortable room'],
       
       // General
-      general: ['it is a practical fit for routine use without specialized requirements', 'it should work best in setups focused on predictable daily performance']
+      general: ['Practical for routine tasks', 'Works well in mixed-use setups']
     };
 
     const categoryReserveClauses = {
       // Home
-      airFryer: ['its main benefit is quicker cooking with less oil', 'it is best suited to making crispy sides or snacks fast'],
-      coffeeMaker: ['its main benefit is consistent brewing for your daily cup', 'it is best suited to households that need a reliable caffeine routine'],
-      robotVacuum: ['its main benefit is keeping floors acceptable between deep cleans', 'it is best suited to maintaining baseline cleanliness automatically'],
-      airPurifier: ['its main benefit is reducing airborne irritants steadily', 'it is best suited to bedrooms or offices with poor airflow'],
-      shelving: ['its main benefit is adding vertical storage footprint', 'it is best suited to garages, pantries, or closets needing structure'],
+      airFryer: ['Cooks crispy sides with less oil', 'Great for quick snacks'],
+      coffeeMaker: ['Delivers a consistent daily cup', 'Simple operation for every morning'],
+      robotVacuum: ['Keeps baseline cleanliness up automatically', 'Saves you from daily sweeping'],
+      airPurifier: ['Reduces airborne irritants steadily', 'Good for bedrooms or offices'],
+      shelving: ['Adds vertical storage footprint', 'Good for garages or pantries'],
       
       // Fallback
-      general: ['its strongest advantage is practical day-to-day utility', 'it is best suited to mixed-use environments that value reliability']
+      general: ['Solid utility for the price', 'Reliable performance day-to-day']
     };
 
     const roleTemplates = roleTemplatesByCategory[productCategory] || roleTemplatesByCategory.general;
@@ -406,11 +425,11 @@
     let bestMeta = { roleTemplate: '', primaryClause: '', pattern: '' };
 
     for (let attempt = 0; attempt < 16; attempt += 1) {
-      const openerVariants = [
-        'Operational fit:', 'Day-to-day impact:', 'Practical upside:', 'Why it matters:',
-        'Workflow benefit:', 'In routine use:', 'Execution note:', 'Buyer takeaway:'
+      // Removed robotic openers. Now using natural connectors or empty strings.
+      const connectors = [
+        'Plus,', 'Also,', 'Note:', 'Key benefit:', '', '', '', ''
       ];
-      const opener = openerVariants[(seed + attempt) % openerVariants.length];
+      const connector = connectors[(seed + attempt) % connectors.length];
       const priorBlurbs = diversityState.blurbs;
       const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
 
@@ -450,35 +469,33 @@
         secondaryClause = allCandidateClauses[(seed + attempt + 5) % allCandidateClauses.length];
       }
 
-      let candidate = `${role}. ${opener} ${primaryClause}`;
-      if (secondaryClause && secondaryClause !== primaryClause && attempt % 3 !== 2) {
-        candidate += `; ${secondaryClause}`;
+      // Construction: Role + Connector + Clause.
+      // E.g. "Speeds up meal prep. Plus, non-stick coating makes cleanup simple."
+      let candidate = `${role}`;
+      if (!/[.!?]$/.test(candidate)) candidate += '.';
+      
+      if (primaryClause) {
+        // Lowercase primary clause if no connector (it flows active->active) 
+        // OR capitalize if it starts a new sentence.
+        // Actually, our clauses are sentences/fragments. Let's treat them as sentences.
+        const clause = primaryClause.charAt(0).toUpperCase() + primaryClause.slice(1);
+        candidate += ` ${connector} ${clause}`;
+        if (!/[.!?]$/.test(candidate)) candidate += '.';
       }
-      candidate += '.';
 
       if (suspiciousSource) {
         const caveats = [
-          'Source cues suggest used or refurbished inventory, so verify condition and warranty.',
-          'Listing hints indicate potential resale status, so confirm seller quality before purchase.'
+          'Verify condition and warranty.',
+          'Confirm seller quality before purchase.'
         ];
         candidate += ` ${caveats[(seed + attempt) % caveats.length]}`;
       }
 
       // Length adjustment
-      if (candidate.length > 180) {
-        candidate = candidate.replace(/;[^.]+\./, '.'); // drop secondary
-      }
-      if (candidate.length > 180) {
-        candidate = candidate.slice(0, 180).trim();
+      if (candidate.length > 160) {
+        // Strip secondary or truncate nicely
+        candidate = candidate.slice(0, 160).trim();
         if (!/[.!?]$/.test(candidate)) candidate += '.';
-      }
-      if (candidate.length < 95) {
-        const topUps = [
-          'This keeps the value proposition practical for routine use.',
-          'It should integrate cleanly into existing setups with limited overhead.',
-          'That profile aligns with practical constraints for this category.'
-        ];
-        candidate += ` ${topUps[(seed + attempt) % topUps.length]}`;
       }
 
       const candidateBigram = openingBigram(candidate);
@@ -489,7 +506,7 @@
       const patternSimilarity = maxSimilarity(candidatePattern, diversityState.patterns || []);
       
       // Penalties
-      const lengthPenalty = candidate.length < 95 ? (95 - candidate.length) : (candidate.length > 180 ? (candidate.length - 180) : 0);
+      const lengthPenalty = candidate.length < 60 ? (60 - candidate.length) : (candidate.length > 160 ? (candidate.length - 160) : 0);
       const roleReusePenalty = diversityState.usedRoleLines.has(roleLine) ? 120 : 0;
       const penalty =
         lengthPenalty +
