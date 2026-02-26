@@ -324,6 +324,10 @@
     if (t.includes('robot vacuum') || (t.includes('robot') && t.includes('vacuum')) || t.includes('roborock')) return 'robotVacuum';
     if (t.includes('tablet') || t.includes('ipad') || t.includes('fire hd') || t.includes('galaxy tab')) return 'tablet';
     if (t.includes('monitor arm') || (t.includes('monitor') && t.includes('arm')) || t.includes('vesa')) return 'monitorArm';
+    if (t.includes('router') || t.includes('wifi 6e') || t.includes('tri-band') || t.includes('mesh')) return 'router';
+    if (t.includes('ethernet switch') || (t.includes('switch') && t.includes('gigabit'))) return 'networkSwitch';
+    if (t.includes('cooling pad') || t.includes('laptop cooler')) return 'coolingPad';
+    if (t.includes('privacy screen') || (t.includes('privacy') && t.includes('screen'))) return 'privacyScreen';
     if (t.includes('charger') || t.includes('charging') || t.includes('power adapter') || /\bpd\b/.test(t)) return 'charger';
     return 'general';
   }
@@ -471,6 +475,26 @@
         'This monitor-mount pick is positioned for ergonomic height control in long desk sessions',
         'As a workspace ergonomics option, {brandOption} focuses on adjustability and cable order'
       ],
+      router: [
+        '{brand} router is designed to keep multi-device home-office traffic stable under heavier daily load',
+        'This Wi-Fi router pick prioritizes consistent throughput for calls, uploads, and streaming overlap',
+        'As a network-core option, {brandOption} is tuned for steadier coverage and lower congestion spikes'
+      ],
+      networkSwitch: [
+        '{brand} switch is designed to add stable wired ports for desk gear that benefits from consistent throughput',
+        'This ethernet switch pick focuses on low-friction wired expansion for desktops, docks, and consoles',
+        'As a wired-network option, {brandOption} helps keep latency and packet variability lower than shared Wi-Fi'
+      ],
+      coolingPad: [
+        '{brand} cooling pad is designed to improve laptop airflow during longer high-heat sessions',
+        'This laptop cooler pick helps manage thermal buildup so sustained performance stays more consistent',
+        'As a thermal-support accessory, {brandOption} aims to reduce heat-related throttling in extended use'
+      ],
+      privacyScreen: [
+        '{brand} privacy screen is designed to narrow side-angle visibility for safer work in shared spaces',
+        'This privacy-filter pick helps protect on-screen content in cafés, coworking spaces, and open offices',
+        'As a screen-privacy option, {brandOption} adds visual protection without changing your core workflow'
+      ],
       charger: [
         '{brand} charger is built to streamline power delivery across core desk devices',
         'This charging option reduces adapter clutter in multi-device setups',
@@ -600,6 +624,9 @@
       const role = fillTemplate(roleTemplates[(seed + attempt) % roleTemplates.length], brand);
       const openerVariants = ['Key benefit:', 'In day-to-day use,', 'Practical upside:'];
       const opener = openerVariants[(seed + attempt) % openerVariants.length];
+      const priorBlurbs = diversityState.blurbs;
+      const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
+
       let primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
       let secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
 
@@ -679,8 +706,6 @@
         if (!/[.!?]$/.test(candidate)) candidate += '.';
       }
 
-      const priorBlurbs = diversityState.blurbs;
-      const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
       const candidateBigram = openingBigram(candidate);
       const adjacentBigram = diversityState.lastOpeningBigram || '';
       const pairwise = maxSimilarity(candidate, priorBlurbs);
