@@ -384,7 +384,7 @@
               if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
             }
             const rawBlurb = String(p.blurb || '').trim();
-            const blurb = (!needsBlurbRefresh(rawBlurb) ? rawBlurb : window.DCBlurbEngine.generateBlurb(cleanTitle, { category: selectedCategory, signalText: rawBlurb, state: diversityState }));
+            const blurb = rawBlurb || 'Why it made the archive: previously selected for practical fit in this category.';
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>
