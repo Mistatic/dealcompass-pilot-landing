@@ -600,8 +600,22 @@
       const role = fillTemplate(roleTemplates[(seed + attempt) % roleTemplates.length], brand);
       const openerVariants = ['Key benefit:', 'In day-to-day use,', 'Practical upside:'];
       const opener = openerVariants[(seed + attempt) % openerVariants.length];
-      const primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
-      const secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
+      let primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
+      let secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
+
+      // Hard guard: don't reuse the exact same key-benefit clause as the adjacent card.
+      if (adjacentBlurb && adjacentBlurb.toLowerCase().includes(primaryClause.toLowerCase())) {
+        for (let shift = 1; shift < allCandidateClauses.length; shift += 1) {
+          const alt = allCandidateClauses[(seed + attempt + shift) % allCandidateClauses.length];
+          if (alt && !adjacentBlurb.toLowerCase().includes(alt.toLowerCase())) {
+            primaryClause = alt;
+            break;
+          }
+        }
+      }
+      if (secondaryClause && secondaryClause.toLowerCase() === primaryClause.toLowerCase()) {
+        secondaryClause = allCandidateClauses[(seed + attempt + 5) % allCandidateClauses.length];
+      }
 
       let candidate = `${role}. ${opener} ${primaryClause}`;
       if (secondaryClause && secondaryClause !== primaryClause && attempt % 3 !== 2) {
