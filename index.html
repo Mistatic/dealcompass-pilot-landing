@@ -112,6 +112,13 @@
     .section { margin-top: 20px; }
     .section-title { margin: 0 0 8px; font-size: clamp(1.2rem, 3vw, 1.5rem); line-height: 1.25; }
     .section-sub { margin: 0; color: var(--muted); font-size: 0.94rem; }
+
+    .listings-kicker { display:inline-block; margin: 0 0 10px; padding: 6px 10px; border-radius: 999px; border:1px solid rgba(119,163,255,.35); background: rgba(86,131,235,.14); color:#dce8ff; font-size:.78rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; }
+    .listings-divider { height:1px; margin: 6px 0 14px; background: linear-gradient(90deg, rgba(118,167,255,.55), rgba(118,167,255,0)); }
+    .listings-emphasis { border:1px solid rgba(116,160,255,.2); background: linear-gradient(180deg, rgba(23,34,66,.55), rgba(15,24,47,.35)); border-radius: 14px; padding: 14px; }
+    .listings-row-title { display:flex; align-items:center; gap:8px; margin: 0 0 10px; color:#dbe7ff; font-weight:700; font-size:.9rem; }
+    .listings-dot { width:8px; height:8px; border-radius:999px; background:#76a7ff; box-shadow:0 0 0 4px rgba(118,167,255,.2); }
+
     .cards { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-card); }
     .card h2 { margin: 0 0 8px; font-size: 1.04rem; line-height: 1.3; }
@@ -208,7 +215,8 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section listings-emphasis">
+      <div class="listings-kicker">Current Picks</div>
       <h2 class="section-title">Current Top 10 Picks</h2>
       <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a href="/past-picks.html">View our past deal archive</a>.</p>
       <article class="top-pick-card" id="topPickCard" hidden>
