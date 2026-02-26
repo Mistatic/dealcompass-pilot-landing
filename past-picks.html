@@ -356,7 +356,12 @@
             items.push(p);
           }
 
-          const filteredItems = items.filter((p) => topLevelCategoryFromTitle(String(p.title || '')) === selectedCategory);
+          const filteredItems = items.filter((p) => {
+            const explicit = String(p.category || '').trim().toLowerCase();
+            const inferred = topLevelCategoryFromTitle(String(p.title || ''));
+            const category = (explicit === 'tech' || explicit === 'home') ? explicit : inferred;
+            return category === selectedCategory;
+          });
 
           if (!filteredItems.length) {
             meta.textContent = `0 ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
