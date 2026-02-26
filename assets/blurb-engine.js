@@ -43,9 +43,9 @@
       '{brand} makes sense when you want fewer setup headaches.'
     ],
     home: [
-      '{brand} is a practical home pick for consistent everyday use.',
-      '{brand} stands out for reducing routine household friction.',
-      '{brand} fits best when you want a low-maintenance home setup.'
+      '{brand} is a solid home pick when you want less daily hassle.',
+      '{brand} stands out for making everyday home routines easier.',
+      '{brand} fits best if you want dependable results without babysitting.'
     ],
     default: ['{brand} is a practical pick for real day-to-day use.']
   };
@@ -75,19 +75,19 @@
     const bits = [];
     if (signals.numerics.length) bits.push(`Key spec: ${signals.numerics.join(' / ')}.`);
     if (category === 'home') {
-      if (f.vacuum) bits.push('Why it was picked: it cuts recurring cleanup effort without adding daily overhead.');
-      else if (f.purifier) bits.push('Why it was picked: it targets air-quality consistency, which matters more than flashy extras.');
-      else if (f.storage) bits.push('Why it was picked: it improves organization efficiency and reduces clutter-driven friction.');
-      else if (f.heatCool) bits.push('Why it was picked: it supports more stable room comfort for longer work blocks at home.');
-      else bits.push('Why it was picked: it provides practical utility for real home routines, not novelty features.');
+      if (f.vacuum) bits.push('Why it was picked: it can save real cleanup time each week while keeping floors under control.');
+      else if (f.purifier) bits.push('Why it was picked: cleaner, more stable air quality tends to matter more than extra bells and whistles.');
+      else if (f.storage) bits.push('Why it was picked: better organization lowers day-to-day friction and helps rooms stay usable.');
+      else if (f.heatCool) bits.push('Why it was picked: steadier room comfort makes long work or family blocks easier to get through.');
+      else bits.push('Why it was picked: it solves a common home pain point in a practical, repeatable way.');
     } else {
       if (f.keyboard) bits.push('Why it was picked: it improves typing consistency and lowers daily input friction.');
       else if (f.mouse) bits.push('Why it was picked: it favors control and comfort over unnecessary complexity.');
       else if (f.hub) bits.push('Why it was picked: it consolidates connectivity and removes adapter/cable chaos.');
       else bits.push('Why it was picked: it adds reliable utility where most setups actually need it.');
     }
-    if (f.wireless) bits.push('Wireless support keeps placement and setup more flexible.');
-    if (f.ergonomic) bits.push('Ergonomic design helps reduce fatigue over longer sessions.');
+    if (f.wireless) bits.push('Wireless support makes placement easier and cuts cable clutter.');
+    if (f.ergonomic) bits.push('Ergonomic design helps reduce fatigue during longer daily use.');
     return bits.slice(0, 3).join(' ');
   }
 
