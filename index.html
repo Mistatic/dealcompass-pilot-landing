@@ -87,7 +87,13 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
     .topbar-left { display: flex; align-items: center; gap: 12px; }
-    .brand { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; color: #fff; }
+    .brand {
+      font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em; color: #fff;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .brand::before {
+      content: "✦"; color: var(--brand); font-size: 1.2rem;
+    }
     .category-select {
       background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 0.85rem; font-family: inherit;
