@@ -847,8 +847,8 @@
     row.pick.appendChild(meta);
     row.pick.appendChild(cta);
 
-    // Keep list focused on alternatives; top pick is highlighted above.
-    if (idx > 0) pickList.appendChild(row.pick);
+    // Keep full Top 10 list visible; top pick is highlighted above and also remains in ranked list.
+    pickList.appendChild(row.pick);
   });
 })();
 </script>
