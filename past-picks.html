@@ -200,7 +200,7 @@
         .replace(/\s+/g, ' ')
         .trim();
 
-      const buildProductBlurb = (title, diversityState) => {
+      const buildProductBlurb = (title, diversityState, categoryContext = 'tech') => {
         const brand = extractBrand(title);
         const category = detectProductCategory(title);
         const { features, intendedUse, suspiciousSource } = detectTitleSignals(title);
@@ -217,7 +217,7 @@
           tablet: ['{brand} tablet is intended for light productivity and review work away from a full desktop', 'As a secondary-screen option, {brandOption} supports flexible work around meetings and travel'],
           monitorArm: ['{brand} monitor arm is designed to improve screen positioning and free desk surface area', 'As a workspace ergonomics option, {brandOption} focuses on adjustability and cable order'],
           charger: ['{brand} charger is aimed at consolidating power delivery for core desk devices', 'As a power-management option, {brandOption} supports steadier charging across daily gear'],
-          general: ['{brand} pick is positioned for practical utility in routine productivity setups', 'As a desk-tech option, {brandOption} focuses on function-first value for regular use']
+          general: ['{brand} pick is positioned for practical utility in routine productivity setups', '{brandOption} focuses on function-first value for regular use']
         };
 
         const featureClauses = {
@@ -247,7 +247,7 @@
           gaming: ['its fit is strongest when responsiveness and control mapping matter most', 'it is best matched to gaming-leaning workflows that need quicker input response'],
           office: ['its fit is strongest for office-heavy workflows where consistency is the priority', 'it aligns well with practical office routines that favor low-friction reliability'],
           mobile: ['its fit is strongest for mobile workflows that shift between locations', 'it is better suited to portable setups that need compact, flexible gear'],
-          general: ['it is a practical fit for routine productivity work without specialized requirements', 'it should work best in mixed-use setups focused on predictable daily performance']
+          general: ['it is a practical fit for routine productivity work without specialized requirements', 'it should work best in mixed-use setups focused on predictable daily use']
         };
 
         const roleTemplates = roles[category] || roles.general;
@@ -372,8 +372,12 @@
           const diversityState = { blurbs: [], lastOpeningBigram: '' };
           meta.textContent = `${filteredItems.length} ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
           root.innerHTML = filteredItems.map((p) => {
-            const cleanTitle = String(p.title || '').replace(/^\s*\d+\)\s*/, '').trim();
-            const blurb = buildProductBlurb(cleanTitle, diversityState);
+            let cleanTitle = String(p.title || '').replace(/^\s*\d+\)\s*/, '').trim();
+            if (!cleanTitle || cleanTitle.toLowerCase() === 'dealcompass archived pick') {
+              const m = String(p.url || '').match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+              if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
+            }
+            const blurb = buildProductBlurb(cleanTitle, diversityState, selectedCategory);
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>
