@@ -683,6 +683,7 @@
 
     let bestCandidate = '';
     let bestPenalty = Number.POSITIVE_INFINITY;
+    let bestMeta = { roleTemplate: '', primaryClause: '', angle: '', pattern: '' };
 
     for (let attempt = 0; attempt < 16; attempt += 1) {
       const openerVariants = [
@@ -712,6 +713,7 @@
         }
       }
       const role = fillTemplate(roleTemplate, brand);
+      const roleLine = role.toLowerCase();
 
       let primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
       let secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
@@ -824,9 +826,11 @@
         return acc;
       }, 0);
 
+      const roleReusePenalty = diversityState.usedRoleLines.has(roleLine) ? 120 : 0;
       const penalty =
         lengthPenalty +
         repeatedPhrasePenalty +
+        roleReusePenalty +
         (candidateBigram && candidateBigram === adjacentBigram ? 35 : 0) +
         Math.max(0, pairwise - 0.50) * 160 +
         Math.max(0, adjacent - 0.40) * 170 +
@@ -835,11 +839,18 @@
       if (penalty < bestPenalty) {
         bestPenalty = penalty;
         bestCandidate = candidate;
+        bestMeta = {
+          roleTemplate,
+          primaryClause,
+          angle: selectedAngle || '',
+          pattern: candidatePattern
+        };
       }
 
       if (candidateBigram === adjacentBigram) continue;
       if (pairwise > 0.50 || adjacent > 0.40) continue;
       if (patternSimilarity > 0.46) continue;
+      if (diversityState.usedRoleLines.has(roleLine)) continue;
       if (category === 'hub' && selectedAngle) {
         const usedHubAngles = diversityState.usedAnglesByCategory.hub || new Set();
         const unusedHubAngles = ['display', 'power', 'io', 'cable', 'travel', 'network'].filter((a) => !usedHubAngles.has(a));
@@ -850,6 +861,7 @@
       diversityState.blurbs.push(candidate);
       diversityState.patterns.push(candidatePattern);
       diversityState.usedRoleTemplates.add(`${category}|${roleTemplate}`);
+      diversityState.usedRoleLines.add(roleLine);
       diversityState.usedPrimaryClauses.add(primaryClause.toLowerCase());
       if (category === 'hub' && selectedAngle) {
         (diversityState.usedAnglesByCategory.hub ||= new Set()).add(selectedAngle);
@@ -859,7 +871,15 @@
     }
 
     diversityState.blurbs.push(bestCandidate);
-    diversityState.patterns.push(normalizeBlurbPattern(bestCandidate));
+    diversityState.patterns.push(bestMeta.pattern || normalizeBlurbPattern(bestCandidate));
+    if (bestMeta.roleTemplate) {
+      diversityState.usedRoleTemplates.add(`${category}|${bestMeta.roleTemplate}`);
+      diversityState.usedRoleLines.add(fillTemplate(bestMeta.roleTemplate, brand).toLowerCase());
+    }
+    if (bestMeta.primaryClause) diversityState.usedPrimaryClauses.add(bestMeta.primaryClause.toLowerCase());
+    if (category === 'hub' && bestMeta.angle) {
+      (diversityState.usedAnglesByCategory.hub ||= new Set()).add(bestMeta.angle);
+    }
     diversityState.lastOpeningBigram = openingBigram(bestCandidate);
     return bestCandidate;
   }
@@ -937,6 +957,7 @@
     blurbs: [],
     patterns: [],
     usedRoleTemplates: new Set(),
+    usedRoleLines: new Set(),
     usedPrimaryClauses: new Set(),
     usedAnglesByCategory: { hub: new Set() },
     lastOpeningBigram: ''
