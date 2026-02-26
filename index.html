@@ -1078,10 +1078,14 @@
     seen.add(key);
     const blurb = pick.querySelector('small')?.textContent || '';
     const score = scoreDeal(cleanTitle, blurb, href, i + 1);
-    deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 });
+    const explicitCategory = (pick.dataset.category || '').trim().toLowerCase();
+    const category = explicitCategory === 'home' || explicitCategory === 'tech'
+      ? explicitCategory
+      : topLevelCategoryFromTitle(cleanTitle);
+    deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1, category });
   });
   const ranked = deduped.sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
-  const filteredRanked = ranked.filter((row) => topLevelCategoryFromTitle(row.cleanTitle) === selectedCategory);
+  const filteredRanked = ranked.filter((row) => row.category === selectedCategory);
 
   const top = filteredRanked[0];
   const topCard = document.getElementById('topPickCard');
