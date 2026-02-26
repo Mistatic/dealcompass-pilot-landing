@@ -621,14 +621,77 @@
     };
 
     const roleTemplates = roleTemplatesByCategory[category] || roleTemplatesByCategory.general;
+
+    const categoryReserveClauses = {
+      trackball: [
+        'its strongest advantage is fine cursor control in limited desk space',
+        'it is best suited to precision-heavy workflows where small movements matter'
+      ],
+      combo: [
+        'its main benefit is predictable keyboard-and-mouse behavior across daily tasks',
+        'it is best suited to desks that need quick setup with fewer compatibility surprises'
+      ],
+      keyboard: [
+        'its strongest advantage is consistent typing feel over long writing sessions',
+        'it is best suited to productivity-heavy routines where key feel consistency matters'
+      ],
+      mouse: [
+        'its main benefit is controlled tracking for repetitive daily pointer work',
+        'it is best suited to workflows that prioritize comfort and precision over extra features'
+      ],
+      hub: [
+        'its main benefit is consolidating multiple desk connections through one hub point',
+        'it is best suited to laptop setups that frequently switch between accessories and displays'
+      ],
+      deskLamp: [
+        'its strongest advantage is controllable desk lighting for long focus blocks',
+        'it is best suited to workspaces that need consistent visibility across changing ambient light'
+      ],
+      robotVacuum: [
+        'its main benefit is reducing routine cleaning overhead between deep-clean cycles',
+        'it is best suited to home-office floors that benefit from automated maintenance'
+      ],
+      tablet: [
+        'its strongest advantage is flexible secondary-screen use for reading and notes',
+        'it is best suited to mobile workflows that alternate between desk and travel contexts'
+      ],
+      monitorArm: [
+        'its main benefit is ergonomic screen positioning with less desk obstruction',
+        'it is best suited to setups that need adjustable viewing angles during long sessions'
+      ],
+      router: [
+        'its strongest advantage is maintaining steadier multi-device throughput under load',
+        'it is best suited to homes with overlapping calls, streaming, and cloud sync traffic'
+      ],
+      networkSwitch: [
+        'its main benefit is adding reliable wired links for latency-sensitive desk gear',
+        'it is best suited to setups that need more ethernet ports without Wi-Fi bottlenecks'
+      ],
+      coolingPad: [
+        'its strongest advantage is improving thermal consistency during sustained laptop use',
+        'it is best suited to high-heat workflows where throttling risk is a concern'
+      ],
+      privacyScreen: [
+        'its main benefit is limiting side-angle visibility in shared work environments',
+        'it is best suited to teams working in offices, coworking spaces, or cafés'
+      ],
+      charger: [
+        'its strongest advantage is cleaner power delivery across core daily devices',
+        'it is best suited to desks that need fewer adapters and steadier charging behavior'
+      ],
+      general: [
+        'its strongest advantage is practical day-to-day utility with low setup overhead',
+        'it is best suited to mixed-use setups that prioritize dependable baseline performance'
+      ]
+    };
+
     const allCandidateClauses = [];
     features.forEach((feature) => {
       const variants = featureClauses[feature];
       if (variants) allCandidateClauses.push(...variants);
     });
-    const includeIntendedUse = category === 'general' || allCandidateClauses.length < 2;
-    if (includeIntendedUse) {
-      allCandidateClauses.push(...(intendedUseClauses[intendedUse] || intendedUseClauses.general));
+    if (allCandidateClauses.length < 2) {
+      allCandidateClauses.push(...(categoryReserveClauses[category] || categoryReserveClauses.general));
     }
 
     const angleClausesByCategory = {
@@ -784,7 +847,7 @@
         const topUps = [
           'This fit is strongest for steady office workflows that prioritize consistency.',
           'It should integrate cleanly into mixed home-office setups with limited overhead.',
-          'That profile helps maintain predictable day-to-day desk performance.'
+          'That profile aligns with practical constraints for this product class.'
         ];
         candidate += ` ${topUps[(seed + attempt) % topUps.length]}`;
       }
