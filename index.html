@@ -615,7 +615,10 @@
       const variants = featureClauses[feature];
       if (variants) allCandidateClauses.push(...variants);
     });
-    allCandidateClauses.push(...(intendedUseClauses[intendedUse] || intendedUseClauses.general));
+    const includeIntendedUse = category === 'general' || allCandidateClauses.length < 2;
+    if (includeIntendedUse) {
+      allCandidateClauses.push(...(intendedUseClauses[intendedUse] || intendedUseClauses.general));
+    }
 
     let bestCandidate = '';
     let bestPenalty = Number.POSITIVE_INFINITY;
