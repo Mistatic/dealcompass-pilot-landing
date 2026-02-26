@@ -405,6 +405,17 @@
     return tokens.slice(0, 2).join(' ');
   }
 
+  function normalizeBlurbPattern(text) {
+    return text
+      .toLowerCase()
+      .replace(/(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)/g, ' brand ')
+      .replace(/\d+[a-z0-9%-]*/g, ' # ')
+      .replace(/[^a-z\s#]/g, ' ')
+      .replace(/(a|an|the|this|that|it|is|are|for|to|of|with|and|or|as|in|on|by|from|option|pick)/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function maxSimilarity(candidate, priorBlurbs) {
     let max = 0;
     for (const prior of priorBlurbs) {
@@ -624,7 +635,6 @@
     let bestPenalty = Number.POSITIVE_INFINITY;
 
     for (let attempt = 0; attempt < 16; attempt += 1) {
-      const role = fillTemplate(roleTemplates[(seed + attempt) % roleTemplates.length], brand);
       const openerVariants = [
         'Operational fit:',
         'Day-to-day impact:',
@@ -638,6 +648,20 @@
       const opener = openerVariants[(seed + attempt) % openerVariants.length];
       const priorBlurbs = diversityState.blurbs;
       const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
+
+      let roleTemplate = roleTemplates[(seed + attempt) % roleTemplates.length];
+      const roleKeyBase = `${category}|${roleTemplate}`;
+      if (diversityState.usedRoleTemplates.has(roleKeyBase)) {
+        for (let shift = 1; shift < roleTemplates.length; shift += 1) {
+          const altTemplate = roleTemplates[(seed + attempt + shift) % roleTemplates.length];
+          const altKey = `${category}|${altTemplate}`;
+          if (!diversityState.usedRoleTemplates.has(altKey)) {
+            roleTemplate = altTemplate;
+            break;
+          }
+        }
+      }
+      const role = fillTemplate(roleTemplate, brand);
 
       let primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
       let secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
@@ -655,6 +679,15 @@
       }
       if (secondaryClause && secondaryClause.toLowerCase() === primaryClause.toLowerCase()) {
         secondaryClause = allCandidateClauses[(seed + attempt + 5) % allCandidateClauses.length];
+      }
+      if (diversityState.usedPrimaryClauses.has(primaryClause.toLowerCase())) {
+        for (let shift = 1; shift < allCandidateClauses.length; shift += 1) {
+          const alt = allCandidateClauses[(seed + attempt + shift) % allCandidateClauses.length];
+          if (alt && !diversityState.usedPrimaryClauses.has(alt.toLowerCase())) {
+            primaryClause = alt;
+            break;
+          }
+        }
       }
 
       let candidate = `${role}. ${opener} ${primaryClause}`;
@@ -723,6 +756,8 @@
       const adjacentBigram = diversityState.lastOpeningBigram || '';
       const pairwise = maxSimilarity(candidate, priorBlurbs);
       const adjacent = adjacentBlurb ? jaccardSimilarity(candidate, adjacentBlurb) : 0;
+      const candidatePattern = normalizeBlurbPattern(candidate);
+      const patternSimilarity = maxSimilarity(candidatePattern, diversityState.patterns || []);
       const lengthPenalty = candidate.length < 95 ? (95 - candidate.length) : (candidate.length > 180 ? (candidate.length - 180) : 0);
 
       const repeatedPhraseList = [
@@ -743,8 +778,9 @@
         lengthPenalty +
         repeatedPhrasePenalty +
         (candidateBigram && candidateBigram === adjacentBigram ? 35 : 0) +
-        Math.max(0, pairwise - 0.64) * 140 +
-        Math.max(0, adjacent - 0.54) * 140;
+        Math.max(0, pairwise - 0.50) * 160 +
+        Math.max(0, adjacent - 0.40) * 170 +
+        Math.max(0, patternSimilarity - 0.46) * 220;
 
       if (penalty < bestPenalty) {
         bestPenalty = penalty;
@@ -752,15 +788,20 @@
       }
 
       if (candidateBigram === adjacentBigram) continue;
-      if (pairwise > 0.52 || adjacent > 0.42) continue;
+      if (pairwise > 0.50 || adjacent > 0.40) continue;
+      if (patternSimilarity > 0.46) continue;
       if ((candidate.length < 95 || candidate.length > 180) && attempt < 15) continue;
 
       diversityState.blurbs.push(candidate);
+      diversityState.patterns.push(candidatePattern);
+      diversityState.usedRoleTemplates.add(`${category}|${roleTemplate}`);
+      diversityState.usedPrimaryClauses.add(primaryClause.toLowerCase());
       diversityState.lastOpeningBigram = candidateBigram;
       return candidate;
     }
 
     diversityState.blurbs.push(bestCandidate);
+    diversityState.patterns.push(normalizeBlurbPattern(bestCandidate));
     diversityState.lastOpeningBigram = openingBigram(bestCandidate);
     return bestCandidate;
   }
@@ -834,7 +875,13 @@
 
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
   pickList.innerHTML = '';
-  const blurbDiversityState = { blurbs: [], lastOpeningBigram: '' };
+  const blurbDiversityState = {
+    blurbs: [],
+    patterns: [],
+    usedRoleTemplates: new Set(),
+    usedPrimaryClauses: new Set(),
+    lastOpeningBigram: ''
+  };
   ranked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
