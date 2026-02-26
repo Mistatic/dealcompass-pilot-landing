@@ -472,14 +472,14 @@
         'As a workspace ergonomics option, {brandOption} focuses on adjustability and cable order'
       ],
       charger: [
-        '{brand} charger is aimed at consolidating power delivery for core desk devices',
-        'This charging pick is positioned to reduce adapter clutter in multi-device setups',
-        'As a power-management option, {brandOption} supports steadier charging across daily gear'
+        '{brand} charger is built to streamline power delivery across core desk devices',
+        'This charging option reduces adapter clutter in multi-device setups',
+        'As a power-management choice, {brandOption} keeps charging steadier across daily gear'
       ],
       general: [
-        '{brand} pick is positioned for practical utility in routine productivity setups',
-        'This option is intended to improve day-to-day workflow reliability without extra complexity',
-        'As a desk-tech option, {brandOption} focuses on function-first value for regular use'
+        '{brand} pick is selected for reliable day-to-day usefulness in mixed setups',
+        'This option improves workflow consistency without unnecessary complexity',
+        'As a desk-tech choice, {brandOption} prioritizes practical value for regular use'
       ]
     };
 
@@ -572,16 +572,16 @@
         'it is best matched to gaming-leaning workflows that need quicker input response'
       ],
       office: [
-        'its fit is strongest for office-heavy workflows where consistency is the priority',
-        'it aligns well with practical office routines that favor low-friction reliability'
+        'it fits office-heavy workflows where consistency and low setup friction matter most',
+        'it aligns with practical office routines that prioritize dependable daily performance'
       ],
       mobile: [
-        'its fit is strongest for mobile workflows that shift between locations',
+        'it fits mobile workflows that regularly shift between locations',
         'it is better suited to portable setups that need compact, flexible gear'
       ],
       general: [
-        'it is a practical fit for routine productivity work without specialized requirements',
-        'it should work best in mixed-use setups focused on predictable daily performance'
+        'it works well in mixed-use setups where predictable daily performance matters',
+        'it is a solid fit for routine workflows that value reliability over feature bloat'
       ]
     };
 
@@ -673,8 +673,23 @@
       const adjacent = adjacentBlurb ? jaccardSimilarity(candidate, adjacentBlurb) : 0;
       const lengthPenalty = candidate.length < 95 ? (95 - candidate.length) : (candidate.length > 180 ? (candidate.length - 180) : 0);
 
+      const repeatedPhraseList = [
+        'positioned for',
+        'practical utility',
+        'practical fit',
+        'routine productivity',
+        'day-to-day workflow reliability'
+      ];
+      const repeatedPhrasePenalty = repeatedPhraseList.reduce((acc, phrase) => {
+        if (adjacentBlurb && candidate.toLowerCase().includes(phrase) && adjacentBlurb.toLowerCase().includes(phrase)) {
+          return acc + 22;
+        }
+        return acc;
+      }, 0);
+
       const penalty =
         lengthPenalty +
+        repeatedPhrasePenalty +
         (candidateBigram && candidateBigram === adjacentBigram ? 35 : 0) +
         Math.max(0, pairwise - 0.64) * 140 +
         Math.max(0, adjacent - 0.54) * 140;
