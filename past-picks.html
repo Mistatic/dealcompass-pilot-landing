@@ -59,7 +59,9 @@
     *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
     .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}
     .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
+    .topbar-left{display:inline-flex;align-items:center;gap:10px}
     .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}
+    .category-select{background:rgba(255,255,255,.05);color:#dbe7ff;border:1px solid var(--border);border-radius:10px;padding:7px 9px;font-weight:700;font-size:.78rem}
     .top-links{display:flex;gap:8px}
     .pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
     h1{margin:8px 0 8px;font-size:clamp(1.5rem,5vw,2.2rem)}
@@ -78,10 +80,16 @@
 <body>
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass archive header">
-      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      <div class="topbar-left">
+        <select id="categorySelect" class="category-select" aria-label="Select category">
+          <option value="tech">Tech</option>
+          <option value="home">Home</option>
+        </select>
+        <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      </div>
       <nav class="top-links" aria-label="Primary">
-        <a class="pill" href="/">Current Picks</a>
-        <a class="pill" href="/reviews.html">Our Verdicts</a>
+        <a class="pill" id="currentPicksNav" href="/">Current Picks</a>
+        <a class="pill" id="reviewsNav" href="/reviews.html">Our Verdicts</a>
       </nav>
     </header>
 
@@ -99,6 +107,17 @@
 
   <script>
     (() => {
+      const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
+      const getSelectedCategory = () => {
+        const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
+        return CATEGORY_CONFIG[raw] ? raw : 'tech';
+      };
+      const withCategory = (url, category) => {
+        const u = new URL(url, window.location.origin);
+        u.searchParams.set('category', category);
+        return `${u.pathname}${u.search}`;
+      };
+
       const hashText = (text) => {
         let hash = 0;
         for (let i = 0; i < text.length; i += 1) hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
@@ -130,6 +149,12 @@
         if (t.includes('monitor arm') || (t.includes('monitor') && t.includes('arm')) || t.includes('vesa')) return 'monitorArm';
         if (t.includes('charger') || t.includes('charging') || t.includes('power adapter') || /\bpd\b/.test(t)) return 'charger';
         return 'general';
+      };
+
+      const topLevelCategoryFromTitle = (title) => {
+        const c = detectProductCategory(title);
+        if (['robotVacuum', 'deskLamp'].includes(c)) return 'home';
+        return 'tech';
       };
 
       const detectTitleSignals = (title) => {
@@ -273,6 +298,21 @@
 
       const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+      const selectedCategory = getSelectedCategory();
+      const categorySelect = document.getElementById('categorySelect');
+      if (categorySelect) {
+        categorySelect.value = selectedCategory;
+        categorySelect.addEventListener('change', () => {
+          window.location.href = withCategory('/past-picks.html', categorySelect.value);
+        });
+      }
+      const currentPicksNav = document.getElementById('currentPicksNav');
+      const reviewsNav = document.getElementById('reviewsNav');
+      if (currentPicksNav) currentPicksNav.href = withCategory('/', selectedCategory);
+      if (reviewsNav) reviewsNav.href = withCategory('/reviews.html', selectedCategory);
+      const heading = document.querySelector('h1');
+      if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Past Picks Archive`;
+
       (async () => {
         const root = document.getElementById('archive');
         const meta = document.getElementById('listMeta');
@@ -308,15 +348,17 @@
             items.push(p);
           }
 
-          if (!items.length) {
-            meta.textContent = '0 unique picks';
-            root.innerHTML = '<p class="sub">No archived picks yet.</p>';
+          const filteredItems = items.filter((p) => topLevelCategoryFromTitle(String(p.title || '')) === selectedCategory);
+
+          if (!filteredItems.length) {
+            meta.textContent = `0 ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
+            root.innerHTML = '<p class="sub">No archived picks yet for this category.</p>';
             return;
           }
 
           const diversityState = { blurbs: [], lastOpeningBigram: '' };
-          meta.textContent = `${items.length} unique picks`;
-          root.innerHTML = items.map((p) => {
+          meta.textContent = `${filteredItems.length} ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
+          root.innerHTML = filteredItems.map((p) => {
             const cleanTitle = String(p.title || '').replace(/^\s*\d+\)\s*/, '').trim();
             const blurb = buildProductBlurb(cleanTitle, diversityState);
             return `

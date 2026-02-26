@@ -79,7 +79,17 @@
       padding: 12px 14px; border: 1px solid var(--border); border-radius: 999px;
       background: rgba(8, 14, 29, 0.7); backdrop-filter: blur(8px); box-shadow: var(--shadow-soft); margin-bottom: 18px;
     }
+    .topbar-left { display: inline-flex; align-items: center; gap: 10px; }
     .brand { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #d9e4ff; text-decoration: none; }
+    .category-select {
+      background: rgba(255,255,255,0.05);
+      color: #dbe7ff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 9px;
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
     .topbar-right { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
     .topbar-right nav { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .nav-pill {
@@ -167,11 +177,17 @@
 <body>
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass status">
-      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      <div class="topbar-left">
+        <select id="categorySelect" class="category-select" aria-label="Select category">
+          <option value="tech">Tech</option>
+          <option value="home">Home</option>
+        </select>
+        <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      </div>
       <div class="topbar-right">
         <nav aria-label="Primary">
-          <a class="nav-pill" href="/past-picks.html">Past Picks</a>
-          <a class="nav-pill" href="/reviews.html">Our Verdicts</a>
+          <a class="nav-pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
+          <a class="nav-pill" id="reviewsNav" href="/reviews.html">Our Verdicts</a>
         </nav>
       </div>
     </header>
@@ -185,8 +201,8 @@
 
     <section class="section listings-emphasis" id="current-picks">
       <div class="listings-kicker">Current Picks</div>
-      <h2 class="section-title">Current Top 10 Picks</h2>
-      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a href="/past-picks.html">View our past deal archive</a>.</p>
+      <h2 class="section-title" id="currentPicksTitle">Current Top 10 Picks</h2>
+      <p class="section-sub" id="currentPicksSub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a id="pastPicksInlineLink" href="/past-picks.html">View our past deal archive</a>.</p>
       <article class="top-pick-card" id="topPickCard" hidden>
         <div class="top-pick-label">⭐ Top Pick</div>
         <div class="top-pick-title" id="topPickTitle"></div>
@@ -195,7 +211,7 @@
           <a class="btn btn-primary" id="topPickLink" href="#" target="_blank" rel="nofollow sponsored noopener">View Top Pick</a>
         </div>
       </article>
-      <div class="pick-list">
+      <div class="pick-list" id="pickList">
         <!-- DEALCOMPASS_LINKS_START -->
         <a class="pick" href="https://amzn.to/4bbhioE" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) Logitech POP ICON Combo, Bluetooth Keyboard and Mouse Combo, Comfortable Typing, programmabl…</span><small>Improves typing rhythm and desk ergonomics with practical value for daily use.</small></a>
         <a class="pick" href="https://amzn.to/4tX9fDa" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) PowerA Advantage Wired Controller for Nintendo Switch 2 - Black, Officially Licensed, Hall E…</span><small>High-value accessory with reliable performance and strong utility for compatible gaming setups.</small></a>
@@ -209,6 +225,7 @@
         <a class="pick" href="https://amzn.to/4kXzl58" target="_blank" rel="nofollow sponsored noopener"><span class="title">10) TECKNET Bluetooth Mouse, 4000DPI Wireless Mice for Laptop 2-in-1(BT 5.0/3.0+2.4Ghz) Computer…</span><small>Reliable pointer upgrade with practical comfort and control benefits for daily workflows.</small></a>
 <!-- DEALCOMPASS_LINKS_END -->
       </div>
+      <p class="section-sub" id="emptyCategoryState" hidden>No picks are live for this category yet. Join updates and we’ll notify you when it opens.</p>
     </section>
 
     <section class="section" aria-label="about dealcompass">
@@ -241,6 +258,21 @@
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
+  const CATEGORY_CONFIG = {
+    tech: { label: 'Tech', heroSub: 'DealCompass finds high-value tech deals and explains exactly why they’re worth it—fast, clear, and practical.' },
+    home: { label: 'Home', heroSub: 'DealCompass finds high-value home deals with clear buy/no-buy context and practical fit guidance.' }
+  };
+
+  function getSelectedCategory() {
+    const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
+    return CATEGORY_CONFIG[raw] ? raw : 'tech';
+  }
+
+  function withCategory(url, category) {
+    const u = new URL(url, window.location.origin);
+    u.searchParams.set('category', category);
+    return `${u.pathname}${u.search}`;
+  }
 
   function appendTokens(url, linkId) {
     try {
@@ -312,6 +344,12 @@
     if (t.includes('privacy screen') || (t.includes('privacy') && t.includes('screen'))) return 'privacyScreen';
     if (t.includes('charger') || t.includes('charging') || t.includes('power adapter') || /\bpd\b/.test(t)) return 'charger';
     return 'general';
+  }
+
+  function topLevelCategoryFromTitle(title) {
+    const productCategory = detectProductCategory(title);
+    if (['robotVacuum', 'deskLamp'].includes(productCategory)) return 'home';
+    return 'tech';
   }
 
   function detectTitleSignals(title) {
@@ -991,11 +1029,32 @@
     return low[idx % low.length];
   }
 
+  const selectedCategory = getSelectedCategory();
+  const categorySelect = document.getElementById('categorySelect');
+  const categoryMeta = CATEGORY_CONFIG[selectedCategory];
+  if (categorySelect) {
+    categorySelect.value = selectedCategory;
+    categorySelect.addEventListener('change', () => {
+      window.location.href = withCategory('/', categorySelect.value);
+    });
+  }
+  const heroSub = document.querySelector('.hero .sub');
+  if (heroSub) heroSub.textContent = categoryMeta.heroSub;
+  const currentPicksTitle = document.getElementById('currentPicksTitle');
+  if (currentPicksTitle) currentPicksTitle.textContent = `${categoryMeta.label} Current Top Picks`;
+
+  const pastPicksNav = document.getElementById('pastPicksNav');
+  const reviewsNav = document.getElementById('reviewsNav');
+  const pastPicksInlineLink = document.getElementById('pastPicksInlineLink');
+  if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
+  if (reviewsNav) reviewsNav.href = withCategory('/reviews.html', selectedCategory);
+  if (pastPicksInlineLink) pastPicksInlineLink.href = withCategory('/past-picks.html', selectedCategory);
+
   document.querySelectorAll('a[data-link-id]').forEach((a) => {
     a.href = appendTokens(a.href, a.dataset.linkId || 'unknown');
   });
 
-  const pickList = document.querySelector('.pick-list');
+  const pickList = document.getElementById('pickList');
   const picks = Array.from(document.querySelectorAll('.pick-list a.pick'));
   const deduped = [];
   const seen = new Set();
@@ -1013,10 +1072,11 @@
     deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 });
   });
   const ranked = deduped.sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
+  const filteredRanked = ranked.filter((row) => topLevelCategoryFromTitle(row.cleanTitle) === selectedCategory);
 
-  const top = ranked[0];
+  const top = filteredRanked[0];
+  const topCard = document.getElementById('topPickCard');
   if (top) {
-    const topCard = document.getElementById('topPickCard');
     const topTitle = document.getElementById('topPickTitle');
     const topReason = document.getElementById('topPickReason');
     const topLink = document.getElementById('topPickLink');
@@ -1024,6 +1084,8 @@
     topReason.textContent = 'Top utility-to-value pick this cycle.';
     topLink.href = top.pick.getAttribute('href') || '#';
     topCard.hidden = false;
+  } else {
+    topCard.hidden = true;
   }
 
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
@@ -1037,7 +1099,7 @@
     usedAnglesByCategory: { hub: new Set() },
     lastOpeningBigram: ''
   };
-  ranked.slice(1).forEach((row, idx) => {
+  filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
     const confidence = confidenceLabel(row.score, idx);
@@ -1065,6 +1127,11 @@
     // Avoid duplicate UI: top pick is shown in the hero card, list starts at rank #2.
     pickList.appendChild(row.pick);
   });
+
+  const emptyCategoryState = document.getElementById('emptyCategoryState');
+  if (emptyCategoryState) {
+    emptyCategoryState.hidden = filteredRanked.length > 0;
+  }
 })();
 </script>
 

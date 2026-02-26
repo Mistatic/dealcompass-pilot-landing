@@ -22,7 +22,7 @@
     :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; }
     *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
     .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
-    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
+    .topbar-left{display:inline-flex;align-items:center;gap:10px}.brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}.category-select{background:rgba(255,255,255,.05);color:#dbe7ff;border:1px solid var(--border);border-radius:10px;padding:7px 9px;font-weight:700;font-size:.78rem}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
     h1{margin:8px 0 8px;font-size:clamp(1.6rem,5vw,2.35rem)} .sub{margin:0 0 16px;color:var(--muted)}
     .cards{display:grid;gap:12px}.card{border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--surface)}
     .card h2{margin:0 0 6px;font-size:1.02rem}.meta{font-size:.8rem;color:var(--muted);margin-bottom:8px}.cta{display:inline-flex;margin-top:10px;text-decoration:none;font-size:.82rem;font-weight:800;color:#dbe7ff;border:1px solid var(--border);padding:7px 10px;border-radius:10px}
@@ -31,10 +31,16 @@
 <body>
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass reviews header">
-      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      <div class="topbar-left">
+        <select id="categorySelect" class="category-select" aria-label="Select category">
+          <option value="tech">Tech</option>
+          <option value="home">Home</option>
+        </select>
+        <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      </div>
       <nav class="top-links" aria-label="Primary">
-        <a class="pill" href="/">Home</a>
-        <a class="pill" href="/past-picks.html">Past Picks</a>
+        <a class="pill" id="homeNav" href="/">Home</a>
+        <a class="pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
       </nav>
     </header>
     <h1>Our Verdicts</h1>
@@ -42,14 +48,46 @@
     <section id="reviews" class="cards" aria-live="polite"></section>
   </main>
   <script>
+    const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
+    const getSelectedCategory = () => {
+      const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
+      return CATEGORY_CONFIG[raw] ? raw : 'tech';
+    };
+    const withCategory = (url, category) => {
+      const u = new URL(url, window.location.origin);
+      u.searchParams.set('category', category);
+      return `${u.pathname}${u.search}`;
+    };
+    const toTopLevelCategory = (reviewCategory = '') => {
+      const c = String(reviewCategory).toLowerCase();
+      if (/(home|cleaning|vacuum|kitchen|furniture)/.test(c)) return 'home';
+      return 'tech';
+    };
+
     (async () => {
       const root = document.getElementById('reviews');
+      const selectedCategory = getSelectedCategory();
+      const categorySelect = document.getElementById('categorySelect');
+      if (categorySelect) {
+        categorySelect.value = selectedCategory;
+        categorySelect.addEventListener('change', () => {
+          window.location.href = withCategory('/reviews.html', categorySelect.value);
+        });
+      }
+      const homeNav = document.getElementById('homeNav');
+      const pastPicksNav = document.getElementById('pastPicksNav');
+      if (homeNav) homeNav.href = withCategory('/', selectedCategory);
+      if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
+      const heading = document.querySelector('h1');
+      if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Verdicts`;
+
       try {
         const res = await fetch('/assets/reviews.json', { cache: 'no-store' });
         const data = await res.json();
         const rows = Array.isArray(data?.reviews) ? data.reviews : [];
-        if (!rows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages will appear here as they are released.</p></div>'; return; }
-        root.innerHTML = rows.map((r) => `
+        const filteredRows = rows.filter((r) => toTopLevelCategory(r.category) === selectedCategory);
+        if (!filteredRows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages for this category will appear here as they are released.</p></div>'; return; }
+        root.innerHTML = filteredRows.map((r) => `
           <article class="card">
             <h2>${r.title}</h2>
             <div class="meta">${r.published_at} • ${r.category || 'Review'}</div>
