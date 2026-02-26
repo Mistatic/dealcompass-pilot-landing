@@ -161,8 +161,7 @@
       };
 
       const topLevelCategoryFromTitle = (title) => {
-        const t = String(title || '').toLowerCase();
-        if (/(vacuum|air purifier|humidifier|dehumidifier|heater|fan|air fryer|espresso|coffee maker|cookware|storage|organizer|shelf|curtain|bedding|mattress|kitchen|thermometer|hygrometer|cleaner|purifier|toaster|blender|mixer)/.test(t)) return 'home';
+        // Deprecated: category inference disabled.
         return 'tech';
       };
 
@@ -360,8 +359,9 @@
           const filteredItems = items.filter((p) => {
             const rawTitle = String(p.title || '').trim();
             if (!rawTitle || /^amazon product\s+[a-z0-9]{10}$/i.test(rawTitle)) return false;
-            const inferred = topLevelCategoryFromTitle(rawTitle);
-            return inferred === selectedCategory;
+            const explicit = String(p.category || '').trim().toLowerCase();
+            if (!(explicit === 'tech' || explicit === 'home')) return false;
+            return explicit === selectedCategory;
           });
 
           if (!filteredItems.length) {
