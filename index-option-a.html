@@ -599,7 +599,16 @@
 
     for (let attempt = 0; attempt < 16; attempt += 1) {
       const role = fillTemplate(roleTemplates[(seed + attempt) % roleTemplates.length], brand);
-      const openerVariants = ['Key benefit:', 'In day-to-day use,', 'Practical upside:'];
+      const openerVariants = [
+        'Operational fit:',
+        'Day-to-day impact:',
+        'Practical upside:',
+        'Why it matters:',
+        'Workflow benefit:',
+        'In routine use,',
+        'Execution note:',
+        'Buyer takeaway:'
+      ];
       const opener = openerVariants[(seed + attempt) % openerVariants.length];
       const primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
       const secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
@@ -686,7 +695,7 @@
       }
 
       if (candidateBigram === adjacentBigram) continue;
-      if (pairwise > 0.64 || adjacent > 0.54) continue;
+      if (pairwise > 0.52 || adjacent > 0.42) continue;
       if ((candidate.length < 95 || candidate.length > 180) && attempt < 15) continue;
 
       diversityState.blurbs.push(candidate);
@@ -769,8 +778,8 @@
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
   pickList.innerHTML = '';
   const blurbDiversityState = { blurbs: [], lastOpeningBigram: '' };
-  ranked.forEach((row, idx) => {
-    const rank = idx + 1;
+  ranked.slice(1).forEach((row, idx) => {
+    const rank = idx + 2;
     const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
     const confidence = confidenceLabel(row.score, idx);
     const generatedBlurb = buildProductBlurb(row.cleanTitle, blurbDiversityState);
