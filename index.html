@@ -230,7 +230,7 @@
         <a class="pick" data-category="home" href="https://amzn.to/3N2XR8k" target="_blank" rel="nofollow sponsored noopener"><span class="title">16) Rocoren 9-Pack Cable Clips [Upgraded], Magnetic 360° Rotatable Cord Holder, Adhesive Cable M…</span><small>Strong value pick with practical day-to-day utility and clear purchase upside for most desk setups.</small></a>
         <a class="pick" data-category="home" href="https://amzn.to/3ZZhxNd" target="_blank" rel="nofollow sponsored noopener"><span class="title">17) Sakugi Storage Shelves - 3 Tier Shelf Organizer, Sturdy ...</span><small>Strong value pick with practical day-to-day utility and clear purchase upside for most desk setups.</small></a>
         <a class="pick" data-category="home" href="https://amzn.to/4sdp8Uz" target="_blank" rel="nofollow sponsored noopener"><span class="title">18) Coway AP-2015F Airmega 400 Smart Air Purifier (Covers 1,560 sq. ft.), True HEPA Air Purifier…</span><small>High-signal shortlist item chosen to improve workflow quality without unnecessary feature bloat.</small></a>
-        <a class="pick" data-category="home" href="https://amzn.to/3N7avmJ" target="_blank" rel="nofollow sponsored noopener"><span class="title">19) Amazon Product #19</span><small>Strong value pick with practical day-to-day utility and clear purchase upside for most desk setups.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/3N7avmJ" target="_blank" rel="nofollow sponsored noopener"><span class="title">19) TempPro TP50 Digital Hygrometer Indoor Thermometer Room Thermometer and Humidity Gauge with…</span><small>Balanced price-to-performance option selected for reliability, usefulness, and low-regret buyer fit.</small></a>
         <a class="pick" data-category="home" href="https://amzn.to/4cgSU61" target="_blank" rel="nofollow sponsored noopener"><span class="title">20) MONOZEL Cordless Handheld Vacuum Cleaner, 18000Pa 2 in 1 ...</span><small>Utility-focused automation choice for reducing routine cleanup friction in busy weeks.</small></a>
         <a class="pick" data-category="tech" href="https://amzn.to/4bbhioE" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) Logitech POP ICON Combo, Bluetooth Keyboard and Mouse Combo, Comfortable Typing, programmabl…</span><small>Improves typing rhythm and desk ergonomics with practical value for daily use.</small></a>
         <a class="pick" data-category="tech" href="https://amzn.to/4tX9fDa" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) PowerA Advantage Wired Controller for Nintendo Switch 2 - Black, Officially Licensed, Hall E…</span><small>High-value accessory with reliable performance and strong utility for compatible gaming setups.</small></a>
@@ -304,12 +304,18 @@
     }
   }
 
-  function classifyUseCase(text) {
+  function classifyUseCase(text, category = 'tech') {
     const t = text.toLowerCase();
+    if (category === 'home') {
+      if (t.includes('vacuum') || t.includes('robot')) return 'Best for Cleaning';
+      if (t.includes('air purifier') || t.includes('humidifier') || t.includes('dehumidifier')) return 'Best for Air Quality';
+      if (t.includes('heater') || t.includes('fan')) return 'Best for Comfort';
+      if (t.includes('storage') || t.includes('organizer')) return 'Best for Organization';
+      return 'Best for Home Essentials';
+    }
     if (t.includes('gaming') || t.includes('controller')) return 'Best for Gaming';
     if (t.includes('keyboard') || t.includes('mouse')) return 'Best for Everyday Use';
     if (t.includes('hub') || t.includes('dock') || t.includes('usb-c')) return 'Best for Laptop Setups';
-    if (t.includes('vacuum') || t.includes('robot')) return 'Best for Home Automation';
     return 'Best for Tech Upgrades';
   }
 
@@ -553,7 +559,7 @@
       general: [
         '{brand} pick is selected for reliable day-to-day usefulness in mixed setups',
         'This option improves workflow consistency without unnecessary complexity',
-        'As a desk-tech choice, {brandOption} prioritizes practical value for regular use'
+        '{brandOption} prioritizes practical value for regular use'
       ]
     };
 
@@ -1124,7 +1130,7 @@
   };
   filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
+    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
     const generatedBlurb = buildProductBlurb(row.cleanTitle, blurbDiversityState);
 
