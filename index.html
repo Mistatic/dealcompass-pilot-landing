@@ -271,18 +271,42 @@
       const fallback = slugs[0] || Category.defaultSlug;
       const selected = Category.getSelectedCategory();
 
+      const COMING_SOON_VALUE = '__coming_soon';
       const select = document.getElementById('landingCategorySelect');
       const browseBtn = document.getElementById('landingBrowseBtn');
       const verdictsBtn = document.getElementById('landingVerdictsBtn');
 
       const syncLinks = (slug) => {
+        if (slug === COMING_SOON_VALUE) {
+          if (browseBtn) {
+            browseBtn.href = '/coming-soon.html';
+            browseBtn.textContent = 'See what’s coming →';
+          }
+          if (verdictsBtn) {
+            verdictsBtn.href = '/coming-soon.html#feedback';
+            verdictsBtn.textContent = 'Share feedback →';
+          }
+          return;
+        }
+
         const next = Category.isKnown(slug) ? slug : fallback;
-        if (browseBtn) browseBtn.href = Category.withCategory('/current-picks.html', next);
-        if (verdictsBtn) verdictsBtn.href = Category.withCategory('/reviews.html', next);
+        if (browseBtn) {
+          browseBtn.href = Category.withCategory('/current-picks.html', next);
+          browseBtn.textContent = 'Browse now →';
+        }
+        if (verdictsBtn) {
+          verdictsBtn.href = Category.withCategory('/reviews.html', next);
+          verdictsBtn.textContent = 'View verdicts →';
+        }
       };
 
       if (select) {
         Category.applyOptions(select, selected);
+        const comingSoonOption = document.createElement('option');
+        comingSoonOption.value = COMING_SOON_VALUE;
+        comingSoonOption.textContent = 'More categories coming soon';
+        select.appendChild(comingSoonOption);
+
         syncLinks(select.value || selected);
         select.addEventListener('change', () => syncLinks(select.value));
       } else {

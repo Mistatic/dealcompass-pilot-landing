@@ -19,6 +19,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://dealcompass.app/coming-soon.html</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealcompass.app/reviews.html</loc>
     <lastmod>2026-02-25</lastmod>
     <changefreq>weekly</changefreq>
