@@ -246,7 +246,6 @@
       <p class="sub">DealCompass tracks high-value products, ranks practical picks, and gives fast buy/no-buy context without the review rabbit hole.</p>
       <p class="trust">Built for real buying decisions: practical picks, clear reasons, and no noisy fluff.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" id="primaryBrowse" href="/current-picks.html?category=tech">Browse Current Picks</a>
         <a class="btn btn-ghost" href="/signup.html">Join free updates</a>
       </div>
       <div class="trust-strip" aria-label="DealCompass trust pillars">
@@ -280,14 +279,12 @@
       const fallback = slugs[0] || Category.defaultSlug;
       const selected = Category.getSelectedCategory();
 
-      const primaryBrowse = document.getElementById('primaryBrowse');
       const select = document.getElementById('landingCategorySelect');
       const browseBtn = document.getElementById('landingBrowseBtn');
 
       const syncLinks = (slug) => {
         const next = Category.isKnown(slug) ? slug : fallback;
         const href = Category.withCategory('/current-picks.html', next);
-        if (primaryBrowse) primaryBrowse.href = href;
         if (browseBtn) browseBtn.href = href;
       };
 
