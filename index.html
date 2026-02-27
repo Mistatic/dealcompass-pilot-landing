@@ -161,6 +161,17 @@
       display: grid; gap: 16px; 
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
     }
+
+    .pick-placeholder {
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; height: 100%; min-height: 200px;
+      background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: var(--radius-md); padding: 24px;
+    }
+    .pick-placeholder h3 { font-size: 1.1rem; color: #fff; margin: 0 0 8px; font-weight: 700; }
+    .pick-placeholder p { font-size: 0.95rem; color: var(--muted); margin: 0 0 16px; max-width: 28ch; line-height: 1.5; }
+    .pick-placeholder .cta-link { color: var(--brand); font-weight: 700; font-size: 0.9rem; transition: color 0.2s; }
+    .pick-placeholder .cta-link:hover { color: #82aaff; text-decoration: underline; }
     
     /* Top Pick Card */
     .top-pick-card {
@@ -301,6 +312,11 @@
         <div class="cta-row" style="margin-top:10px;">
           <a class="btn btn-primary" id="topPickLink" href="#" target="_blank" rel="nofollow sponsored noopener">View Top Pick</a>
         </div>
+      </article>
+      <article class="card pick-placeholder">
+        <h3>Stay Tuned</h3>
+        <p>New deals drop every Mon/Wed/Fri. Join the list to catch the next batch.</p>
+        <a class="cta-link" href="/signup.html">Get Updates →</a>
       </article>
       <div class="pick-list" id="pickList">
         <!-- DEALCOMPASS_LINKS_START -->
@@ -532,6 +548,23 @@
     // Avoid duplicate UI: top pick is shown in the hero card, list starts at rank #2.
     pickList.appendChild(row.pick);
   });
+  
+  // Symmetry enforcement:
+  // If we have an odd number of items in the grid (leaving a gap), append the placeholder.
+  // The 'pickList' grid contains N items. The total display area is grid-based.
+  // We can just always append the placeholder if N is odd?
+  // Or simpler: always append the placeholder if it makes the total count even?
+  // Actually, standard behavior: if (count % 2 !== 0) show placeholder.
+  if (pickList.children.length % 2 !== 0) {
+    const placeholder = document.createElement('article');
+    placeholder.className = 'pick-placeholder';
+    placeholder.innerHTML = `
+      <h3>Stay Tuned</h3>
+      <p>New deals drop every Mon/Wed/Fri. Join the list to catch the next batch.</p>
+      <a class="cta-link" href="/signup.html">Get Updates →</a>
+    `;
+    pickList.appendChild(placeholder);
+  }
 
   const emptyCategoryState = document.getElementById('emptyCategoryState');
   if (emptyCategoryState) {
