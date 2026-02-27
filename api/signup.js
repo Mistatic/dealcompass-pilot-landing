@@ -21,15 +21,29 @@ module.exports = async (req, res) => {
 
   const email = sanitize(body.email, 180).toLowerCase();
   const firstName = sanitize(body.first_name || body.firstName, 120);
-  const interest = sanitize(body.interest_category || body.interestCategory, 120);
-  const budget = sanitize(body.budget_range || body.budgetRange, 120);
-  const preferredChannel = sanitize(body.preferred_channel || body.preferredChannel, 120);
+
+  // New post-pilot signup fields
+  const primaryInterest = sanitize(
+    body.primary_interest || body.primaryInterest || body.interest_category || body.interestCategory,
+    120
+  );
+  const primaryGoal = sanitize(body.primary_goal || body.primaryGoal, 120);
+  const requestedCategories = sanitize(body.requested_categories || body.requestedCategories, 220);
+  const updateFrequency = sanitize(body.update_frequency || body.updateFrequency, 120);
+  const deliveryPreference = sanitize(
+    body.delivery_preference || body.deliveryPreference || body.preferred_channel || body.preferredChannel,
+    120
+  );
+  const biggestPain = sanitize(body.biggest_pain || body.biggestPain, 320);
+
   const consent = asBool(body.consent);
   const campaignId = sanitize(body.dc_campaign || body.campaign_id || body.utm_campaign, 120);
   const campaignChannel = sanitize(body.dc_channel || body.channel || body.utm_source, 120);
   const campaignVariant = sanitize(body.dc_variant || body.variant || body.utm_content, 120);
 
   if (!emailOk(email)) return json(res, 400, { ok: false, error: 'invalid_email' });
+  if (!primaryInterest) return json(res, 400, { ok: false, error: 'missing_primary_interest' });
+  if (!primaryGoal) return json(res, 400, { ok: false, error: 'missing_primary_goal' });
   if (!consent) return json(res, 400, { ok: false, error: 'consent_required' });
 
   const submissionId = makeSubmissionId('signup');
@@ -41,9 +55,20 @@ module.exports = async (req, res) => {
     form_type: 'signup',
     user_email: email,
     user_name: firstName,
-    interest_category: interest,
-    budget_range: budget,
-    preferred_channel: preferredChannel,
+
+    // Updated signup signal fields
+    primary_interest: primaryInterest,
+    primary_goal: primaryGoal,
+    requested_categories: requestedCategories,
+    update_frequency: updateFrequency,
+    delivery_preference: deliveryPreference,
+    biggest_pain: biggestPain,
+
+    // Compatibility fields (for legacy sheet mappings/reporting)
+    interest_category: primaryInterest,
+    budget_range: updateFrequency,
+    preferred_channel: deliveryPreference,
+
     consent: 'YES',
     campaign_id: campaignId,
     campaign_channel: campaignChannel,
@@ -70,6 +95,8 @@ module.exports = async (req, res) => {
     const tags = ['dealcompass', 'signup'];
     if (campaignChannel) tags.push(`ch:${campaignChannel}`);
     if (campaignVariant) tags.push(`var:${campaignVariant}`);
+    if (primaryInterest) tags.push(`interest:${primaryInterest.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`);
+
     await postJson(
       'https://api.buttondown.email/v1/subscribers',
       {
@@ -81,9 +108,17 @@ module.exports = async (req, res) => {
           campaign_id: campaignId || undefined,
           campaign_channel: campaignChannel || undefined,
           campaign_variant: campaignVariant || undefined,
-          preferred_channel: preferredChannel || undefined,
-          interest_category: interest || undefined,
-          budget_range: budget || undefined,
+          primary_interest: primaryInterest || undefined,
+          primary_goal: primaryGoal || undefined,
+          requested_categories: requestedCategories || undefined,
+          update_frequency: updateFrequency || undefined,
+          delivery_preference: deliveryPreference || undefined,
+          biggest_pain: biggestPain || undefined,
+
+          // Compatibility mirrors
+          preferred_channel: deliveryPreference || undefined,
+          interest_category: primaryInterest || undefined,
+          budget_range: updateFrequency || undefined,
         },
       },
       {
