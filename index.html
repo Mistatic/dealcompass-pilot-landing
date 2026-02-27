@@ -313,11 +313,6 @@
           <a class="btn btn-primary" id="topPickLink" href="#" target="_blank" rel="nofollow sponsored noopener">View Top Pick</a>
         </div>
       </article>
-      <article class="card pick-placeholder">
-        <h3>Stay Tuned</h3>
-        <p>New deals drop every Mon/Wed/Fri. Join the list to catch the next batch.</p>
-        <a class="cta-link" href="/signup.html">Get Updates →</a>
-      </article>
       <div class="pick-list" id="pickList">
         <!-- DEALCOMPASS_LINKS_START -->
         <a class="pick" data-category="home" href="https://amzn.to/4baBmY9" target="_blank" rel="nofollow sponsored noopener"><span class="title">11) Air Purifiers for Home Large Room Up to 2590 ft² with PM 2.5 Display Air Quality Sensor, DBF…</span><small>Signal: 2590 ft². Fit: picked for air quality because it improves day-to-day room comfort consistency.</small></a>
@@ -550,14 +545,11 @@
   });
   
   // Symmetry enforcement:
-  // If we have an odd number of items in the grid (leaving a gap), append the placeholder.
-  // The 'pickList' grid contains N items. The total display area is grid-based.
-  // We can just always append the placeholder if N is odd?
-  // Or simpler: always append the placeholder if it makes the total count even?
-  // Actually, standard behavior: if (count % 2 !== 0) show placeholder.
-  if (pickList.children.length % 2 !== 0) {
+  // Only append if the grid has items, otherwise empty state handles it.
+  // Check after everything is populated.
+  if (pickList.children.length > 0 && pickList.children.length % 2 !== 0) {
     const placeholder = document.createElement('article');
-    placeholder.className = 'pick-placeholder';
+    placeholder.className = 'card pick-placeholder'; // Ensure 'card' class is applied for basic styles if needed, though we override
     placeholder.innerHTML = `
       <h3>Stay Tuned</h3>
       <p>New deals drop every Mon/Wed/Fri. Join the list to catch the next batch.</p>
