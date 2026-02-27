@@ -157,7 +157,7 @@
       padding: 18px;
       display: grid;
       gap: 12px;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       align-items: center;
     }
     .selector-wrap { position: relative; }
@@ -231,13 +231,7 @@
           <span>DealCompass</span>
         </a>
       </div>
-      <div class="topbar-right">
-        <nav aria-label="Primary">
-          <a class="nav-pill" href="/current-picks.html?category=tech">Current Picks</a>
-          <a class="nav-pill" href="/past-picks.html?category=tech">Past Picks</a>
-          <a class="nav-pill" href="/reviews.html?category=tech">Our Verdicts</a>
-        </nav>
-      </div>
+
     </header>
 
     <section class="hero">
@@ -262,6 +256,7 @@
           <span class="selector-arrow" aria-hidden="true">▾</span>
         </div>
         <a class="btn btn-primary" id="landingBrowseBtn" href="/current-picks.html?category=tech">Browse now →</a>
+        <a class="btn btn-ghost" id="landingVerdictsBtn" href="/reviews.html?category=tech">View verdicts →</a>
       </div>
     </section>
 
@@ -278,11 +273,12 @@
 
       const select = document.getElementById('landingCategorySelect');
       const browseBtn = document.getElementById('landingBrowseBtn');
+      const verdictsBtn = document.getElementById('landingVerdictsBtn');
 
       const syncLinks = (slug) => {
         const next = Category.isKnown(slug) ? slug : fallback;
-        const href = Category.withCategory('/current-picks.html', next);
-        if (browseBtn) browseBtn.href = href;
+        if (browseBtn) browseBtn.href = Category.withCategory('/current-picks.html', next);
+        if (verdictsBtn) verdictsBtn.href = Category.withCategory('/reviews.html', next);
       };
 
       if (select) {
