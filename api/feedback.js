@@ -6,6 +6,7 @@ const {
   nowIso,
   makeSubmissionId,
 } = require('./_shared');
+const { supabaseConfig, supabaseInsert } = require('./_supabase');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'method_not_allowed' });
@@ -50,18 +51,40 @@ module.exports = async (req, res) => {
     source: 'dealcompass_native_form',
   };
 
-  const webhook = process.env.DEALCOMPASS_FORM_WEBHOOK_URL;
-  if (!webhook) return json(res, 500, { ok: false, error: 'missing_form_webhook' });
+  const { configured: hasSupabase } = supabaseConfig();
+  const allowWebhookFallback = String(process.env.DEALCOMPASS_ALLOW_WEBHOOK_FALLBACK || '').trim() === '1';
 
-  const webhookToken = process.env.DEALCOMPASS_FORM_WEBHOOK_TOKEN || '';
-  const sheetResp = await postJson(
-    webhook,
-    { action: 'feedback', row, token: webhookToken || undefined }
-  );
-
-  if (!sheetResp.ok) {
-    return json(res, 502, { ok: false, error: 'sheet_write_failed', detail: sheetResp.body || null });
+  let storedIn = null;
+  if (hasSupabase) {
+    try {
+      await supabaseInsert('feedback_submissions', row);
+      storedIn = 'supabase';
+    } catch (e) {
+      if (!allowWebhookFallback) {
+        return json(res, 502, {
+          ok: false,
+          error: 'supabase_write_failed',
+          detail: e.body || e.message || null,
+        });
+      }
+    }
   }
 
-  return json(res, 200, { ok: true, submission_id: submissionId });
+  if (!storedIn) {
+    const webhook = process.env.DEALCOMPASS_FORM_WEBHOOK_URL;
+    if (!webhook) return json(res, 500, { ok: false, error: 'missing_storage_target' });
+
+    const webhookToken = process.env.DEALCOMPASS_FORM_WEBHOOK_TOKEN || '';
+    const sheetResp = await postJson(
+      webhook,
+      { action: 'feedback', row, token: webhookToken || undefined }
+    );
+
+    if (!sheetResp.ok) {
+      return json(res, 502, { ok: false, error: 'sheet_write_failed', detail: sheetResp.body || null });
+    }
+    storedIn = 'webhook';
+  }
+
+  return json(res, 200, { ok: true, submission_id: submissionId, storage: storedIn });
 };
