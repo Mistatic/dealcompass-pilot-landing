@@ -57,13 +57,7 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
     .topbar-left { display: flex; align-items: center; gap: 12px; }
-    .brand { 
-      font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em; color: #fff;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
-    .brand::before {
-      content: "✦"; color: var(--brand); font-size: 1.2rem;
-    }
+    .brand-logo { height: 32px; width: auto; border-radius: 6px; display: block; }
     .category-select {
       background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 0.85rem; font-family: inherit;
@@ -122,7 +116,9 @@
           <option value="tech">Tech</option>
           <option value="home">Home</option>
         </select>
-        <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+        <a class="brand" href="/" aria-label="DealCompass home">
+          <img src="/assets/logo-official.jpg" alt="DealCompass" class="brand-logo" />
+        </a>
       </div>
       <nav class="top-links" aria-label="Primary">
         <a class="pill" id="homeNav" href="/">Current Picks</a>
