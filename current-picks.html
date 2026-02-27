@@ -128,30 +128,8 @@
       border-color: rgba(255,255,255,0.2); transform: translateY(-1px);
     }
 
-    /* Hero */
-    .hero {
-      margin-top: 32px; padding: 40px 24px; text-align: center;
-      border: 1px solid var(--surface-border); border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(20, 27, 45, 0.4) 0%, rgba(10, 16, 32, 0.0) 100%);
-    }
-    .eyebrow {
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--brand); margin-bottom: 16px; display: inline-block;
-      background: rgba(95, 141, 255, 0.1); padding: 4px 10px; border-radius: 6px;
-    }
-    h1 {
-      margin: 0 auto 16px; font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800;
-      line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch;
-      background: linear-gradient(to bottom right, #fff 30%, #a5b4fc 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .sub {
-      margin: 0 auto 24px; color: var(--muted); font-size: 1.1rem; max-width: 60ch; font-weight: 400;
-    }
-    .trust { font-size: 0.9rem; color: #64748b; font-weight: 500; }
-
     /* Listings */
-    .section { margin-top: 48px; }
+    .section { margin-top: 32px; }
     .section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
     .section-title { font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; margin: 0; }
     .section-sub { color: var(--muted); font-size: 0.95rem; margin: 0; }
@@ -255,8 +233,6 @@
     .disclosure a { color: #64748b; text-decoration: underline; }
 
     @media (max-width: 768px) {
-      .hero { padding: 32px 16px; text-align: left; }
-      .hero h1 { font-size: 2.4rem; }
       .pick-list { grid-template-columns: 1fr; }
       .about-grid { grid-template-columns: 1fr; }
       .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 12px; }
@@ -293,13 +269,6 @@
         </nav>
       </div>
     </header>
-
-    <section class="hero">
-      <p class="eyebrow">LESS SCROLLING. BETTER PICKS.</p>
-      <h1>We do the research. You make the call.</h1>
-      <p class="sub">DealCompass finds high-value tech deals and explains exactly why they’re worth it—fast, clear, and practical.</p>
-      <p class="trust">Free access, fresh Mon/Wed/Fri deal updates, zero spammy fluff.</p>
-    </section>
 
     <section class="section listings-emphasis" id="current-picks">
       <div class="listings-kicker">Current Picks</div>
@@ -435,8 +404,6 @@
       window.location.href = Category.withCategory('/current-picks.html', categorySelect.value);
     });
   }
-  const heroSub = document.querySelector('.hero .sub');
-  if (heroSub) heroSub.textContent = categoryMeta.heroSub;
   const currentPicksTitle = document.getElementById('currentPicksTitle');
   if (currentPicksTitle) currentPicksTitle.textContent = `${categoryMeta.label} Current Top Picks`;
 
