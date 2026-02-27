@@ -56,14 +56,34 @@
       position: sticky; top: 16px; z-index: 100;
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .topbar-left { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { height: 32px; width: auto; border-radius: 6px; display: block; }
-    .category-select {
-      background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 0.85rem; font-family: inherit;
-      cursor: pointer; transition: background 0.2s; outline: none;
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: -0.02em;
     }
-    .category-select:hover { background: rgba(255,255,255,0.1); }
+    .brand-logo { height: 32px; width: 32px; border-radius: 8px; display: block; object-fit: cover; }
+    
+    .category-wrapper { position: relative; display: flex; align-items: center; }
+    .category-select {
+      appearance: none; -webkit-appearance: none;
+      background: rgba(255,255,255,0.06); color: #fff; 
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 8px 36px 8px 14px; 
+      font-weight: 600; font-size: 0.9rem; font-family: inherit;
+      cursor: pointer; transition: all 0.2s ease; outline: none;
+      line-height: 1.2;
+    }
+    .category-select:hover { 
+      background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25);
+    }
+    .category-select:focus {
+      border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+    .category-arrow {
+      position: absolute; right: 12px; pointer-events: none;
+      color: #94a3c8; font-size: 0.8rem; display: flex; align-items: center;
+    }
     .nav-pill {
       font-size: 0.85rem; font-weight: 600; color: #cbd5e1; padding: 6px 14px;
       border-radius: 999px; transition: color 0.2s, background 0.2s;
@@ -112,13 +132,21 @@
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass reviews header">
       <div class="topbar-left">
-        <select id="categorySelect" class="category-select" aria-label="Select category">
-          <option value="tech">Tech</option>
-          <option value="home">Home</option>
-        </select>
         <a class="brand" href="/" aria-label="DealCompass home">
-          <img src="/assets/logo-official.jpg" alt="DealCompass" class="brand-logo" />
+          <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
+          <span>DealCompass</span>
         </a>
+        <div class="category-wrapper">
+          <select id="categorySelect" class="category-select" aria-label="Select category">
+            <option value="tech">Tech</option>
+            <option value="home">Home</option>
+          </select>
+          <div class="category-arrow" aria-hidden="true">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
       </div>
       <nav class="top-links" aria-label="Primary">
         <a class="pill" id="homeNav" href="/">Current Picks</a>
