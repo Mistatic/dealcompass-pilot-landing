@@ -159,16 +159,9 @@
 
     .pick-list { 
       display: grid; gap: 16px; 
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
     }
     
-    /* Ensure the last item spans full width if it's an orphan in a 2-column grid */
-    @media (min-width: 720px) {
-      .pick-list > .pick:last-child:nth-child(odd) {
-        grid-column: 1 / -1;
-      }
-    }
-
     /* Top Pick Card */
     .top-pick-card {
       grid-column: 1 / -1; margin-bottom: 16px;
