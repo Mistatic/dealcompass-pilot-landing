@@ -112,40 +112,34 @@ module.exports = async (req, res) => {
     storedIn = 'webhook';
   }
 
-  // Keep Buttondown list update in the same flow.
-  const buttondownKey = process.env.BUTTONDOWN_API_KEY;
-  if (buttondownKey) {
-    const tags = ['dealcompass', 'signup'];
-    if (campaignChannel) tags.push(`ch:${campaignChannel}`);
-    if (campaignVariant) tags.push(`var:${campaignVariant}`);
-    if (primaryInterest) tags.push(`interest:${primaryInterest.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`);
+  // Newsletter sync via Loops (Buttondown replacement).
+  const loopsKey = String(process.env.LOOPS_API_KEY || '').trim();
+  if (loopsKey) {
+    const userGroup = campaignChannel
+      ? `dealcompass:${campaignChannel}`
+      : 'dealcompass:general';
 
     await postJson(
-      'https://api.buttondown.email/v1/subscribers',
+      'https://app.loops.so/api/v1/contacts/update',
       {
         email,
-        first_name: firstName || undefined,
-        tags,
-        metadata: {
-          source: 'dealcompass_native_form',
-          campaign_id: campaignId || undefined,
-          campaign_channel: campaignChannel || undefined,
-          campaign_variant: campaignVariant || undefined,
-          primary_interest: primaryInterest || undefined,
-          primary_goal: primaryGoal || undefined,
-          requested_categories: requestedCategories || undefined,
-          update_frequency: updateFrequency || undefined,
-          delivery_preference: deliveryPreference || undefined,
-          biggest_pain: biggestPain || undefined,
+        firstName: firstName || undefined,
+        source: 'dealcompass_native_form',
+        userGroup,
+        subscribed: true,
 
-          // Compatibility mirrors
-          preferred_channel: deliveryPreference || undefined,
-          interest_category: primaryInterest || undefined,
-          budget_range: updateFrequency || undefined,
-        },
+        campaign_id: campaignId || undefined,
+        campaign_channel: campaignChannel || undefined,
+        campaign_variant: campaignVariant || undefined,
+        primary_interest: primaryInterest || undefined,
+        primary_goal: primaryGoal || undefined,
+        requested_categories: requestedCategories || undefined,
+        update_frequency: updateFrequency || undefined,
+        delivery_preference: deliveryPreference || undefined,
+        biggest_pain: biggestPain || undefined,
       },
       {
-        Authorization: `Token ${buttondownKey}`,
+        Authorization: `Bearer ${loopsKey}`,
       }
     );
   }
