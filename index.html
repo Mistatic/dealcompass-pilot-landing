@@ -75,6 +75,13 @@
     }
     a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
     a:hover { opacity: 0.9; }
+    .sr-only {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      border: 0;
+    }
     .wrap { width: min(100%, 1080px); margin: 0 auto; padding: 20px 16px 80px; }
 
     .topbar {
@@ -122,24 +129,63 @@
     .section-title { font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; margin: 0 0 10px; }
     .section-sub { color: var(--muted); font-size: 0.95rem; margin: 0; }
 
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-    .about-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--surface-border); }
-    .about-card h3 { font-size: 1rem; color: #fff; margin: 0 0 8px; }
-    .about-card p { font-size: 0.92rem; color: var(--muted); margin: 0; }
+    .trust-strip {
+      margin-top: 22px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .trust-pill {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--surface-border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #c8d4f3;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-    .category-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 16px; }
-    .category-card {
-      display: flex; flex-direction: column; gap: 12px;
+    .selector-panel {
+      margin-top: 16px;
       background: var(--surface);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius-md);
-      padding: 20px;
-      min-height: 190px;
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr auto;
+      align-items: center;
     }
-    .category-card:hover { transform: translateY(-2px); border-color: rgba(95,141,255,0.35); background: var(--surface-strong); }
-    .category-card h3 { margin: 0; font-size: 1.2rem; letter-spacing: -0.01em; }
-    .category-card p { margin: 0; color: var(--muted); font-size: 0.92rem; flex-grow: 1; }
+    .selector-wrap { position: relative; }
+    .landing-select {
+      appearance: none; -webkit-appearance: none;
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 12px 40px 12px 14px;
+      font: inherit;
+      font-weight: 600;
+      outline: none;
+    }
+    .landing-select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+    .selector-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3c8;
+      pointer-events: none;
+    }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       border-radius: 12px; font-weight: 700; font-size: 0.9rem; line-height: 1;
@@ -167,7 +213,8 @@
     @media (max-width: 768px) {
       .hero { padding: 32px 16px; text-align: left; }
       .hero h1 { font-size: 2.4rem; }
-      .about-grid { grid-template-columns: 1fr; }
+      .trust-strip { grid-template-columns: 1fr; }
+      .selector-panel { grid-template-columns: 1fr; }
       .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 12px; }
       .topbar-left { justify-content: space-between; }
       .topbar-right nav { justify-content: center; width: 100%; display: flex; gap: 4px; }
@@ -197,65 +244,60 @@
       <p class="eyebrow">LESS SCROLLING. BETTER PICKS.</p>
       <h1>We do the research. You choose your category.</h1>
       <p class="sub">DealCompass tracks high-value products, ranks practical picks, and gives fast buy/no-buy context without the review rabbit hole.</p>
-      <p class="trust">Fresh updates, transparent affiliate disclosure, and clear decision-first recommendations.</p>
+      <p class="trust">Built for real buying decisions: practical picks, clear reasons, and no noisy fluff.</p>
       <div class="cta-row">
         <a class="btn btn-primary" id="primaryBrowse" href="/current-picks.html?category=tech">Browse Current Picks</a>
         <a class="btn btn-ghost" href="/signup.html">Join free updates</a>
       </div>
-    </section>
-
-    <section class="section" aria-labelledby="howHeading">
-      <h2 class="section-title" id="howHeading">What DealCompass does</h2>
-      <p class="section-sub">We focus on practical fit, utility, and price-to-value — not hype.</p>
-      <div class="about-grid">
-        <article class="about-card">
-          <h3>Signal-first curation</h3>
-          <p>We prioritize products that solve common problems, hold up under everyday use, and offer strong utility per dollar.</p>
-        </article>
-        <article class="about-card">
-          <h3>Clear decision context</h3>
-          <p>Every pick is paired with concise context so you can quickly decide if it fits your workflow, room, or setup.</p>
-        </article>
+      <div class="trust-strip" aria-label="DealCompass trust pillars">
+        <div class="trust-pill">Practical picks over hype</div>
+        <div class="trust-pill">Clear reasoning for each pick</div>
+        <div class="trust-pill">Consistent quality checks</div>
       </div>
     </section>
 
     <section class="section" aria-labelledby="browseHeading">
       <h2 class="section-title" id="browseHeading">Choose a category</h2>
-      <p class="section-sub">Select where you want to start. We’ll open current picks in that category.</p>
-      <div class="category-grid" id="categoryGrid"></div>
+      <p class="section-sub">Pick a category and jump straight into the latest ranked list.</p>
+      <div class="selector-panel">
+        <div class="selector-wrap">
+          <label for="landingCategorySelect" class="sr-only">Select category</label>
+          <select id="landingCategorySelect" class="landing-select" aria-label="Select category"></select>
+          <span class="selector-arrow" aria-hidden="true">▾</span>
+        </div>
+        <a class="btn btn-primary" id="landingBrowseBtn" href="/current-picks.html?category=tech">Browse now →</a>
+      </div>
     </section>
 
-    <p class="disclosure"><strong>Affiliate disclosure:</strong> DealCompass may earn a commission from qualifying purchases made through partner links.<br />
-      Contact: <a href="mailto:help@dealcompass.app">help@dealcompass.app</a>
-    </p>
+    <p class="disclosure">DealCompass may earn from qualifying purchases. Contact: <a href="mailto:help@dealcompass.app">help@dealcompass.app</a></p>
   </main>
 
   <script src="/assets/category-config.js"></script>
   <script>
     (() => {
       const Category = window.DCCategoryConfig;
-      const categories = Category.categories;
-      const slugs = Object.keys(categories);
-      const grid = document.getElementById('categoryGrid');
+      const slugs = Object.keys(Category.categories);
+      const fallback = slugs[0] || Category.defaultSlug;
+      const selected = Category.getSelectedCategory();
+
       const primaryBrowse = document.getElementById('primaryBrowse');
+      const select = document.getElementById('landingCategorySelect');
+      const browseBtn = document.getElementById('landingBrowseBtn');
 
-      if (primaryBrowse && slugs.length) {
-        primaryBrowse.href = Category.withCategory('/current-picks.html', slugs[0]);
+      const syncLinks = (slug) => {
+        const next = Category.isKnown(slug) ? slug : fallback;
+        const href = Category.withCategory('/current-picks.html', next);
+        if (primaryBrowse) primaryBrowse.href = href;
+        if (browseBtn) browseBtn.href = href;
+      };
+
+      if (select) {
+        Category.applyOptions(select, selected);
+        syncLinks(select.value || selected);
+        select.addEventListener('change', () => syncLinks(select.value));
+      } else {
+        syncLinks(selected);
       }
-
-      if (!grid) return;
-      grid.innerHTML = slugs.map((slug) => {
-        const cfg = categories[slug] || { label: slug, heroSub: '' };
-        const copy = cfg.heroSub || `Browse top ${cfg.label.toLowerCase()} picks with concise utility-first context.`;
-        const href = Category.withCategory('/current-picks.html', slug);
-        return `
-          <article class="category-card">
-            <h3>${cfg.label}</h3>
-            <p>${copy}</p>
-            <a class="btn btn-primary" href="${href}">Browse ${cfg.label} picks →</a>
-          </article>
-        `;
-      }).join('');
     })();
   </script>
 </body>
