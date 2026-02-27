@@ -214,45 +214,49 @@
       <form id="feedbackForm" novalidate>
         <div class="row two">
           <div>
-            <label for="usefulness_score">Usefulness Score (1–5) *</label>
-            <select id="usefulness_score" name="usefulness_score" required>
+            <label for="confidence_score">How confident did this page make you feel? (1–5) *</label>
+            <select id="confidence_score" name="confidence_score" required>
               <option value="">Select…</option>
-              <option value="5">5 - Very useful</option>
+              <option value="5">5 - Very confident</option>
               <option value="4">4</option>
               <option value="3">3</option>
               <option value="2">2</option>
-              <option value="1">1 - Not useful</option>
+              <option value="1">1 - Not confident</option>
             </select>
           </div>
           <div>
-            <label for="buy_intent">Would you consider buying?</label>
-            <select id="buy_intent" name="buy_intent">
+            <label for="feedback_focus">What should we improve next? *</label>
+            <select id="feedback_focus" name="feedback_focus" required>
               <option value="">Select…</option>
-              <option>Yes</option>
-              <option>Maybe</option>
-              <option>No</option>
+              <option value="category_expansion">Category expansion</option>
+              <option value="ranking_quality">Ranking quality</option>
+              <option value="verdict_depth">Verdict depth/clarity</option>
+              <option value="site_ux">Site UX/navigation</option>
+              <option value="deal_freshness">Deal freshness/frequency</option>
+              <option value="other">Other</option>
             </select>
           </div>
         </div>
 
         <div class="row two">
           <div>
-            <label for="reviewed_pick">Which pick did you review?</label>
-            <input id="reviewed_pick" name="reviewed_pick" type="text" />
+            <label for="requested_category">Category you'd like us to add</label>
+            <input id="requested_category" name="requested_category" type="text" placeholder="e.g., Beauty, Fitness, Office" />
           </div>
           <div>
-            <label for="clicked_link">Did you click a link?</label>
-            <select id="clicked_link" name="clicked_link">
-              <option value="">Select…</option>
-              <option>Yes</option>
-              <option>No</option>
-            </select>
+            <label for="what_worked">What worked well for you?</label>
+            <input id="what_worked" name="what_worked" type="text" placeholder="e.g., clear rankings, concise blurbs" />
           </div>
         </div>
 
         <div>
-          <label for="missing_or_confusing">What was missing or confusing?</label>
-          <textarea id="missing_or_confusing" name="missing_or_confusing"></textarea>
+          <label for="what_to_improve">What should we improve first? *</label>
+          <textarea id="what_to_improve" name="what_to_improve" required></textarea>
+        </div>
+
+        <div>
+          <label for="feature_request">Any feature or page you want us to add?</label>
+          <textarea id="feature_request" name="feature_request"></textarea>
         </div>
 
         <button id="submitBtn" class="btn" type="submit">Submit feedback</button>
