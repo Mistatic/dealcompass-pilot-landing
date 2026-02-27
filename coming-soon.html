@@ -129,7 +129,6 @@
         <p>Your feedback directly shapes what categories and reviews we prioritize.</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="/feedback.html">Share feedback →</a>
-          <a class="btn btn-ghost" id="browseCurrent" href="/current-picks.html?category=tech">Browse current picks</a>
         </div>
       </div>
     </section>
@@ -138,13 +137,5 @@
   </main>
 
   <script src="/assets/category-config.js"></script>
-  <script>
-    (() => {
-      const Category = window.DCCategoryConfig;
-      const first = Object.keys(Category.categories)[0] || Category.defaultSlug;
-      const browseCurrent = document.getElementById('browseCurrent');
-      if (browseCurrent) browseCurrent.href = Category.withCategory('/current-picks.html', first);
-    })();
-  </script>
 </body>
 </html>
