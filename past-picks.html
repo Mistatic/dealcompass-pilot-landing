@@ -194,7 +194,7 @@
         </div>
       </div>
       <nav class="top-links" aria-label="Primary">
-        <a class="pill" id="currentPicksNav" href="/">Current Picks</a>
+        <a class="pill" id="currentPicksNav" href="/current-picks.html?category=tech">Current Picks</a>
         <a class="pill" id="reviewsNav" href="/reviews.html">Our Verdicts</a>
       </nav>
     </header>
@@ -230,7 +230,7 @@
       }
       const currentPicksNav = document.getElementById('currentPicksNav');
       const reviewsNav = document.getElementById('reviewsNav');
-      if (currentPicksNav) currentPicksNav.href = Category.withCategory('/', selectedCategory);
+      if (currentPicksNav) currentPicksNav.href = Category.withCategory('/current-picks.html', selectedCategory);
       if (reviewsNav) reviewsNav.href = Category.withCategory('/reviews.html', selectedCategory);
       const heading = document.querySelector('h1');
       if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Past Picks Archive`;
