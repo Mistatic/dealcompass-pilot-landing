@@ -131,7 +131,7 @@
     }
     .pick:hover { border-color: rgba(120, 165, 255, 0.62); transform: translateY(-1px); }
     .pick .title { display: block; color: #dbe7ff; font-size: 0.96rem; font-weight: 700; line-height: 1.35; }
-    .pick small { display: block; margin-top: 6px; color: var(--muted); font-size: 0.88rem; line-height: 1.4; }
+    .pick small { display: none !important; }
     .pick-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
     .chip { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:.72rem; font-weight:700; border:1px solid var(--border); color:#d5e3ff; background:rgba(255,255,255,.04); }
     .chip-confidence { color:#d8f8e8; border-color:rgba(143,228,186,.35); background:rgba(101,191,154,.14); }
@@ -256,6 +256,7 @@
     </p>
   </main>
 
+<script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
@@ -271,12 +272,18 @@
     }
   }
 
-  function classifyUseCase(text) {
+  function classifyUseCase(text, category = 'tech') {
     const t = text.toLowerCase();
+    if (category === 'home') {
+      if (t.includes('vacuum') || t.includes('robot')) return 'Best for Cleaning';
+      if (t.includes('air purifier') || t.includes('humidifier') || t.includes('dehumidifier')) return 'Best for Air Quality';
+      if (t.includes('heater') || t.includes('fan')) return 'Best for Comfort';
+      if (t.includes('storage') || t.includes('organizer')) return 'Best for Organization';
+      return 'Best for Home Essentials';
+    }
     if (t.includes('gaming') || t.includes('controller')) return 'Best for Gaming';
     if (t.includes('keyboard') || t.includes('mouse')) return 'Best for Everyday Use';
     if (t.includes('hub') || t.includes('dock') || t.includes('usb-c')) return 'Best for Laptop Setups';
-    if (t.includes('vacuum') || t.includes('robot')) return 'Best for Home Automation';
     return 'Best for Tech Upgrades';
   }
 
@@ -490,7 +497,7 @@
       general: [
         '{brand} pick is positioned for practical utility in routine productivity setups',
         'This option is intended to improve day-to-day workflow reliability without extra complexity',
-        'As a desk-tech option, {brandOption} focuses on function-first value for regular use'
+        '{brandOption} focuses on function-first value for regular use'
       ]
     };
 
@@ -998,9 +1005,9 @@
   };
   ranked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
+    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
-    const generatedBlurb = buildProductBlurb(row.cleanTitle, blurbDiversityState);
+    const generatedBlurb = (row.blurb || '').trim();
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');

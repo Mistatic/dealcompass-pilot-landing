@@ -3,21 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DealCompass | Better Tech Deals, Less Research</title>
-  <meta name="description" content="DealCompass helps shoppers find high-value tech and everyday deals with clear buy/no-buy context, ranked picks, and concise updates." />
+  <title>DealCompass | Better Deals, Less Research</title>
+  <meta name="description" content="DealCompass helps shoppers find high-value deals across categories with clear buy/no-buy context, ranked picks, and concise updates." />
   <link rel="canonical" href="https://dealcompass.app/" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-  <meta property="og:title" content="DealCompass | High-Value Tech &amp; Everyday Deals" />
-  <meta property="og:description" content="Discover ranked, high-signal tech and everyday deal picks with concise decision context." />
+  <meta property="og:title" content="DealCompass | High-Value Deals Across Categories" />
+  <meta property="og:description" content="Discover ranked, high-signal deal picks across categories with concise decision context." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dealcompass.app/" />
   <meta property="og:site_name" content="DealCompass" />
   <meta property="og:image" content="https://dealcompass.app/assets/logo-official.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DealCompass | High-Value Tech &amp; Everyday Deals" />
-  <meta name="twitter:description" content="Ranked, high-signal tech deal picks with concise buy/no-buy context." />
+  <meta name="twitter:title" content="DealCompass | High-Value Deals Across Categories" />
+  <meta name="twitter:description" content="Ranked, high-signal deal picks across categories with concise buy/no-buy context." />
   <meta name="twitter:image" content="https://dealcompass.app/assets/logo-official.jpg" />
   <link rel="icon" type="image/png" href="/assets/favicon-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
     {
@@ -45,133 +48,248 @@
   </script>
   <style>
     :root {
-      --bg: #070b16;
-      --bg-soft: #0d1427;
-      --surface: rgba(19, 28, 51, 0.88);
-      --surface-strong: #141f3d;
-      --text: #f4f7ff;
-      --muted: #a9b7dc;
-      --border: rgba(174, 195, 255, 0.2);
-      --border-strong: rgba(174, 195, 255, 0.32);
+      --bg: #050911;
+      --bg-soft: #0a1020;
+      --surface: rgba(20, 27, 45, 0.7);
+      --surface-strong: rgba(26, 36, 60, 0.8);
+      --surface-border: rgba(180, 200, 255, 0.08);
+      --text: #edf2ff;
+      --muted: #94a3c8;
       --brand: #5f8dff;
-      --brand-strong: #78a5ff;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.35);
-      --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.3);
+      --brand-glow: rgba(95, 141, 255, 0.25);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Manrope", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-family: "Manrope", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(900px 620px at 10% -18%, rgba(107, 138, 255, 0.26), transparent 52%),
-        radial-gradient(760px 440px at 98% 6%, rgba(68, 107, 223, 0.2), transparent 56%),
-        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
-      line-height: 1.55;
-      letter-spacing: 0.01em;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 0%, rgba(95, 141, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(120, 100, 255, 0.08) 0%, transparent 40%);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-    a { color: inherit; }
-    .wrap { width: min(100%, 1020px); margin: 0 auto; padding: 18px 14px 60px; }
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
+    a:hover { opacity: 0.9; }
+    
+    .wrap { width: min(100%, 1080px); margin: 0 auto; padding: 20px 16px 80px; }
+    
+    /* Nav */
     .topbar {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: 12px 14px; border: 1px solid var(--border); border-radius: 999px;
-      background: rgba(8, 14, 29, 0.7); backdrop-filter: blur(8px); box-shadow: var(--shadow-soft); margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 10px 14px; border: 1px solid var(--surface-border); border-radius: 999px;
+      background: rgba(10, 16, 32, 0.6); backdrop-filter: blur(12px);
+      position: sticky; top: 16px; z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .brand { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #d9e4ff; text-decoration: none; }
-    .topbar-right { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
-    .topbar-right nav { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: -0.02em;
+    }
+    .brand-logo { height: 32px; width: 32px; border-radius: 8px; display: block; object-fit: cover; }
+    
+    .category-wrapper { position: relative; display: flex; align-items: center; }
+    .category-select {
+      appearance: none; -webkit-appearance: none;
+      background: rgba(255,255,255,0.06); color: #fff; 
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 8px 36px 8px 14px; 
+      font-weight: 600; font-size: 0.9rem; font-family: inherit;
+      cursor: pointer; transition: all 0.2s ease; outline: none;
+      line-height: 1.2;
+    }
+    .category-select:hover { 
+      background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25);
+    }
+    .category-select:focus {
+      border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+    .category-arrow {
+      position: absolute; right: 12px; pointer-events: none;
+      color: #94a3c8; font-size: 0.8rem; display: flex; align-items: center;
+    }
+
+    .topbar-right nav { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+
     .nav-pill {
-      display: inline-flex; align-items: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;
-      color: #dbe7ff; border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px;
-      background: rgba(255,255,255,0.03);
+      font-size: 0.8rem; font-weight: 700; color: #cbd5e1; padding: 10px 18px;
+      border-radius: 999px; transition: all 0.2s ease;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      white-space: nowrap; line-height: 1; text-transform: uppercase; letter-spacing: 0.03em;
     }
+    .nav-pill:hover { 
+      color: #fff; background: rgba(255,255,255,0.08); 
+      border-color: rgba(255,255,255,0.2); transform: translateY(-1px);
+    }
+
+    /* Hero */
     .hero {
-      border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 24px 16px;
-      background: linear-gradient(135deg, rgba(95, 141, 255, 0.18), rgba(95, 141, 255, 0.05) 45%, rgba(19, 30, 53, 0.92));
-      box-shadow: var(--shadow-soft);
+      margin-top: 32px; padding: 40px 24px; text-align: center;
+      border: 1px solid var(--surface-border); border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(20, 27, 45, 0.4) 0%, rgba(10, 16, 32, 0.0) 100%);
     }
-    .eyebrow { margin: 0; color: #c7d6ff; font-size: 0.79rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; }
-    h1 { margin: 10px 0 10px; font-size: clamp(1.85rem, 6.9vw, 3.1rem); line-height: 1.09; letter-spacing: -0.01em; max-width: 18ch; }
-    .sub { margin: 0; color: #d5dff8; font-size: clamp(1rem, 3.5vw, 1.16rem); max-width: 56ch; }
-    .trust { margin: 14px 0 0; color: #c2d0f1; font-size: 0.9rem; }
-    .cta-row { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 10px 16px;
-      border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 0.89rem; line-height: 1.2;
-      transition: transform 0.16s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    .eyebrow {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: 16px; display: inline-block;
+      background: rgba(95, 141, 255, 0.1); padding: 4px 10px; border-radius: 6px;
     }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary {
-      color: #f7fbff; border: 1px solid rgba(137, 170, 255, 0.45);
-      background: linear-gradient(135deg, var(--brand), var(--brand-strong)); box-shadow: 0 10px 24px rgba(78, 122, 236, 0.4);
+    h1 {
+      margin: 0 auto 16px; font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch;
+      background: linear-gradient(to bottom right, #fff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .btn-ghost { color: #d7e2ff; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.03); }
-    .btn-ghost:hover { border-color: rgba(174, 195, 255, 0.45); }
-    .section { margin-top: 20px; }
-    .section-title { margin: 0 0 8px; font-size: clamp(1.2rem, 3vw, 1.5rem); line-height: 1.25; }
-    .section-sub { margin: 0; color: var(--muted); font-size: 0.94rem; }
+    .sub {
+      margin: 0 auto 24px; color: var(--muted); font-size: 1.1rem; max-width: 60ch; font-weight: 400;
+    }
+    .trust { font-size: 0.9rem; color: #64748b; font-weight: 500; }
 
-    .listings-kicker { display:inline-block; margin: 0 0 10px; padding: 6px 10px; border-radius: 999px; border:1px solid rgba(119,163,255,.35); background: rgba(86,131,235,.14); color:#dce8ff; font-size:.78rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; }
-    .listings-divider { height:1px; margin: 6px 0 14px; background: linear-gradient(90deg, rgba(118,167,255,.55), rgba(118,167,255,0)); }
-    .listings-emphasis { border:1px solid rgba(116,160,255,.2); background: linear-gradient(180deg, rgba(23,34,66,.55), rgba(15,24,47,.35)); border-radius: 14px; padding: 14px; }
-    .listings-row-title { display:flex; align-items:center; gap:8px; margin: 0 0 10px; color:#dbe7ff; font-weight:700; font-size:.9rem; }
-    .listings-dot { width:8px; height:8px; border-radius:999px; background:#76a7ff; box-shadow:0 0 0 4px rgba(118,167,255,.2); }
+    /* Listings */
+    .section { margin-top: 48px; }
+    .section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .section-title { font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; margin: 0; }
+    .section-sub { color: var(--muted); font-size: 0.95rem; margin: 0; }
+    .section-sub a { color: var(--brand); text-decoration: underline; text-decoration-color: rgba(95,141,255,0.3); text-underline-offset: 4px; }
 
-    .cards { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-card); }
-    .card h2 { margin: 0 0 8px; font-size: 1.04rem; line-height: 1.3; }
-    .card p { margin: 0; color: #ccd8f5; font-size: 0.94rem; }
-    .pick-list { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+    .pick-list { 
+      display: grid; gap: 16px; 
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    }
+
+    .pick-placeholder {
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; height: 100%; min-height: 200px;
+      background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: var(--radius-md); padding: 24px;
+    }
+    .pick-placeholder h3 { font-size: 1.1rem; color: #fff; margin: 0 0 8px; font-weight: 700; }
+    .pick-placeholder p { font-size: 0.95rem; color: var(--muted); margin: 0 0 16px; max-width: 28ch; line-height: 1.5; }
+    .pick-placeholder .cta-link { color: var(--brand); font-weight: 700; font-size: 0.9rem; transition: color 0.2s; }
+    .pick-placeholder .cta-link:hover { color: #82aaff; text-decoration: underline; }
+    
+    /* Top Pick Card */
+    .top-pick-card {
+      grid-column: 1 / -1; margin-bottom: 16px;
+      background: linear-gradient(135deg, rgba(95, 141, 255, 0.08), rgba(20, 27, 45, 0.6));
+      border: 1px solid rgba(95, 141, 255, 0.3); border-radius: var(--radius-lg);
+      padding: 24px; display: flex; flex-direction: column; align-items: start;
+      box-shadow: 0 0 30px rgba(95, 141, 255, 0.05); position: relative; overflow: hidden;
+    }
+    .top-pick-card::before {
+      content: "★ EDITOR'S CHOICE"; position: absolute; top: 16px; right: 16px;
+      font-size: 0.7rem; font-weight: 800; color: var(--brand); letter-spacing: 0.05em;
+      background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;
+    }
+    .top-pick-title { font-size: 1.4rem; font-weight: 700; margin: 0 0 8px; color: #fff; max-width: 90%; }
+    .top-pick-reason { font-size: 1rem; color: #cbd5e1; margin-bottom: 20px; max-width: 80%; }
+
+    /* Standard Pick */
     .pick {
-      display: block; text-decoration: none; border-radius: var(--radius-md); border: 1px solid var(--border);
-      background: var(--surface-strong); padding: 13px; box-shadow: var(--shadow-card);
-      transition: border-color 0.2s ease, transform 0.16s ease;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md); padding: 20px; height: 100%;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .pick:hover { border-color: rgba(120, 165, 255, 0.62); transform: translateY(-1px); }
-    .pick .title { display: block; color: #dbe7ff; font-size: 0.96rem; font-weight: 700; line-height: 1.35; }
-    .pick small { display: block; margin-top: 6px; color: var(--muted); font-size: 0.88rem; line-height: 1.4; }
-    .pick-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .chip { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:.72rem; font-weight:700; border:1px solid var(--border); color:#d5e3ff; background:rgba(255,255,255,.04); }
-    .chip-confidence { color:#d8f8e8; border-color:rgba(143,228,186,.35); background:rgba(101,191,154,.14); }
-    .pick-cta { display:inline-block; margin-top:8px; font-size:.8rem; font-weight:700; color:#bcd1ff; }
-    .top-pick-card { border:1px solid rgba(120,165,255,.45); background:linear-gradient(135deg,rgba(95,141,255,.16),rgba(20,31,61,.94)); border-radius:18px; padding:14px; box-shadow:var(--shadow-card); margin-top:10px; }
-    .top-pick-label { font-size:.75rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#cfe0ff; }
-    .top-pick-title { margin:6px 0 6px; font-size:1rem; font-weight:800; color:#e8f0ff; }
-    .top-pick-reason { margin:0; color:var(--muted); font-size:.9rem; }
+    .pick:hover {
+      transform: translateY(-2px);
+      border-color: rgba(180, 200, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      background: var(--surface-strong);
+    }
+    .pick .title { font-size: 1.05rem; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 8px; }
+    .pick small { display: block; font-size: 0.9rem; color: var(--muted); line-height: 1.5; margin-bottom: 16px; flex-grow: 1; }
+    
+    .pick-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.03); width: 100%; }
+    .pick-meta { display: flex; gap: 8px; }
+    .chip {
+      font-size: 0.7rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;
+      text-transform: uppercase; letter-spacing: 0.03em;
+      background: rgba(255,255,255,0.05); color: #94a3c8;
+    }
+    .chip-confidence { color: #86efac; background: rgba(134, 239, 172, 0.1); }
+    
+    .pick-cta {
+      font-size: 0.85rem; font-weight: 700; color: var(--brand);
+      display: flex; align-items: center; gap: 4px; transition: gap 0.2s;
+    }
+    .pick:hover .pick-cta { gap: 6px; color: #82aaff; }
+    .pick-cta::after { content: "→"; font-size: 1.1em; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+      transition: all 0.2s; cursor: pointer; text-align: center;
+    }
+    .btn-primary {
+      background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(95, 141, 255, 0.4);
+    }
+    .btn-primary:hover { background: #4b7bff; transform: translateY(-1px); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* Footer / About */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
+    .about-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--surface-border); }
+    .about-card h3 { font-size: 1rem; color: #fff; margin: 0 0 8px; }
+    .about-card p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
     .feedback {
-      margin-top: 18px; border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 14px; background: rgba(11, 18, 36, 0.9); box-shadow: var(--shadow-card);
+      margin-top: 40px; text-align: center; padding: 40px 20px;
+      background: radial-gradient(circle at center, rgba(30, 40, 70, 0.5) 0%, transparent 70%);
+      border: 1px solid var(--surface-border); border-radius: var(--radius-lg);
     }
-    .feedback .title { margin: 0; font-size: 1.02rem; font-weight: 700; color: #dce8ff; }
-    .feedback p { margin: 8px 0 0; color: var(--muted); font-size: 0.9rem; }
-    .disclosure { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border); color: #8ea1cf; font-size: 0.78rem; line-height: 1.5; }
-    .disclosure a { color: #cfe0ff; }
-    @media (max-width: 900px) {
-      .topbar { flex-direction: column; align-items: flex-start; border-radius: 24px; gap: 10px; }
-      .topbar-right { width: 100%; justify-content: flex-start; }
-      .topbar-right nav { width: 100%; justify-content: flex-start; }
+    .feedback h3 { font-size: 1.3rem; margin: 0 0 10px; color: #fff; }
+    .disclosure {
+      margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--surface-border);
+      text-align: center; font-size: 0.8rem; color: #475569;
     }
-    @media (min-width: 760px) {
-      .wrap { padding: 28px 24px 72px; }
-      .topbar { padding: 13px 16px; }
-      .hero { padding: 30px; }
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-      .pick-list { gap: 12px; }
-      .section { margin-top: 24px; }
-      .feedback { padding: 16px; }
+    .disclosure a { color: #64748b; text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 32px 16px; text-align: left; }
+      .hero h1 { font-size: 2.4rem; }
+      .pick-list { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 12px; }
+      .topbar-left { justify-content: space-between; }
+      .topbar-right nav { justify-content: center; width: 100%; display: flex; gap: 4px; }
+      .nav-pill { flex: 1; text-align: center; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass status">
-      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      <div class="topbar-left">
+        <a class="brand" href="/" aria-label="DealCompass home">
+          <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
+          <span>DealCompass</span>
+        </a>
+        <div class="category-wrapper">
+          <select id="categorySelect" class="category-select" aria-label="Select category">
+            <option value="tech">Tech</option>
+            <option value="home">Home</option>
+          </select>
+          <div class="category-arrow" aria-hidden="true">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
       <div class="topbar-right">
         <nav aria-label="Primary">
-          <a class="nav-pill" href="/past-picks.html">Past Picks</a>
-          <a class="nav-pill" href="/reviews.html">Our Verdicts</a>
+          <a class="nav-pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
+          <a class="nav-pill" id="reviewsNav" href="/reviews.html">Our Verdicts</a>
         </nav>
       </div>
     </header>
@@ -185,8 +303,8 @@
 
     <section class="section listings-emphasis" id="current-picks">
       <div class="listings-kicker">Current Picks</div>
-      <h2 class="section-title">Current Top 10 Picks</h2>
-      <p class="section-sub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a href="/past-picks.html">View our past deal archive</a>.</p>
+      <h2 class="section-title" id="currentPicksTitle">Current Top 10 Picks</h2>
+      <p class="section-sub" id="currentPicksSub">Updated list of tracked picks from the current batch — ranked for practical value and fit using utility/trust signals. Need more context? <a id="pastPicksInlineLink" href="/past-picks.html">View our past deal archive</a>.</p>
       <article class="top-pick-card" id="topPickCard" hidden>
         <div class="top-pick-label">⭐ Top Pick</div>
         <div class="top-pick-title" id="topPickTitle"></div>
@@ -195,20 +313,31 @@
           <a class="btn btn-primary" id="topPickLink" href="#" target="_blank" rel="nofollow sponsored noopener">View Top Pick</a>
         </div>
       </article>
-      <div class="pick-list">
+      <div class="pick-list" id="pickList">
         <!-- DEALCOMPASS_LINKS_START -->
-        <a class="pick" data-category="tech" href="https://amzn.to/4bbhioE" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) Logitech POP ICON Combo, Bluetooth Keyboard and Mouse Combo, Comfortable Typing, programmabl…</span><small>Improves typing rhythm and desk ergonomics with practical value for daily use.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4tX9fDa" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) PowerA Advantage Wired Controller for Nintendo Switch 2 - Black, Officially Licensed, Hall E…</span><small>High-value accessory with reliable performance and strong utility for compatible gaming setups.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4u1OZka" target="_blank" rel="nofollow sponsored noopener"><span class="title">3) Anker 6-in-1 USB C Hub with Ethernet, USB C to 4K HDMI Multiport Adapter, 1Gbps Ethernet, 65…</span><small>Port-expansion option that simplifies cable management and stabilizes laptop workstation wiring.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4aLHXbH" target="_blank" rel="nofollow sponsored noopener"><span class="title">4) Logitech G305 Lightspeed Wireless Gaming Mouse, Hero Sensor, 12,000 DPI, Lightweight, 6 Prog…</span><small>Precision-forward mouse choice that reduces strain and improves control through long desk hours.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4tWjpEf" target="_blank" rel="nofollow sponsored noopener"><span class="title">5) YUNZII AL71 75% Mechanical Keyboard,Full Aluminum CNC,Hot Swappable Gasket,2.4GHz Wireless B…</span><small>Solid keyboard pick for consistent feel, layout reliability, and low-regret everyday utility.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/3ZSxHbj" target="_blank" rel="nofollow sponsored noopener"><span class="title">6) Vicsoon Desk Lamp for Home Office - LED Desk Lamp with Wireless Charger, 3 Color Modes Dimma…</span><small>Desk-lighting upgrade for clearer visibility and lower eye strain in evening or low-light work blocks.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/3Mya2dc" target="_blank" rel="nofollow sponsored noopener"><span class="title">7) YUNZII B75 Mechanical Keyboard,75% Layout with Knob,Hot Swappable RGB Backlit Gasket Mounted…</span><small>Solid keyboard pick for consistent feel, layout reliability, and low-regret everyday utility.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/3Ot0rVF" target="_blank" rel="nofollow sponsored noopener"><span class="title">8) MELCAM 2K Webcam for PC, Web Camera with Microphone, Light, Privacy Cover, Plug and Play Aut…</span><small>Lighting-focused pick that improves visual comfort and reduces monitor-area glare in darker setups.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4aAVhzs" target="_blank" rel="nofollow sponsored noopener"><span class="title">9) havit HV-F2056 15.6"-17" Laptop Cooler Cooling Pad - Slim Portable USB Powered (3 Fans), Bla…</span><small>Strong value pick with practical day-to-day utility and clear purchase upside for most desk setups.</small></a>
-        <a class="pick" data-category="tech" href="https://amzn.to/4kXzl58" target="_blank" rel="nofollow sponsored noopener"><span class="title">10) TECKNET Bluetooth Mouse, 4000DPI Wireless Mice for Laptop 2-in-1(BT 5.0/3.0+2.4Ghz) Computer…</span><small>Reliable pointer upgrade with practical comfort and control benefits for daily workflows.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4baBmY9" target="_blank" rel="nofollow sponsored noopener"><span class="title">11) Air Purifiers for Home Large Room Up to 2590 ft² with PM 2.5 Display Air Quality Sensor, DBF…</span><small>Signal: 2590 ft². Fit: picked for air quality because it improves day-to-day room comfort consistency.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4r9foKc" target="_blank" rel="nofollow sponsored noopener"><span class="title">12) SHARDOR 10-Cup Programmable Coffee Maker, Regular & Strong Brew Drip Coffee Machine for Home…</span><small>Signal: programmable. Fit: picked for kitchen because it adds repeat-use value in regular routines.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4aCavUS" target="_blank" rel="nofollow sponsored noopener"><span class="title">13) Ninja Air Fryer & Toaster Oven | Foodi Series, XL Pro Air Oven Kitchen Countertop Convection…</span><small>Signal: Foodi Series. Fit: picked for kitchen because it adds repeat-use value in regular routines.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4rJuXcs" target="_blank" rel="nofollow sponsored noopener"><span class="title">14) Dandist Space Heaters for Indoor Use with Remote, 2s Efficient Heating, Overheat & Tilt Prot…</span><small>Signal: 2s Efficient Heating. Fit: picked for comfort because it stabilizes day-to-day room conditions.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4u37DrU" target="_blank" rel="nofollow sponsored noopener"><span class="title">15) Space Heater, Electric Heaters for Indoor Use with Thermostat, Remote, 1-12H Timer, 70°Oscil…</span><small>Signal: Electric Heaters for Indoor Use. Fit: picked for comfort because it stabilizes day-to-day room conditions.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/3N2XR8k" target="_blank" rel="nofollow sponsored noopener"><span class="title">16) Rocoren 9-Pack Cable Clips [Upgraded], Magnetic 360° Rotatable Cord Holder, Adhesive Cable M…</span><small>Signal: Pack Cable Clips [Upgraded]. Fit: picked for home utility because it addresses a practical daily-use need.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/3ZZhxNd" target="_blank" rel="nofollow sponsored noopener"><span class="title">17) Sakugi Storage Shelves - 3 Tier Shelf Organizer, Sturdy Metal Garage Shelving with Adjustabl…</span><small>Signal: 3 Tier Shelf Organizer. Fit: picked for organization because it keeps spaces easier to maintain.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4sdp8Uz" target="_blank" rel="nofollow sponsored noopener"><span class="title">18) Coway AP-2015F Airmega 400 Smart Air Purifier (Covers 1,560 sq. ft.), True HEPA Air Purifier…</span><small>Signal: 1,560 sq. ft + HEPA. Fit: picked for air quality because it improves day-to-day room comfort consistency.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/3N7avmJ" target="_blank" rel="nofollow sponsored noopener"><span class="title">19) TempPro TP50 Digital Hygrometer Indoor Thermometer Room Thermometer and Humidity Gauge with…</span><small>Signal: TempPro TP50 Digital Hygrometer Indoor. Fit: picked for home utility because it addresses a practical daily-use need.</small></a>
+        <a class="pick" data-category="home" href="https://amzn.to/4cgSU61" target="_blank" rel="nofollow sponsored noopener"><span class="title">20) MONOZEL Cordless Handheld Vacuum Cleaner, 18000Pa 2 in 1 Car Vacuum Cleaner&Air Duster, 130W…</span><small>Signal: 18000pa + 2 in. Fit: picked for cleaning because it reduces recurring floor-cleaning work.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4bbhioE" target="_blank" rel="nofollow sponsored noopener"><span class="title">1) Logitech POP ICON Combo, Bluetooth Keyboard and Mouse Combo, Comfortable Typing, programmabl…</span><small>Signal: wireless. Fit: picked for typing because it improves consistency in longer sessions.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4tX9fDa" target="_blank" rel="nofollow sponsored noopener"><span class="title">2) PowerA Advantage Wired Controller for Nintendo Switch 2 - Black, Officially Licensed, Hall E…</span><small>Signal: Black. Fit: picked for gaming because it keeps input response predictable.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4u1OZka" target="_blank" rel="nofollow sponsored noopener"><span class="title">3) Anker 6-in-1 USB C Hub with Ethernet, USB C to 4K HDMI Multiport Adapter, 1Gbps Ethernet, 65…</span><small>Signal: multiport. Fit: picked for connectivity because it reduces cable and adapter friction.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4aLHXbH" target="_blank" rel="nofollow sponsored noopener"><span class="title">4) Logitech G305 Lightspeed Wireless Gaming Mouse, Hero Sensor, 12,000 DPI, Lightweight, 6 Prog…</span><small>Signal: wireless. Fit: picked for control because it improves precision while reducing fatigue.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4tWjpEf" target="_blank" rel="nofollow sponsored noopener"><span class="title">5) YUNZII AL71 75% Mechanical Keyboard,Full Aluminum CNC,Hot Swappable Gasket,2.4GHz Wireless B…</span><small>Signal: wireless. Fit: picked for typing because it improves consistency in longer sessions.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/3ZSxHbj" target="_blank" rel="nofollow sponsored noopener"><span class="title">6) Vicsoon Desk Lamp for Home Office - LED Desk Lamp with Wireless Charger, 3 Color Modes Dimma…</span><small>Signal: wireless. Fit: picked for workflow because it addresses a practical daily-use need.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/3Mya2dc" target="_blank" rel="nofollow sponsored noopener"><span class="title">7) YUNZII B75 Mechanical Keyboard,75% Layout with Knob,Hot Swappable RGB Backlit Gasket Mounted…</span><small>Signal: hot-swappable. Fit: picked for typing because it improves consistency in longer sessions.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/3Ot0rVF" target="_blank" rel="nofollow sponsored noopener"><span class="title">8) MELCAM 2K Webcam for PC, Web Camera with Microphone, Light, Privacy Cover, Plug and Play Aut…</span><small>Signal: Web Camera with Microphone. Fit: picked for workflow because it addresses a practical daily-use need.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4aAVhzs" target="_blank" rel="nofollow sponsored noopener"><span class="title">9) havit HV-F2056 15.6"-17" Laptop Cooler Cooling Pad - Slim Portable USB Powered (3 Fans), Bla…</span><small>Signal: F2056 15.6". Fit: picked for comfort because it stabilizes day-to-day room conditions.</small></a>
+        <a class="pick" data-category="tech" href="https://amzn.to/4kXzl58" target="_blank" rel="nofollow sponsored noopener"><span class="title">10) TECKNET Bluetooth Mouse, 4000DPI Wireless Mice for Laptop 2-in-1(BT 5.0/3.0+2.4Ghz) Computer…</span><small>Signal: wireless. Fit: picked for control because it improves precision while reducing fatigue.</small></a>
 <!-- DEALCOMPASS_LINKS_END -->
       </div>
+      <p class="section-sub" id="emptyCategoryState" hidden>No picks are live for this category yet. Join updates and we’ll notify you when it opens.</p>
     </section>
 
     <section class="section" aria-label="about dealcompass">
@@ -238,9 +367,25 @@
     </p>
   </main>
 
+<script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
+  const CATEGORY_CONFIG = {
+    tech: { label: 'Tech', heroSub: 'DealCompass finds high-value tech deals and explains exactly why they’re worth it—fast, clear, and practical.' },
+    home: { label: 'Home', heroSub: 'DealCompass finds high-value home deals with clear buy/no-buy context and practical fit guidance.' }
+  };
+
+  function getSelectedCategory() {
+    const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
+    return CATEGORY_CONFIG[raw] ? raw : 'tech';
+  }
+
+  function withCategory(url, category) {
+    const u = new URL(url, window.location.origin);
+    u.searchParams.set('category', category);
+    return `${u.pathname}${u.search}`;
+  }
 
   function appendTokens(url, linkId) {
     try {
@@ -251,712 +396,6 @@
     } catch {
       return url;
     }
-  }
-
-  function classifyUseCase(text) {
-    const t = text.toLowerCase();
-    if (t.includes('gaming') || t.includes('controller')) return 'Best for Gaming';
-    if (t.includes('keyboard') || t.includes('mouse')) return 'Best for Everyday Use';
-    if (t.includes('hub') || t.includes('dock') || t.includes('usb-c')) return 'Best for Laptop Setups';
-    if (t.includes('vacuum') || t.includes('robot')) return 'Best for Home Automation';
-    return 'Best for Tech Upgrades';
-  }
-
-  function hashText(text) {
-    let hash = 0;
-    for (let i = 0; i < text.length; i += 1) {
-      hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
-    }
-    return Math.abs(hash);
-  }
-
-  function extractBrand(title) {
-    const brands = [
-      ['logitech', 'Logitech'],
-      ['ugreen', 'UGREEN'],
-      ['anker', 'Anker'],
-      ['asus', 'ASUS'],
-      ['redragon', 'Redragon'],
-      ['yunzii', 'YUNZII'],
-      ['vicsoon', 'Vicsoon'],
-      ['amazon', 'Amazon'],
-      ['fire', 'Amazon'],
-      ['samsung', 'Samsung'],
-      ['apple', 'Apple'],
-      ['lenovo', 'Lenovo'],
-      ['dell', 'Dell'],
-      ['hp', 'HP']
-    ];
-    const t = title.toLowerCase();
-    for (const [needle, label] of brands) {
-      if (t.includes(needle)) return label;
-    }
-    const first = title.match(/^\s*([A-Za-z0-9][A-Za-z0-9+\-]{1,})/);
-    return first ? first[1] : '';
-  }
-
-  function detectProductCategory(title) {
-    const t = title.toLowerCase();
-    if (t.includes('trackball')) return 'trackball';
-    if ((t.includes('keyboard') && t.includes('mouse')) || t.includes('combo')) return 'combo';
-    if (t.includes('keyboard')) return 'keyboard';
-    if (t.includes('mouse')) return 'mouse';
-    if (t.includes('hub') || t.includes('dock') || t.includes('multiport')) return 'hub';
-    if (t.includes('desk lamp') || /\blamp\b/.test(t) || t.includes('light bar')) return 'deskLamp';
-    if (t.includes('robot vacuum') || (t.includes('robot') && t.includes('vacuum')) || t.includes('roborock')) return 'robotVacuum';
-    if (t.includes('tablet') || t.includes('ipad') || t.includes('fire hd') || t.includes('galaxy tab')) return 'tablet';
-    if (t.includes('monitor arm') || (t.includes('monitor') && t.includes('arm')) || t.includes('vesa')) return 'monitorArm';
-    if (t.includes('router') || t.includes('wifi 6e') || t.includes('tri-band') || t.includes('mesh')) return 'router';
-    if (t.includes('ethernet switch') || (t.includes('switch') && t.includes('gigabit'))) return 'networkSwitch';
-    if (t.includes('cooling pad') || t.includes('laptop cooler')) return 'coolingPad';
-    if (t.includes('privacy screen') || (t.includes('privacy') && t.includes('screen'))) return 'privacyScreen';
-    if (t.includes('charger') || t.includes('charging') || t.includes('power adapter') || /\bpd\b/.test(t)) return 'charger';
-    return 'general';
-  }
-
-  function detectTitleSignals(title) {
-    const t = title.toLowerCase();
-    const featurePatterns = [
-      ['wireless', /\bwireless\b|2\.4ghz|lightspeed/],
-      ['wired', /\bwired\b/],
-      ['bluetooth', /\bbluetooth\b/],
-      ['ergonomic', /\bergonomic\b|vertical|comfort/],
-      ['gaming', /\bgaming\b|esports|fps/],
-      ['mmo', /\bmmo\b|side buttons|macro/],
-      ['mechanical', /\bmechanical\b|linear switch|tactile switch/],
-      ['rgb', /\brgb\b|led/],
-      ['compact', /\bcompact\b|mini|\b75%\b|\b60%\b|small/],
-      ['lightweight', /\blightweight\b|\b\d{2}g\b|\b\d{1,2}g\b/],
-      ['trackball', /\btrackball\b/],
-      ['aluminum', /\baluminum\b|alloy|cnc/],
-      ['hot-swappable', /\bhot\s*swappable\b|hot-swap/],
-      ['4k', /\b4k\b|\b60hz\b/],
-      ['hdmi', /\bhdmi\b/],
-      ['ethernet', /\bethernet\b|1gbps|\brj45\b/],
-      ['100w', /\b100w\b|\b140w\b|\b65w\b|power delivery|\bpd\b/],
-      ['usb-c', /\busb[\s-]?c\b|type-c|multiport|hub|dock/],
-      ['dimmable', /\bdimmable\b|brightness|color modes|color temperature/],
-      ['charger', /\bcharger\b|charging|power adapter|qi|magnetic charge/]
-    ];
-
-    const features = featurePatterns
-      .filter(([, pattern]) => pattern.test(t))
-      .map(([name]) => name);
-
-    let intendedUse = 'general';
-    if (/\bgaming\b|mmo|fps|rgb|hero sensor/.test(t)) intendedUse = 'gaming';
-    else if (/office|home office|productivity|ergonomic|keyboard|mouse|desk/.test(t)) intendedUse = 'office';
-    else if (/portable|travel|mobile|mini|compact|tablet|wireless/.test(t)) intendedUse = 'mobile';
-
-    const suspiciousSource = /ebay|refurbished|renewed|used|open box|pre-?owned/.test(t);
-    return { features, intendedUse, suspiciousSource };
-  }
-
-  function tokenSet(text) {
-    const stopWords = new Set([
-      'a', 'an', 'and', 'as', 'at', 'be', 'for', 'from', 'in', 'into', 'is', 'it', 'its',
-      'of', 'on', 'or', 'so', 'that', 'the', 'this', 'to', 'with', 'while'
-    ]);
-    return new Set(
-      text
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .split(/\s+/)
-        .filter(token => token && !stopWords.has(token))
-    );
-  }
-
-  function jaccardSimilarity(a, b) {
-    const aTokens = tokenSet(a);
-    const bTokens = tokenSet(b);
-    if (!aTokens.size && !bTokens.size) return 0;
-    let intersection = 0;
-    for (const token of aTokens) {
-      if (bTokens.has(token)) intersection += 1;
-    }
-    const union = aTokens.size + bTokens.size - intersection;
-    return union ? intersection / union : 0;
-  }
-
-  function openingBigram(text) {
-    const tokens = text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, ' ')
-      .split(/\s+/)
-      .filter(Boolean);
-    return tokens.slice(0, 2).join(' ');
-  }
-
-  function normalizeBlurbPattern(text) {
-    return text
-      .toLowerCase()
-      .replace(/(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)/g, ' brand ')
-      .replace(/\d+[a-z0-9%-]*/g, ' # ')
-      .replace(/[^a-z\s#]/g, ' ')
-      .replace(/(a|an|the|this|that|it|is|are|for|to|of|with|and|or|as|in|on|by|from|option|pick)/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function maxSimilarity(candidate, priorBlurbs) {
-    let max = 0;
-    for (const prior of priorBlurbs) {
-      max = Math.max(max, jaccardSimilarity(candidate, prior));
-    }
-    return max;
-  }
-
-  function fillTemplate(template, brand) {
-    const brandLabel = brand || 'This';
-    const brandOption = brand ? `${brand} option` : 'this option';
-    return template
-      .replaceAll('{brand}', brandLabel)
-      .replaceAll('{brandOption}', brandOption)
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function buildProductBlurb(title, diversityState) {
-    const brand = extractBrand(title);
-    const category = detectProductCategory(title);
-    const { features, intendedUse, suspiciousSource } = detectTitleSignals(title);
-    const seed = hashText(title);
-
-    const roleTemplatesByCategory = {
-      trackball: [
-        '{brand} trackball is positioned for precise cursor work with reduced wrist travel',
-        'This trackball pick is tuned for steady control during long pointer-heavy sessions',
-        'As a trackball option, {brandOption} favors controlled navigation over fast sweeping motion'
-      ],
-      combo: [
-        '{brand} combo is built to standardize keyboard and mouse behavior across one desk',
-        'This keyboard-and-mouse bundle is aimed at practical setup simplicity for daily work',
-        'As an input combo, {brandOption} reduces setup friction for mixed home and office routines'
-      ],
-      keyboard: [
-        '{brand} keyboard is intended for consistent typing comfort in long writing blocks',
-        'This keyboard pick is designed for predictable key feel across everyday productivity tasks',
-        'As a primary keyboard, {brandOption} focuses on stable input quality for daily desk use'
-      ],
-      mouse: [
-        '{brand} mouse is aimed at controlled, repeatable pointer movement for daily tasks',
-        'This mouse pick is positioned for low-fatigue handling in long desk sessions',
-        'As a daily-use mouse, {brandOption} prioritizes reliable tracking over unnecessary extras'
-      ],
-      hub: [
-        '{brand} hub is built to centralize laptop connectivity in a single desk anchor point',
-        'This USB-C hub is positioned to reduce cable swapping across monitor and accessory links',
-        'As a port-expansion option, {brandOption} targets cleaner, more stable workstation wiring'
-      ],
-      deskLamp: [
-        '{brand} desk lamp is designed to support clearer visibility through variable work hours',
-        'This lighting pick is aimed at reducing eye strain in low-light desk environments',
-        'As a task-light option, {brandOption} focuses on practical illumination control for office setups'
-      ],
-      robotVacuum: [
-        '{brand} robot vacuum is positioned to automate recurring floor cleanup with low supervision',
-        'This robot vacuum pick is designed to maintain baseline cleanliness between manual deep cleans',
-        'As a home-office cleaning option, {brandOption} aims to reduce routine maintenance overhead'
-      ],
-      tablet: [
-        '{brand} tablet is intended for light productivity and review work away from a full desktop',
-        'This tablet pick is positioned for mobile reading, notes, and communication tasks',
-        'As a secondary-screen option, {brandOption} supports flexible work around meetings and travel'
-      ],
-      monitorArm: [
-        '{brand} monitor arm is designed to improve screen positioning and free desk surface area',
-        'This monitor-mount pick is positioned for ergonomic height control in long desk sessions',
-        'As a workspace ergonomics option, {brandOption} focuses on adjustability and cable order'
-      ],
-      router: [
-        '{brand} router is designed to keep multi-device home-office traffic stable under heavier daily load',
-        'This Wi-Fi router pick prioritizes consistent throughput for calls, uploads, and streaming overlap',
-        'As a network-core option, {brandOption} is tuned for steadier coverage and lower congestion spikes'
-      ],
-      networkSwitch: [
-        '{brand} switch is designed to add stable wired ports for desk gear that benefits from consistent throughput',
-        'This ethernet switch pick focuses on low-friction wired expansion for desktops, docks, and consoles',
-        'As a wired-network option, {brandOption} helps keep latency and packet variability lower than shared Wi-Fi'
-      ],
-      coolingPad: [
-        '{brand} cooling pad is designed to improve laptop airflow during longer high-heat sessions',
-        'This laptop cooler pick helps manage thermal buildup so sustained performance stays more consistent',
-        'As a thermal-support accessory, {brandOption} aims to reduce heat-related throttling in extended use'
-      ],
-      privacyScreen: [
-        '{brand} privacy screen is designed to narrow side-angle visibility for safer work in shared spaces',
-        'This privacy-filter pick helps protect on-screen content in cafés, coworking spaces, and open offices',
-        'As a screen-privacy option, {brandOption} adds visual protection without changing your core workflow'
-      ],
-      charger: [
-        '{brand} charger is built to streamline power delivery across core desk devices',
-        'This charging option reduces adapter clutter in multi-device setups',
-        'As a power-management choice, {brandOption} keeps charging steadier across daily gear'
-      ],
-      general: [
-        '{brand} pick is selected for reliable day-to-day usefulness in mixed setups',
-        'This option improves workflow consistency without unnecessary complexity',
-        'As a desk-tech choice, {brandOption} prioritizes practical value for regular use'
-      ]
-    };
-
-    const featureClauses = {
-      wireless: [
-        'wireless operation keeps movement unrestricted in crowded desk layouts',
-        'wireless connectivity helps keep cable clutter lower around keyboard and dock zones'
-      ],
-      wired: [
-        'wired connectivity avoids battery interruptions and keeps response behavior consistent',
-        'wired operation is useful when you want stable input with no charging cycle management'
-      ],
-      bluetooth: [
-        'Bluetooth pairing simplifies switching between laptop, tablet, and secondary devices',
-        'Bluetooth support reduces dependence on extra receivers in compact setups'
-      ],
-      ergonomic: [
-        'ergonomic shaping can reduce wrist strain across extended work sessions',
-        'ergonomic contours support lower hand fatigue during repetitive pointer or typing tasks'
-      ],
-      gaming: [
-        'gaming-oriented tuning favors faster response when quick cursor changes are common',
-        'gaming-focused hardware can keep tracking behavior more consistent under rapid movement'
-      ],
-      mmo: [
-        'MMO-style side controls can shift frequent commands away from keyboard reaches',
-        'extra side-button capacity helps map repetitive actions for faster execution'
-      ],
-      mechanical: [
-        'mechanical switches provide clearer tactile feedback for long-form typing',
-        'mechanical key response tends to improve consistency when typing volume is high'
-      ],
-      rgb: [
-        'RGB lighting can improve key or control visibility in dim work areas',
-        'RGB zones make low-light sessions easier without changing desk lighting'
-      ],
-      compact: [
-        'compact sizing fits tighter desks and packs more easily for mobile setups',
-        'compact footprint leaves more surface area for notebooks, tablets, and accessories'
-      ],
-      lightweight: [
-        'lightweight construction can lower fatigue during long control-intensive sessions',
-        'lower weight supports quicker repositioning when switching between tasks'
-      ],
-      trackball: [
-        'trackball control reduces broad arm movement while keeping fine cursor precision',
-        'trackball input can help maintain control in limited desk space'
-      ],
-      aluminum: [
-        'aluminum construction adds rigidity for steadier day-to-day handling',
-        'metal chassis materials typically hold alignment better under heavy daily use'
-      ],
-      'hot-swappable': [
-        'hot-swappable sockets simplify switch maintenance and long-term customization',
-        'hot-swap support lets you tune key feel without replacing the full board'
-      ],
-      '4k': [
-        '4K output support is useful for sharper spreadsheets, docs, and dashboard views',
-        '4K-ready display paths help preserve text clarity on larger external monitors'
-      ],
-      hdmi: [
-        'HDMI output streamlines single-cable external display hookups',
-        'HDMI support improves compatibility with common office and meeting-room screens'
-      ],
-      ethernet: [
-        'Ethernet can provide steadier throughput than congested shared Wi-Fi',
-        'wired network support is valuable for calls, uploads, and large sync jobs'
-      ],
-      '100w': [
-        'higher-wattage USB-C delivery can power laptops while peripherals stay attached',
-        'power-delivery headroom helps avoid separate laptop chargers at the desk'
-      ],
-      'usb-c': [
-        'USB-C expansion centralizes accessories and charging through a single connection path',
-        'USB-C multiport support cuts down repeated plug swapping during the workday'
-      ],
-      dimmable: [
-        'dimmable output helps match brightness to early-morning and late-evening work blocks',
-        'adjustable brightness can reduce eye strain when ambient light changes'
-      ],
-      charger: [
-        'integrated charging reduces adapter sprawl around core daily devices',
-        'charging support keeps phones and peripherals topped up without extra power bricks'
-      ]
-    };
-
-    const intendedUseClauses = {
-      gaming: [
-        'its fit is strongest when responsiveness and control mapping matter most',
-        'it is best matched to gaming-leaning workflows that need quicker input response'
-      ],
-      office: [
-        'it fits office-heavy workflows where consistency and low setup friction matter most',
-        'it aligns with practical office routines that prioritize dependable daily performance'
-      ],
-      mobile: [
-        'it fits mobile workflows that regularly shift between locations',
-        'it is better suited to portable setups that need compact, flexible gear'
-      ],
-      general: [
-        'it works well in mixed-use setups where predictable daily performance matters',
-        'it is a solid fit for routine workflows that value reliability over feature bloat'
-      ]
-    };
-
-    const roleTemplates = roleTemplatesByCategory[category] || roleTemplatesByCategory.general;
-
-    const categoryReserveClauses = {
-      trackball: [
-        'its strongest advantage is fine cursor control in limited desk space',
-        'it is best suited to precision-heavy workflows where small movements matter'
-      ],
-      combo: [
-        'its main benefit is predictable keyboard-and-mouse behavior across daily tasks',
-        'it is best suited to desks that need quick setup with fewer compatibility surprises'
-      ],
-      keyboard: [
-        'its strongest advantage is consistent typing feel over long writing sessions',
-        'it is best suited to productivity-heavy routines where key feel consistency matters'
-      ],
-      mouse: [
-        'its main benefit is controlled tracking for repetitive daily pointer work',
-        'it is best suited to workflows that prioritize comfort and precision over extra features'
-      ],
-      hub: [
-        'its main benefit is consolidating multiple desk connections through one hub point',
-        'it is best suited to laptop setups that frequently switch between accessories and displays'
-      ],
-      deskLamp: [
-        'its strongest advantage is controllable desk lighting for long focus blocks',
-        'it is best suited to workspaces that need consistent visibility across changing ambient light'
-      ],
-      robotVacuum: [
-        'its main benefit is reducing routine cleaning overhead between deep-clean cycles',
-        'it is best suited to home-office floors that benefit from automated maintenance'
-      ],
-      tablet: [
-        'its strongest advantage is flexible secondary-screen use for reading and notes',
-        'it is best suited to mobile workflows that alternate between desk and travel contexts'
-      ],
-      monitorArm: [
-        'its main benefit is ergonomic screen positioning with less desk obstruction',
-        'it is best suited to setups that need adjustable viewing angles during long sessions'
-      ],
-      router: [
-        'its strongest advantage is maintaining steadier multi-device throughput under load',
-        'it is best suited to homes with overlapping calls, streaming, and cloud sync traffic'
-      ],
-      networkSwitch: [
-        'its main benefit is adding reliable wired links for latency-sensitive desk gear',
-        'it is best suited to setups that need more ethernet ports without Wi-Fi bottlenecks'
-      ],
-      coolingPad: [
-        'its strongest advantage is improving thermal consistency during sustained laptop use',
-        'it is best suited to high-heat workflows where throttling risk is a concern'
-      ],
-      privacyScreen: [
-        'its main benefit is limiting side-angle visibility in shared work environments',
-        'it is best suited to teams working in offices, coworking spaces, or cafés'
-      ],
-      charger: [
-        'its strongest advantage is cleaner power delivery across core daily devices',
-        'it is best suited to desks that need fewer adapters and steadier charging behavior'
-      ],
-      general: [
-        'its strongest advantage is practical day-to-day utility with low setup overhead',
-        'it is best suited to mixed-use setups that prioritize dependable baseline performance'
-      ]
-    };
-
-    const allCandidateClauses = [];
-    features.forEach((feature) => {
-      const variants = featureClauses[feature];
-      if (variants) allCandidateClauses.push(...variants);
-    });
-    if (allCandidateClauses.length < 2) {
-      allCandidateClauses.push(...(categoryReserveClauses[category] || categoryReserveClauses.general));
-    }
-
-    const angleClausesByCategory = {
-      hub: {
-        display: [
-          'display-output paths are useful for sharper docs, dashboards, and multi-monitor layouts',
-          'video-output support reduces friction when rotating between desk and meeting-room displays'
-        ],
-        power: [
-          'power-delivery headroom helps keep laptops charged while peripherals stay connected',
-          'higher-wattage passthrough can remove the need for a second charger on the desk'
-        ],
-        io: [
-          'broader port mix reduces adapter hopping across keyboard, storage, and accessories',
-          'expanded I/O options simplify one-cable desk setups with fewer dongle dependencies'
-        ],
-        cable: [
-          'single-cable expansion helps keep workstation wiring cleaner and easier to manage',
-          'centralized connectivity reduces daily plug-swapping and desk clutter'
-        ],
-        travel: [
-          'compact hub sizing is easier to carry between home, office, and travel setups',
-          'portable footprint makes it practical for mixed desk-and-bag workflows'
-        ],
-        network: [
-          'wired network options can improve consistency for calls, syncs, and uploads',
-          'ethernet-capable expansion helps avoid unstable shared Wi-Fi in busier environments'
-        ]
-      }
-    };
-
-    let selectedAngle = '';
-    if (category === 'hub') {
-      const usedAngles = diversityState.usedAnglesByCategory.hub || new Set();
-      diversityState.usedAnglesByCategory.hub = usedAngles;
-      const t = title.toLowerCase();
-      const preferredAngles = [];
-      if (features.includes('ethernet')) preferredAngles.push('network');
-      if (features.includes('4k') || features.includes('hdmi')) preferredAngles.push('display');
-      if (features.includes('100w') || /(65w|100w|140w|power delivery|pd)/.test(t)) preferredAngles.push('power');
-      if (/\d+\s*-?\s*in\s*-?\s*\d+|multiport|multi-port|port/.test(t)) preferredAngles.push('io');
-      if (/compact|slim|portable|travel|mini/.test(t)) preferredAngles.push('travel');
-      preferredAngles.push('cable');
-
-      const ordered = [...new Set([...preferredAngles, 'display', 'power', 'io', 'cable', 'travel', 'network'])];
-      selectedAngle = ordered.find((k) => !usedAngles.has(k)) || ordered[0] || 'cable';
-
-      const angleClauses = angleClausesByCategory.hub[selectedAngle] || [];
-      const deduped = angleClauses.filter((c) => !allCandidateClauses.includes(c));
-      allCandidateClauses.unshift(...deduped);
-    }
-
-    let bestCandidate = '';
-    let bestPenalty = Number.POSITIVE_INFINITY;
-    let bestMeta = { roleTemplate: '', primaryClause: '', angle: '', pattern: '' };
-
-    for (let attempt = 0; attempt < 16; attempt += 1) {
-      const openerVariants = [
-        'Operational fit:',
-        'Day-to-day impact:',
-        'Practical upside:',
-        'Why it matters:',
-        'Workflow benefit:',
-        'In routine use,',
-        'Execution note:',
-        'Buyer takeaway:'
-      ];
-      const opener = openerVariants[(seed + attempt) % openerVariants.length];
-      const priorBlurbs = diversityState.blurbs;
-      const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
-
-      let roleTemplate = roleTemplates[(seed + attempt) % roleTemplates.length];
-      const roleKeyBase = `${category}|${roleTemplate}`;
-      if (diversityState.usedRoleTemplates.has(roleKeyBase)) {
-        for (let shift = 1; shift < roleTemplates.length; shift += 1) {
-          const altTemplate = roleTemplates[(seed + attempt + shift) % roleTemplates.length];
-          const altKey = `${category}|${altTemplate}`;
-          if (!diversityState.usedRoleTemplates.has(altKey)) {
-            roleTemplate = altTemplate;
-            break;
-          }
-        }
-      }
-      const role = fillTemplate(roleTemplate, brand);
-      const roleLine = role.toLowerCase().replace(/\b(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)\b/g, 'brand');
-
-      let primaryClause = allCandidateClauses[(seed + attempt) % allCandidateClauses.length] || intendedUseClauses.general[0];
-      let secondaryClause = allCandidateClauses[(seed + attempt + 3) % allCandidateClauses.length];
-
-      // Hard guard: avoid reusing the same key-benefit clause used recently.
-      const recentBlurbs = priorBlurbs.slice(-3).join(' ').toLowerCase();
-      if (recentBlurbs.includes(primaryClause.toLowerCase())) {
-        for (let shift = 1; shift < allCandidateClauses.length; shift += 1) {
-          const alt = allCandidateClauses[(seed + attempt + shift) % allCandidateClauses.length];
-          if (alt && !recentBlurbs.includes(alt.toLowerCase())) {
-            primaryClause = alt;
-            break;
-          }
-        }
-      }
-      if (secondaryClause && secondaryClause.toLowerCase() === primaryClause.toLowerCase()) {
-        secondaryClause = allCandidateClauses[(seed + attempt + 5) % allCandidateClauses.length];
-      }
-      if (diversityState.usedPrimaryClauses.has(primaryClause.toLowerCase())) {
-        for (let shift = 1; shift < allCandidateClauses.length; shift += 1) {
-          const alt = allCandidateClauses[(seed + attempt + shift) % allCandidateClauses.length];
-          if (alt && !diversityState.usedPrimaryClauses.has(alt.toLowerCase())) {
-            primaryClause = alt;
-            break;
-          }
-        }
-      }
-
-      let candidate = `${role}. ${opener} ${primaryClause}`;
-      if (secondaryClause && secondaryClause !== primaryClause && attempt % 3 !== 2) {
-        candidate += `; ${secondaryClause}`;
-      }
-      candidate += '.';
-
-      if (suspiciousSource) {
-        const caveats = [
-          'Source cues suggest used or refurbished inventory, so verify condition, return policy, and warranty terms.',
-          'Listing hints indicate potential resale/refurb status, so confirm seller quality and warranty coverage before purchase.'
-        ];
-        candidate += ` ${caveats[(seed + attempt) % caveats.length]}`;
-      }
-
-      if (candidate.length < 95) {
-        const ext = [
-          'This keeps the value proposition practical for routine work blocks.',
-          'That profile is usually easier to integrate into existing desk workflows.'
-        ];
-        candidate += ` ${ext[(seed + attempt) % ext.length]}`;
-      }
-      if (candidate.length > 180) {
-        candidate = candidate.replace(/;[^.]+\./, '.');
-      }
-      if (candidate.length > 180) {
-        candidate = candidate
-          .replace(/Listing hints indicate potential resale\/refurb status,[^.]+\./, 'Confirm condition and warranty details before purchase.')
-          .replace(/Source cues suggest used or refurbished inventory,[^.]+\./, 'Confirm condition and warranty details before purchase.');
-      }
-      if (candidate.length > 180) {
-        const normalizedPrimary = `${primaryClause.charAt(0).toUpperCase()}${primaryClause.slice(1)}`.replace(/\.\s*$/, '');
-        candidate = `${role}. ${normalizedPrimary}.`;
-        if (suspiciousSource && candidate.length < 145) candidate += ' Confirm condition and warranty details before purchase.';
-      }
-      if (candidate.length > 180) {
-        candidate = candidate.slice(0, 180).trim();
-        if (!/[.!?]$/.test(candidate)) candidate += '.';
-      }
-      if (candidate.length < 95) {
-        const topUps = [
-          'This fit is strongest for steady office workflows that prioritize consistency.',
-          'It should integrate cleanly into mixed home-office setups with limited overhead.',
-          'That profile aligns with practical constraints for this product class.'
-        ];
-        candidate += ` ${topUps[(seed + attempt) % topUps.length]}`;
-      }
-      if (suspiciousSource && !/condition|warranty|seller/i.test(candidate)) {
-        const caveat = ' Verify condition and warranty terms before purchase.';
-        if (candidate.length + caveat.length > 180) {
-          const maxCoreLength = Math.max(80, 180 - caveat.length);
-          candidate = candidate.slice(0, maxCoreLength).trim();
-          const lastPeriod = candidate.lastIndexOf('.');
-          if (lastPeriod > 70) candidate = candidate.slice(0, lastPeriod + 1).trim();
-          if (!/[.!?]$/.test(candidate)) candidate += '.';
-        }
-        candidate += caveat;
-      }
-      if (candidate.length > 180) {
-        candidate = candidate.slice(0, 180).trim();
-        if (!/[.!?]$/.test(candidate)) candidate += '.';
-      }
-
-      const candidateBigram = openingBigram(candidate);
-      const adjacentBigram = diversityState.lastOpeningBigram || '';
-      const pairwise = maxSimilarity(candidate, priorBlurbs);
-      const adjacent = adjacentBlurb ? jaccardSimilarity(candidate, adjacentBlurb) : 0;
-      const candidatePattern = normalizeBlurbPattern(candidate);
-      const patternSimilarity = maxSimilarity(candidatePattern, diversityState.patterns || []);
-      const lengthPenalty = candidate.length < 95 ? (95 - candidate.length) : (candidate.length > 180 ? (candidate.length - 180) : 0);
-
-      const repeatedPhraseList = [
-        'positioned for',
-        'practical utility',
-        'practical fit',
-        'routine productivity',
-        'day-to-day workflow reliability'
-      ];
-      const repeatedPhrasePenalty = repeatedPhraseList.reduce((acc, phrase) => {
-        if (adjacentBlurb && candidate.toLowerCase().includes(phrase) && adjacentBlurb.toLowerCase().includes(phrase)) {
-          return acc + 22;
-        }
-        return acc;
-      }, 0);
-
-      const roleReusePenalty = diversityState.usedRoleLines.has(roleLine) ? 120 : 0;
-      const penalty =
-        lengthPenalty +
-        repeatedPhrasePenalty +
-        roleReusePenalty +
-        (candidateBigram && candidateBigram === adjacentBigram ? 35 : 0) +
-        Math.max(0, pairwise - 0.50) * 160 +
-        Math.max(0, adjacent - 0.40) * 170 +
-        Math.max(0, patternSimilarity - 0.46) * 220;
-
-      if (penalty < bestPenalty) {
-        bestPenalty = penalty;
-        bestCandidate = candidate;
-        bestMeta = {
-          roleTemplate,
-          primaryClause,
-          angle: selectedAngle || '',
-          pattern: candidatePattern
-        };
-      }
-
-      if (candidateBigram === adjacentBigram) continue;
-      if (pairwise > 0.50 || adjacent > 0.40) continue;
-      if (patternSimilarity > 0.46) continue;
-      if (diversityState.usedRoleLines.has(roleLine)) continue;
-      if (category === 'hub' && selectedAngle) {
-        const usedHubAngles = diversityState.usedAnglesByCategory.hub || new Set();
-        const unusedHubAngles = ['display', 'power', 'io', 'cable', 'travel', 'network'].filter((a) => !usedHubAngles.has(a));
-        if (usedHubAngles.has(selectedAngle) && unusedHubAngles.length > 0) continue;
-      }
-      if ((candidate.length < 95 || candidate.length > 180) && attempt < 15) continue;
-
-      diversityState.blurbs.push(candidate);
-      diversityState.patterns.push(candidatePattern);
-      diversityState.usedRoleTemplates.add(`${category}|${roleTemplate}`);
-      diversityState.usedRoleLines.add(roleLine);
-      diversityState.usedPrimaryClauses.add(primaryClause.toLowerCase());
-      if (category === 'hub' && selectedAngle) {
-        (diversityState.usedAnglesByCategory.hub ||= new Set()).add(selectedAngle);
-      }
-      diversityState.lastOpeningBigram = candidateBigram;
-      return candidate;
-    }
-
-    if (category === 'hub') {
-      const usedHubAngles = diversityState.usedAnglesByCategory.hub || new Set();
-      const hubAngles = ['display', 'power', 'io', 'cable', 'travel', 'network'];
-      const fallbackAngle = selectedAngle || hubAngles.find((a) => !usedHubAngles.has(a)) || 'cable';
-      const hubLeadByAngle = {
-        display: '{brand} hub is optimized for cleaner external-display workflows with reliable HDMI routing',
-        power: '{brand} hub is optimized to keep laptop charging stable while peripherals stay attached',
-        io: '{brand} hub is optimized for broader port coverage to reduce adapter shuffling',
-        cable: '{brand} hub is optimized to simplify desk wiring through one main connection point',
-        travel: '{brand} hub is optimized for portable setups that move between desk and travel bags',
-        network: '{brand} hub is optimized for steadier wired connectivity in high-traffic Wi-Fi environments'
-      };
-      const hubDetailByAngle = {
-        display: 'It emphasizes display compatibility for monitor-heavy desk setups.',
-        power: 'It emphasizes power-delivery headroom for all-day laptop use.',
-        io: 'It emphasizes practical I/O mix for mixed accessory workflows.',
-        cable: 'It emphasizes reduced plug-swapping and lower cable clutter.',
-        travel: 'It emphasizes compact carry and quick setup in changing work locations.',
-        network: 'It emphasizes more stable networking for calls, syncs, and uploads.'
-      };
-      const hubFallback = `${fillTemplate(hubLeadByAngle[fallbackAngle], brand)}. ${hubDetailByAngle[fallbackAngle]}`;
-      diversityState.blurbs.push(hubFallback);
-      diversityState.patterns.push(normalizeBlurbPattern(hubFallback));
-      diversityState.usedRoleTemplates.add(`hub|angle:${fallbackAngle}`);
-      diversityState.usedRoleLines.add(fillTemplate(hubLeadByAngle[fallbackAngle], brand).toLowerCase().replace(/(anker|ugreen|amazon|logitech|asus|redragon|yunzii|dell|hp|lenovo|apple|samsung)/g, 'brand'));
-      (diversityState.usedAnglesByCategory.hub ||= new Set()).add(fallbackAngle);
-      diversityState.lastOpeningBigram = openingBigram(hubFallback);
-      return hubFallback;
-    }
-
-    diversityState.blurbs.push(bestCandidate);
-    diversityState.patterns.push(bestMeta.pattern || normalizeBlurbPattern(bestCandidate));
-    if (bestMeta.roleTemplate) {
-      diversityState.usedRoleTemplates.add(`${category}|${bestMeta.roleTemplate}`);
-      diversityState.usedRoleLines.add(fillTemplate(bestMeta.roleTemplate, brand).toLowerCase());
-    }
-    if (bestMeta.primaryClause) diversityState.usedPrimaryClauses.add(bestMeta.primaryClause.toLowerCase());
-    if (category === 'hub' && bestMeta.angle) {
-      (diversityState.usedAnglesByCategory.hub ||= new Set()).add(bestMeta.angle);
-    }
-    diversityState.lastOpeningBigram = openingBigram(bestCandidate);
-    return bestCandidate;
   }
 
   function scoreDeal(title, blurb, url, originalRank) {
@@ -991,11 +430,39 @@
     return low[idx % low.length];
   }
 
+  function topLevelCategoryFromTitle(title) {
+    // Basic fallback logic
+    const t = title.toLowerCase();
+    if (t.includes('vacuum') || t.includes('purifier') || t.includes('heater') || t.includes('fan') || t.includes('organizer')) return 'home';
+    return 'tech';
+  }
+
+  const selectedCategory = getSelectedCategory();
+  const categorySelect = document.getElementById('categorySelect');
+  const categoryMeta = CATEGORY_CONFIG[selectedCategory];
+  if (categorySelect) {
+    categorySelect.value = selectedCategory;
+    categorySelect.addEventListener('change', () => {
+      window.location.href = withCategory('/', categorySelect.value);
+    });
+  }
+  const heroSub = document.querySelector('.hero .sub');
+  if (heroSub) heroSub.textContent = categoryMeta.heroSub;
+  const currentPicksTitle = document.getElementById('currentPicksTitle');
+  if (currentPicksTitle) currentPicksTitle.textContent = `${categoryMeta.label} Current Top Picks`;
+
+  const pastPicksNav = document.getElementById('pastPicksNav');
+  const reviewsNav = document.getElementById('reviewsNav');
+  const pastPicksInlineLink = document.getElementById('pastPicksInlineLink');
+  if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
+  if (reviewsNav) reviewsNav.href = withCategory('/reviews.html', selectedCategory);
+  if (pastPicksInlineLink) pastPicksInlineLink.href = withCategory('/past-picks.html', selectedCategory);
+
   document.querySelectorAll('a[data-link-id]').forEach((a) => {
     a.href = appendTokens(a.href, a.dataset.linkId || 'unknown');
   });
 
-  const pickList = document.querySelector('.pick-list');
+  const pickList = document.getElementById('pickList');
   const picks = Array.from(document.querySelectorAll('.pick-list a.pick'));
   const deduped = [];
   const seen = new Set();
@@ -1004,19 +471,24 @@
     const rawTitle = titleNode?.textContent || '';
     const cleanTitle = rawTitle.replace(/^\s*\d+\)\s*/, '').trim();
     const href = pick.getAttribute('href') || '';
-    if (!cleanTitle || /^(Amazon Item|Amazon Product)/i.test(cleanTitle)) return;
+    if (!cleanTitle) return;
     const key = `${href}|${cleanTitle.toLowerCase()}`;
     if (seen.has(key)) return;
     seen.add(key);
     const blurb = pick.querySelector('small')?.textContent || '';
     const score = scoreDeal(cleanTitle, blurb, href, i + 1);
-    deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1 });
+    const explicitCategory = (pick.dataset.category || '').trim().toLowerCase();
+    const category = explicitCategory === 'home' || explicitCategory === 'tech'
+      ? explicitCategory
+      : topLevelCategoryFromTitle(cleanTitle);
+    deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1, category });
   });
   const ranked = deduped.sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
+  const filteredRanked = ranked.filter((row) => row.category === selectedCategory);
 
-  const top = ranked[0];
+  const top = filteredRanked[0];
+  const topCard = document.getElementById('topPickCard');
   if (top) {
-    const topCard = document.getElementById('topPickCard');
     const topTitle = document.getElementById('topPickTitle');
     const topReason = document.getElementById('topPickReason');
     const topLink = document.getElementById('topPickLink');
@@ -1024,11 +496,13 @@
     topReason.textContent = 'Top utility-to-value pick this cycle.';
     topLink.href = top.pick.getAttribute('href') || '#';
     topCard.hidden = false;
+  } else {
+    topCard.hidden = true;
   }
 
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
   pickList.innerHTML = '';
-  const blurbDiversityState = {
+  const diversityState = {
     blurbs: [],
     patterns: [],
     usedRoleTemplates: new Set(),
@@ -1037,17 +511,21 @@
     usedAnglesByCategory: { hub: new Set() },
     lastOpeningBigram: ''
   };
-  ranked.slice(1).forEach((row, idx) => {
+  
+  filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const useCase = classifyUseCase(`${row.cleanTitle} ${row.blurb}`);
+    // Generate fresh blurb using updated engine
+    const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, {
+      category: selectedCategory,
+      state: diversityState
+    });
+    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${generatedBlurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
-    const generatedBlurb = buildProductBlurb(row.cleanTitle, blurbDiversityState);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');
     if (blurbNode) blurbNode.textContent = generatedBlurb;
-    row.blurb = generatedBlurb;
-
+    
     // remove old meta/cta if script reruns
     row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach(el => el.remove());
 
@@ -1065,6 +543,25 @@
     // Avoid duplicate UI: top pick is shown in the hero card, list starts at rank #2.
     pickList.appendChild(row.pick);
   });
+  
+  // Symmetry enforcement:
+  // Only append if the grid has items, otherwise empty state handles it.
+  // Check after everything is populated.
+  if (pickList.children.length > 0 && pickList.children.length % 2 !== 0) {
+    const placeholder = document.createElement('article');
+    placeholder.className = 'card pick-placeholder'; // Ensure 'card' class is applied for basic styles if needed, though we override
+    placeholder.innerHTML = `
+      <h3>Stay Tuned</h3>
+      <p>New deals drop every Mon/Wed/Fri. Join the list to catch the next batch.</p>
+      <a class="cta-link" href="/signup.html">Get Updates →</a>
+    `;
+    pickList.appendChild(placeholder);
+  }
+
+  const emptyCategoryState = document.getElementById('emptyCategoryState');
+  if (emptyCategoryState) {
+    emptyCategoryState.hidden = filteredRanked.length > 0;
+  }
 })();
 </script>
 

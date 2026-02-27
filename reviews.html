@@ -17,24 +17,147 @@
   <meta name="twitter:description" content="Practical DealCompass analysis sourced from current and past picks." />
   <meta name="twitter:image" content="https://dealcompass.app/assets/share-card.png" />
   <link rel="icon" type="image/png" href="/assets/favicon-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
-    :root { --bg:#070b16; --bg-soft:#0d1427; --surface:rgba(19,28,51,.88); --text:#f4f7ff; --muted:#a9b7dc; --border:rgba(174,195,255,.2); --brand:#5f8dff; }
-    *{box-sizing:border-box} body{margin:0;color:var(--text);font-family:Manrope,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--bg-soft),var(--bg));}
-    .wrap{width:min(100%,1040px);margin:0 auto;padding:22px 14px 60px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(8,14,29,.7);margin-bottom:16px}
-    .brand{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:.92rem;text-decoration:none;color:inherit}.top-links{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 10px;text-decoration:none;color:#dbe7ff;font-size:.76rem;font-weight:700}
-    h1{margin:8px 0 8px;font-size:clamp(1.6rem,5vw,2.35rem)} .sub{margin:0 0 16px;color:var(--muted)}
-    .cards{display:grid;gap:12px}.card{border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--surface)}
-    .card h2{margin:0 0 6px;font-size:1.02rem}.meta{font-size:.8rem;color:var(--muted);margin-bottom:8px}.cta{display:inline-flex;margin-top:10px;text-decoration:none;font-size:.82rem;font-weight:800;color:#dbe7ff;border:1px solid var(--border);padding:7px 10px;border-radius:10px}
+    :root {
+      --bg: #050911;
+      --bg-soft: #0a1020;
+      --surface: rgba(20, 27, 45, 0.7);
+      --surface-border: rgba(180, 200, 255, 0.08);
+      --text: #edf2ff;
+      --muted: #94a3c8;
+      --brand: #5f8dff;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 0%, rgba(95, 141, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(120, 100, 255, 0.08) 0%, transparent 40%);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
+    a:hover { opacity: 0.9; }
+    .wrap { width: min(100%, 1080px); margin: 0 auto; padding: 20px 16px 80px; }
+    
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 10px 14px; border: 1px solid var(--surface-border); border-radius: 999px;
+      background: rgba(10, 16, 32, 0.6); backdrop-filter: blur(12px);
+      position: sticky; top: 16px; z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: -0.02em;
+    }
+    .brand-logo { height: 32px; width: 32px; border-radius: 8px; display: block; object-fit: cover; }
+    
+    .category-wrapper { position: relative; display: flex; align-items: center; }
+    .category-select {
+      appearance: none; -webkit-appearance: none;
+      background: rgba(255,255,255,0.06); color: #fff; 
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 8px 36px 8px 14px; 
+      font-weight: 600; font-size: 0.9rem; font-family: inherit;
+      cursor: pointer; transition: all 0.2s ease; outline: none;
+      line-height: 1.2;
+    }
+    .category-select:hover { 
+      background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25);
+    }
+    .category-select:focus {
+      border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+    .category-arrow {
+      position: absolute; right: 12px; pointer-events: none;
+      color: #94a3c8; font-size: 0.8rem; display: flex; align-items: center;
+    }
+    .top-links { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    
+    .pill {
+      font-size: 0.8rem; font-weight: 700; color: #cbd5e1; padding: 10px 18px;
+      border-radius: 999px; transition: all 0.2s ease;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      white-space: nowrap; line-height: 1; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .pill:hover { 
+      color: #fff; background: rgba(255,255,255,0.08); 
+      border-color: rgba(255,255,255,0.2); transform: translateY(-1px);
+    }
+
+    h1 {
+      margin: 32px 0 16px; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.03em;
+      background: linear-gradient(to bottom right, #fff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sub { margin: 0 0 32px; color: var(--muted); font-size: 1.1rem; max-width: 60ch; font-weight: 400; }
+    
+    .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+    .card {
+      border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 24px;
+      background: var(--surface); transition: transform 0.2s, border-color 0.2s;
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .card:hover { transform: translateY(-2px); border-color: rgba(180, 200, 255, 0.15); }
+    
+    .card h2 { margin: 0 0 8px; font-size: 1.2rem; font-weight: 700; color: #fff; }
+    .meta { font-size: 0.85rem; color: #94a3c8; margin-bottom: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card p { margin: 0 0 20px; font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; flex-grow: 1; }
+    
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 0.9rem; font-weight: 700; color: #fff;
+      background: rgba(255,255,255,0.05); padding: 10px 16px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; width: 100%;
+    }
+    .cta:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    @media (max-width: 768px) {
+      .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 12px; }
+      .topbar-left { justify-content: space-between; }
+      .topbar-right nav { justify-content: center; width: 100%; display: flex; gap: 4px; }
+      .nav-pill { flex: 1; text-align: center; }
+      h1 { font-size: 2.2rem; }
+      .cards { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <header class="topbar" aria-label="DealCompass reviews header">
-      <a class="brand" href="/" aria-label="DealCompass home">DealCompass</a>
+      <div class="topbar-left">
+        <a class="brand" href="/" aria-label="DealCompass home">
+          <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
+          <span>DealCompass</span>
+        </a>
+        <div class="category-wrapper">
+          <select id="categorySelect" class="category-select" aria-label="Select category">
+            <option value="tech">Tech</option>
+            <option value="home">Home</option>
+          </select>
+          <div class="category-arrow" aria-hidden="true">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
       <nav class="top-links" aria-label="Primary">
-        <a class="pill" href="/">Home</a>
-        <a class="pill" href="/past-picks.html">Past Picks</a>
+        <a class="pill" id="homeNav" href="/">Current Picks</a>
+        <a class="pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
       </nav>
     </header>
     <h1>Our Verdicts</h1>
@@ -42,14 +165,46 @@
     <section id="reviews" class="cards" aria-live="polite"></section>
   </main>
   <script>
+    const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
+    const getSelectedCategory = () => {
+      const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
+      return CATEGORY_CONFIG[raw] ? raw : 'tech';
+    };
+    const withCategory = (url, category) => {
+      const u = new URL(url, window.location.origin);
+      u.searchParams.set('category', category);
+      return `${u.pathname}${u.search}`;
+    };
+    const toTopLevelCategory = (reviewCategory = '') => {
+      const c = String(reviewCategory).toLowerCase();
+      if (/(home|cleaning|vacuum|kitchen|furniture)/.test(c)) return 'home';
+      return 'tech';
+    };
+
     (async () => {
       const root = document.getElementById('reviews');
+      const selectedCategory = getSelectedCategory();
+      const categorySelect = document.getElementById('categorySelect');
+      if (categorySelect) {
+        categorySelect.value = selectedCategory;
+        categorySelect.addEventListener('change', () => {
+          window.location.href = withCategory('/reviews.html', categorySelect.value);
+        });
+      }
+      const homeNav = document.getElementById('homeNav');
+      const pastPicksNav = document.getElementById('pastPicksNav');
+      if (homeNav) homeNav.href = withCategory('/', selectedCategory);
+      if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
+      const heading = document.querySelector('h1');
+      if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Verdicts`;
+
       try {
         const res = await fetch('/assets/reviews.json', { cache: 'no-store' });
         const data = await res.json();
         const rows = Array.isArray(data?.reviews) ? data.reviews : [];
-        if (!rows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages will appear here as they are released.</p></div>'; return; }
-        root.innerHTML = rows.map((r) => `
+        const filteredRows = rows.filter((r) => toTopLevelCategory(r.category) === selectedCategory);
+        if (!filteredRows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages for this category will appear here as they are released.</p></div>'; return; }
+        root.innerHTML = filteredRows.map((r) => `
           <article class="card">
             <h2>${r.title}</h2>
             <div class="meta">${r.published_at} • ${r.category || 'Review'}</div>
