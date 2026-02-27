@@ -156,7 +156,7 @@
         </div>
       </div>
       <nav class="top-links" aria-label="Primary">
-        <a class="pill" id="homeNav" href="/">Current Picks</a>
+        <a class="pill" id="homeNav" href="/current-picks.html?category=tech">Current Picks</a>
         <a class="pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
       </nav>
     </header>
@@ -164,37 +164,32 @@
     <p class="sub">Practical DealCompass analysis from current and past picks, with clear fit notes, tradeoffs, and direct links.</p>
     <section id="reviews" class="cards" aria-live="polite"></section>
   </main>
+  <script src="/assets/category-config.js"></script>
   <script>
-    const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
-    const getSelectedCategory = () => {
-      const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
-      return CATEGORY_CONFIG[raw] ? raw : 'tech';
-    };
-    const withCategory = (url, category) => {
-      const u = new URL(url, window.location.origin);
-      u.searchParams.set('category', category);
-      return `${u.pathname}${u.search}`;
-    };
-    const toTopLevelCategory = (reviewCategory = '') => {
-      const c = String(reviewCategory).toLowerCase();
-      if (/(home|cleaning|vacuum|kitchen|furniture)/.test(c)) return 'home';
-      return 'tech';
+    const Category = window.DCCategoryConfig;
+    const CATEGORY_CONFIG = Category.categories;
+    const normalizeReviewCategory = (reviewCategory = '') => {
+      const c = String(reviewCategory).toLowerCase().trim();
+      if (Category.isKnown(c)) return c;
+      if (/(home|cleaning|vacuum|kitchen|furniture)/.test(c)) return Category.isKnown('home') ? 'home' : Category.defaultSlug;
+      if (/(tech|audio|computer|keyboard|mouse|usb|laptop|gaming)/.test(c)) return Category.isKnown('tech') ? 'tech' : Category.defaultSlug;
+      return Category.defaultSlug;
     };
 
     (async () => {
       const root = document.getElementById('reviews');
-      const selectedCategory = getSelectedCategory();
+      const selectedCategory = Category.getSelectedCategory();
       const categorySelect = document.getElementById('categorySelect');
       if (categorySelect) {
-        categorySelect.value = selectedCategory;
+        Category.applyOptions(categorySelect, selectedCategory);
         categorySelect.addEventListener('change', () => {
-          window.location.href = withCategory('/reviews.html', categorySelect.value);
+          window.location.href = Category.withCategory('/reviews.html', categorySelect.value);
         });
       }
       const homeNav = document.getElementById('homeNav');
       const pastPicksNav = document.getElementById('pastPicksNav');
-      if (homeNav) homeNav.href = withCategory('/', selectedCategory);
-      if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
+      if (homeNav) homeNav.href = Category.withCategory('/current-picks.html', selectedCategory);
+      if (pastPicksNav) pastPicksNav.href = Category.withCategory('/past-picks.html', selectedCategory);
       const heading = document.querySelector('h1');
       if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Verdicts`;
 
@@ -202,7 +197,7 @@
         const res = await fetch('/assets/reviews.json', { cache: 'no-store' });
         const data = await res.json();
         const rows = Array.isArray(data?.reviews) ? data.reviews : [];
-        const filteredRows = rows.filter((r) => toTopLevelCategory(r.category) === selectedCategory);
+        const filteredRows = rows.filter((r) => normalizeReviewCategory(r.category) === selectedCategory);
         if (!filteredRows.length) { root.innerHTML = '<div class="card"><h2>No reviews published yet</h2><p class="sub">New review pages for this category will appear here as they are released.</p></div>'; return; }
         root.innerHTML = filteredRows.map((r) => `
           <article class="card">
