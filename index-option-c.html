@@ -994,7 +994,7 @@
 
   // Rebuild list from ranked items to avoid duplicates / stale DOM order.
   pickList.innerHTML = '';
-  const blurbDiversityState = {
+  const diversityState = {
     blurbs: [],
     patterns: [],
     usedRoleTemplates: new Set(),
@@ -1005,9 +1005,12 @@
   };
   ranked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${row.blurb}`, selectedCategory);
+    const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, {
+      category: selectedCategory,
+      state: diversityState
+    });
+    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${generatedBlurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
-    const generatedBlurb = (row.blurb || '').trim();
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');

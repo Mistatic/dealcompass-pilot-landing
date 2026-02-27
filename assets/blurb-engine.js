@@ -425,10 +425,8 @@
     let bestMeta = { roleTemplate: '', primaryClause: '', pattern: '' };
 
     for (let attempt = 0; attempt < 16; attempt += 1) {
-      // Removed robotic openers. Now using natural connectors or empty strings.
-      const connectors = [
-        'Plus,', 'Also,', 'Note:', 'Key benefit:', '', '', '', ''
-      ];
+      // Natural connectors; avoid robotic labels.
+      const connectors = ['', 'Also', 'Plus', 'Bonus', ''];
       const connector = connectors[(seed + attempt) % connectors.length];
       const priorBlurbs = diversityState.blurbs;
       const adjacentBlurb = priorBlurbs[priorBlurbs.length - 1] || '';
@@ -469,19 +467,21 @@
         secondaryClause = allCandidateClauses[(seed + attempt + 5) % allCandidateClauses.length];
       }
 
-      // Construction: Role + Connector + Clause.
-      // E.g. "Speeds up meal prep. Plus, non-stick coating makes cleanup simple."
+      // Construction: role sentence + optional connector clause.
       let candidate = `${role}`;
       if (!/[.!?]$/.test(candidate)) candidate += '.';
-      
+
       if (primaryClause) {
-        // Lowercase primary clause if no connector (it flows active->active) 
-        // OR capitalize if it starts a new sentence.
-        // Actually, our clauses are sentences/fragments. Let's treat them as sentences.
         const clause = primaryClause.charAt(0).toUpperCase() + primaryClause.slice(1);
-        candidate += ` ${connector} ${clause}`;
+        if (connector) {
+          candidate += ` ${connector}: ${clause}`;
+        } else {
+          candidate += ` ${clause}`;
+        }
         if (!/[.!?]$/.test(candidate)) candidate += '.';
       }
+
+      candidate = candidate.replace(/\s+/g, ' ').trim();
 
       if (suspiciousSource) {
         const caveats = [
