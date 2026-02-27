@@ -367,25 +367,13 @@
     </p>
   </main>
 
+<script src="/assets/category-config.js"></script>
 <script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
-  const CATEGORY_CONFIG = {
-    tech: { label: 'Tech', heroSub: 'DealCompass finds high-value tech deals and explains exactly why they’re worth it—fast, clear, and practical.' },
-    home: { label: 'Home', heroSub: 'DealCompass finds high-value home deals with clear buy/no-buy context and practical fit guidance.' }
-  };
-
-  function getSelectedCategory() {
-    const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
-    return CATEGORY_CONFIG[raw] ? raw : 'tech';
-  }
-
-  function withCategory(url, category) {
-    const u = new URL(url, window.location.origin);
-    u.searchParams.set('category', category);
-    return `${u.pathname}${u.search}`;
-  }
+  const Category = window.DCCategoryConfig;
+  const CATEGORY_CONFIG = Category.categories;
 
   function appendTokens(url, linkId) {
     try {
@@ -431,19 +419,20 @@
   }
 
   function topLevelCategoryFromTitle(title) {
-    // Basic fallback logic
+    // Fallback only for legacy rows missing explicit data-category.
     const t = title.toLowerCase();
     if (t.includes('vacuum') || t.includes('purifier') || t.includes('heater') || t.includes('fan') || t.includes('organizer')) return 'home';
-    return 'tech';
+    if (t.includes('keyboard') || t.includes('mouse') || t.includes('usb-c') || t.includes('dock') || t.includes('controller')) return 'tech';
+    return Category.defaultSlug;
   }
 
-  const selectedCategory = getSelectedCategory();
+  const selectedCategory = Category.getSelectedCategory();
   const categorySelect = document.getElementById('categorySelect');
   const categoryMeta = CATEGORY_CONFIG[selectedCategory];
   if (categorySelect) {
-    categorySelect.value = selectedCategory;
+    Category.applyOptions(categorySelect, selectedCategory);
     categorySelect.addEventListener('change', () => {
-      window.location.href = withCategory('/', categorySelect.value);
+      window.location.href = Category.withCategory('/', categorySelect.value);
     });
   }
   const heroSub = document.querySelector('.hero .sub');
@@ -454,9 +443,9 @@
   const pastPicksNav = document.getElementById('pastPicksNav');
   const reviewsNav = document.getElementById('reviewsNav');
   const pastPicksInlineLink = document.getElementById('pastPicksInlineLink');
-  if (pastPicksNav) pastPicksNav.href = withCategory('/past-picks.html', selectedCategory);
-  if (reviewsNav) reviewsNav.href = withCategory('/reviews.html', selectedCategory);
-  if (pastPicksInlineLink) pastPicksInlineLink.href = withCategory('/past-picks.html', selectedCategory);
+  if (pastPicksNav) pastPicksNav.href = Category.withCategory('/past-picks.html', selectedCategory);
+  if (reviewsNav) reviewsNav.href = Category.withCategory('/reviews.html', selectedCategory);
+  if (pastPicksInlineLink) pastPicksInlineLink.href = Category.withCategory('/past-picks.html', selectedCategory);
 
   document.querySelectorAll('a[data-link-id]').forEach((a) => {
     a.href = appendTokens(a.href, a.dataset.linkId || 'unknown');
@@ -478,7 +467,7 @@
     const blurb = pick.querySelector('small')?.textContent || '';
     const score = scoreDeal(cleanTitle, blurb, href, i + 1);
     const explicitCategory = (pick.dataset.category || '').trim().toLowerCase();
-    const category = explicitCategory === 'home' || explicitCategory === 'tech'
+    const category = Category.isKnown(explicitCategory)
       ? explicitCategory
       : topLevelCategoryFromTitle(cleanTitle);
     deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1, category });

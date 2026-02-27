@@ -211,34 +211,27 @@
     <p class="note"><strong>Affiliate disclosure:</strong> DealCompass may earn a commission from qualifying purchases made through partner links.</p>
   </main>
 
+  <script src="/assets/category-config.js"></script>
   <script src="/assets/blurb-engine.js"></script>
 <script>
     (() => {
-      const CATEGORY_CONFIG = { tech: { label: 'Tech' }, home: { label: 'Home' } };
-      const getSelectedCategory = () => {
-        const raw = new URLSearchParams(window.location.search).get('category') || 'tech';
-        return CATEGORY_CONFIG[raw] ? raw : 'tech';
-      };
-      const withCategory = (url, category) => {
-        const u = new URL(url, window.location.origin);
-        u.searchParams.set('category', category);
-        return `${u.pathname}${u.search}`;
-      };
+      const Category = window.DCCategoryConfig;
+      const CATEGORY_CONFIG = Category.categories;
 
       const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-      const selectedCategory = getSelectedCategory();
+      const selectedCategory = Category.getSelectedCategory();
       const categorySelect = document.getElementById('categorySelect');
       if (categorySelect) {
-        categorySelect.value = selectedCategory;
+        Category.applyOptions(categorySelect, selectedCategory);
         categorySelect.addEventListener('change', () => {
-          window.location.href = withCategory('/past-picks.html', categorySelect.value);
+          window.location.href = Category.withCategory('/past-picks.html', categorySelect.value);
         });
       }
       const currentPicksNav = document.getElementById('currentPicksNav');
       const reviewsNav = document.getElementById('reviewsNav');
-      if (currentPicksNav) currentPicksNav.href = withCategory('/', selectedCategory);
-      if (reviewsNav) reviewsNav.href = withCategory('/reviews.html', selectedCategory);
+      if (currentPicksNav) currentPicksNav.href = Category.withCategory('/', selectedCategory);
+      if (reviewsNav) reviewsNav.href = Category.withCategory('/reviews.html', selectedCategory);
       const heading = document.querySelector('h1');
       if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Past Picks Archive`;
 
@@ -281,7 +274,7 @@
             const rawTitle = String(p.title || '').trim();
             if (!rawTitle || /^amazon product\s+[a-z0-9]{10}$/i.test(rawTitle)) return false;
             const explicit = String(p.category || '').trim().toLowerCase();
-            if (!(explicit === 'tech' || explicit === 'home')) return false;
+            if (!Category.isKnown(explicit)) return false;
             return explicit === selectedCategory;
           });
 
