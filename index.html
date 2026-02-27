@@ -514,7 +514,7 @@
   
   filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    // Generate fresh blurb using updated engine
+    // Generate fresh, humanized blurb with diversity constraints.
     const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, {
       category: selectedCategory,
       state: diversityState
