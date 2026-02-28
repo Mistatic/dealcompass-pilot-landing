@@ -63,7 +63,7 @@ Use one unified DealCompass email visual system for all sends going forward:
 
 3. **Segment sanity checks**
    - Confirm substitutions render for all enum options:
-     - Interests: tech/home/both/new_categories
+     - Interests: tech/home/all/new_categories
      - Goal: save_time/best_value/trusted_verdicts/discover_categories
      - Cadence: weekly_digest/twice_weekly/high_signal_only
      - Delivery: email/email_plus_telegram

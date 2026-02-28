@@ -15,6 +15,12 @@ function cleanUndefined(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== ''));
 }
 
+function normalizePrimaryInterest(value) {
+  const k = sanitize(value, 120).toLowerCase();
+  if (k === 'both') return 'all'; // legacy alias for scalable category targeting
+  return k;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'method_not_allowed' });
 
@@ -29,9 +35,8 @@ module.exports = async (req, res) => {
   const firstName = sanitize(body.first_name || body.firstName, 120);
 
   // New post-pilot signup fields
-  const primaryInterest = sanitize(
-    body.primary_interest || body.primaryInterest || body.interest_category || body.interestCategory,
-    120
+  const primaryInterest = normalizePrimaryInterest(
+    body.primary_interest || body.primaryInterest || body.interest_category || body.interestCategory
   );
   const primaryGoal = sanitize(body.primary_goal || body.primaryGoal, 120);
   const requestedCategories = sanitize(body.requested_categories || body.requestedCategories, 220);
