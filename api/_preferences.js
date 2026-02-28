@@ -66,7 +66,9 @@ function verifyPreferencesToken(token) {
 function buildPreferencesUrl(email) {
   const token = createPreferencesToken(email);
   if (!token) return `${baseUrl()}/preferences.html`;
-  return `${baseUrl()}/preferences.html?t=${encodeURIComponent(token)}`;
+  // Token is already URL-safe base64url + dot separator.
+  // Keep it unencoded to avoid double-encoding by ESP/link wrappers.
+  return `${baseUrl()}/preferences.html?t=${token}`;
 }
 
 function normalizePreferencePayload(input = {}) {
