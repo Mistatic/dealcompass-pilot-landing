@@ -26,13 +26,13 @@ function mapInterest(v) {
       recommended_page_url: 'https://dealcompass.app/current-picks.html?category=home',
     };
   }
-  if (k === 'both') {
+  if (k === 'all' || k === 'both') {
     return {
-      interest_key: 'both',
-      interest_label: 'Tech + Home deals',
-      interest_headline: 'You’ll receive a balanced mix of tech and home picks.',
+      interest_key: 'all',
+      interest_label: 'All categories',
+      interest_headline: 'You’ll receive a mixed feed across all active categories.',
       interest_description:
-        'We’ll rotate high-confidence picks across both categories so you get broad but still useful coverage.',
+        'We’ll rotate high-confidence picks across all available categories so coverage scales as we launch more.',
       recommended_page_label: 'Browse all current picks',
       recommended_page_url: 'https://dealcompass.app/current-picks.html',
     };

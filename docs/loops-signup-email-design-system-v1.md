@@ -21,6 +21,13 @@ The backend maps raw option values into ready-to-render copy fields so Loops tem
 - `emails/loops/signup-welcome-v1.html`
 - `emails/loops/signup-day2-v1.html`
 - `emails/loops/signup-day5-v1.html`
+- Transactional branded baseline (published in Loops): `emails/loops/signup-welcome-transactional-v2.mjml`
+
+## Brand consistency policy (Clay directive, 2026-02-27)
+Use one unified DealCompass email visual system for all sends going forward:
+- Website-aligned top brand treatment (logo + DealCompass wordmark style)
+- Dark navy base + blue accent palette aligned to site theme
+- Consistent card, button, and footer styling across welcome/day2/day5 and future campaigns
 
 ## Variables available in Loops
 ### Core profile
@@ -56,7 +63,7 @@ The backend maps raw option values into ready-to-render copy fields so Loops tem
 
 3. **Segment sanity checks**
    - Confirm substitutions render for all enum options:
-     - Interests: tech/home/both/new_categories
+     - Interests: tech/home/all/new_categories
      - Goal: save_time/best_value/trusted_verdicts/discover_categories
      - Cadence: weekly_digest/twice_weekly/high_signal_only
      - Delivery: email/email_plus_telegram
