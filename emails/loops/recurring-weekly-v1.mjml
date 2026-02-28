@@ -38,12 +38,23 @@
 
     <mj-section padding="12px 16px 0">
       <mj-column css-class="card" padding="18px 20px" background-color="#0f172a">
-        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 8px">
+        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 10px">
           This week at a glance
         </mj-text>
-        <mj-text padding="0 0 6px"><strong>Interest:</strong> {DATA_VARIABLE:primaryInterest}</mj-text>
-        <mj-text padding="0 0 6px"><strong>Categories:</strong> {DATA_VARIABLE:categoriesLine}</mj-text>
-        <mj-text padding="0"><strong>Picks included:</strong> {DATA_VARIABLE:pick_count}</mj-text>
+        <mj-text padding="0 0 10px"><strong>Interest:</strong> {DATA_VARIABLE:primaryInterest} · <strong>Categories:</strong> {DATA_VARIABLE:categoriesLine}</mj-text>
+
+        <mj-text padding="0 0 8px">
+          1) <a href="{DATA_VARIABLE:pick1_url}" style="color:#cfe0ff;text-decoration:none;"><strong>{DATA_VARIABLE:pick1_title}</strong></a>
+          <span style="color:#9fb0d6;"> ({DATA_VARIABLE:pick1_category})</span>
+        </mj-text>
+        <mj-text padding="0 0 8px">
+          2) <a href="{DATA_VARIABLE:pick2_url}" style="color:#cfe0ff;text-decoration:none;"><strong>{DATA_VARIABLE:pick2_title}</strong></a>
+          <span style="color:#9fb0d6;"> ({DATA_VARIABLE:pick2_category})</span>
+        </mj-text>
+        <mj-text padding="0">
+          3) <a href="{DATA_VARIABLE:pick3_url}" style="color:#cfe0ff;text-decoration:none;"><strong>{DATA_VARIABLE:pick3_title}</strong></a>
+          <span style="color:#9fb0d6;"> ({DATA_VARIABLE:pick3_category})</span>
+        </mj-text>
       </mj-column>
     </mj-section>
 
