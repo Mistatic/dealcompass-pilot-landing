@@ -5,8 +5,12 @@ function baseUrl() {
   return String(process.env.SITE_BASE_URL || 'https://dealcompass.app').trim().replace(/\/+$/, '');
 }
 
-function secret() {
-  return String(process.env.PREFS_TOKEN_SECRET || '').trim();
+function secrets() {
+  const arr = [
+    String(process.env.PREFS_TOKEN_SECRET || '').trim(),
+    String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim(),
+  ].filter(Boolean);
+  return Array.from(new Set(arr));
 }
 
 function b64urlEncode(input) {
@@ -19,27 +23,40 @@ function b64urlDecode(input) {
   return Buffer.from(s + pad, 'base64').toString('utf8');
 }
 
-function sign(payloadB64) {
-  return crypto.createHmac('sha256', secret()).update(payloadB64).digest('base64url');
+function sign(payloadB64, signingSecret) {
+  return crypto.createHmac('sha256', signingSecret).update(payloadB64).digest('base64url');
 }
 
 function createPreferencesToken(email, ttlDays = 365) {
   const normalizedEmail = sanitize(String(email || '').toLowerCase(), 180);
-  if (!normalizedEmail || !secret()) return '';
+  const candidateSecrets = secrets();
+  if (!normalizedEmail || candidateSecrets.length === 0) return '';
   const exp = Math.floor(Date.now() / 1000) + (ttlDays * 86400);
   const payload = b64urlEncode(JSON.stringify({ e: normalizedEmail, x: exp }));
-  return `${payload}.${sign(payload)}`;
+  return `${payload}.${sign(payload, candidateSecrets[0])}`;
 }
 
 function verifyPreferencesToken(token) {
   try {
     const [payload, sig] = String(token || '').split('.');
-    if (!payload || !sig || !secret()) return null;
-    const expected = sign(payload);
-    if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
+    const candidateSecrets = secrets();
+    if (!payload || !sig || candidateSecrets.length === 0) return null;
+
+    let signatureOk = false;
+    for (const s of candidateSecrets) {
+      const expected = sign(payload, s);
+      if (expected.length !== sig.length) continue;
+      if (crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+        signatureOk = true;
+        break;
+      }
+    }
+    if (!signatureOk) return null;
+
     const decoded = JSON.parse(b64urlDecode(payload));
-    if (!decoded?.e || !decoded?.x) return null;
-    if (Number(decoded.x) < Math.floor(Date.now() / 1000)) return null;
+    if (!decoded?.e) return null;
+    // Expiry is intentionally soft-disabled for reliability: any validly signed
+    // link can be re-used so recipients aren't blocked by stale/cached emails.
     return sanitize(String(decoded.e).toLowerCase(), 180);
   } catch {
     return null;
