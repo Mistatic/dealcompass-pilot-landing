@@ -198,6 +198,7 @@ module.exports = async (req, res) => {
   const dryRun = String(q.dry_run || '').trim() === '1';
   const targetEmail = norm(q.email || q.test_email || '');
   const forceTarget = String(q.force_target || '').trim() === '1';
+  const bypassDedupe = String(q.bypass_dedupe || '').trim() === '1';
   const coreCategories = String(process.env.CORE_CATEGORY_SLUGS || 'tech,home')
     .split(',')
     .map((x) => norm(x))
@@ -306,7 +307,7 @@ module.exports = async (req, res) => {
     }
 
     // Idempotency guard: skip if recently sent for same cadence/email
-    if (!dryRun && dedupeWindowHours > 0) {
+    if (!dryRun && !bypassDedupe && dedupeWindowHours > 0) {
       try {
         const recent = await sbGet(
           `recurring_email_log?select=email,cadence,sent_at&email=eq.${encodeURIComponent(sub.email)}&cadence=eq.${encodeURIComponent(cadence)}&sent_at=gte.${encodeURIComponent(dedupeSinceIso)}&order=sent_at.desc&limit=1`
