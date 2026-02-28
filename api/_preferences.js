@@ -36,9 +36,39 @@ function createPreferencesToken(email, ttlDays = 365) {
   return `${payload}.${sign(payload, candidateSecrets[0])}`;
 }
 
+function normalizeTokenInput(input) {
+  let raw = String(input || '').trim();
+  if (!raw) return '';
+
+  // Some inbox/tracking wrappers or clients can double-encode query values.
+  // Decode repeatedly until stable (bounded to avoid pathological loops).
+  for (let i = 0; i < 3; i += 1) {
+    try {
+      const next = decodeURIComponent(raw);
+      if (!next || next === raw) break;
+      raw = next;
+    } catch {
+      break;
+    }
+  }
+
+  // If a full URL was accidentally passed, recover the token from ?t=
+  if (raw.includes('://') || raw.includes('?')) {
+    try {
+      const u = new URL(raw, 'http://localhost');
+      raw = u.searchParams.get('t') || u.searchParams.get('token') || raw;
+    } catch {
+      // keep raw as-is
+    }
+  }
+
+  return raw.trim();
+}
+
 function verifyPreferencesToken(token) {
   try {
-    const [payload, sig] = String(token || '').split('.');
+    const normalized = normalizeTokenInput(token);
+    const [payload, sig] = String(normalized || '').split('.');
     const candidateSecrets = secrets();
     if (!payload || !sig || candidateSecrets.length === 0) return null;
 
