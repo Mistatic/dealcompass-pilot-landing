@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { json, sanitize, nowIso } = require('./_shared');
 const { supabaseConfig } = require('./_supabase');
 
@@ -99,6 +100,30 @@ async function sbGet(path) {
   return Array.isArray(body) ? body : [];
 }
 
+async function sbInsert(table, row) {
+  const { url, key, configured } = supabaseConfig();
+  if (!configured) throw new Error('supabase_not_configured');
+  const res = await fetch(`${url}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    let body = null;
+    try { body = text ? JSON.parse(text) : null; } catch { body = text || null; }
+    const err = new Error('supabase_insert_failed');
+    err.status = res.status;
+    err.body = body;
+    throw err;
+  }
+}
+
 async function loopsTransactionalSend(apiKey, payload) {
   const res = await fetch('https://app.loops.so/api/v1/transactional', {
     method: 'POST',
@@ -124,6 +149,16 @@ async function postRunAlert(payload) {
       body: JSON.stringify(payload),
     });
   } catch (_) {}
+}
+
+function isoHoursAgo(hours) {
+  const ms = Number(hours || 0) * 36e5;
+  return new Date(Date.now() - ms).toISOString();
+}
+
+function hashPickSet(cadence, picks) {
+  const material = `${cadence}|${(picks || []).map((p) => `${p.category}:${p.title}:${p.url}`).join('|')}`;
+  return crypto.createHash('sha1').update(material).digest('hex');
 }
 
 module.exports = async (req, res) => {
@@ -221,11 +256,14 @@ module.exports = async (req, res) => {
   const allCategories = Array.from(picksByCategory.keys());
   const newCategories = allCategories.filter((c) => !coreCategories.includes(c));
   const limits = pickLimitsForCadence(cadence);
+  const dedupeWindowHours = Number(process.env.RECURRING_DEDUPE_WINDOW_HOURS || 20);
+  const dedupeSinceIso = isoHoursAgo(dedupeWindowHours);
 
   const sendResults = [];
   const diagnostics = {
     picks_per_category: Object.fromEntries(Array.from(picksByCategory.entries()).map(([k, v]) => [k, v.length])),
     high_signal_max_age_hours: Number(process.env.HIGH_SIGNAL_MAX_AGE_HOURS || 72),
+    dedupe_window_hours: dedupeWindowHours,
   };
   for (const sub of cadenceSubscribers) {
     let allowedCategories = [];
@@ -235,6 +273,27 @@ module.exports = async (req, res) => {
       allowedCategories = newCategories;
     } else {
       allowedCategories = allCategories.includes(sub.interest) ? [sub.interest] : [];
+    }
+
+    // Idempotency guard: skip if recently sent for same cadence/email
+    if (!dryRun && dedupeWindowHours > 0) {
+      try {
+        const recent = await sbGet(
+          `recurring_email_log?select=email,cadence,sent_at&email=eq.${encodeURIComponent(sub.email)}&cadence=eq.${encodeURIComponent(cadence)}&sent_at=gte.${encodeURIComponent(dedupeSinceIso)}&order=sent_at.desc&limit=1`
+        );
+        if (recent.length > 0) {
+          sendResults.push({
+            email: sub.email,
+            sent: false,
+            reason: 'recent_send_guard',
+            interest: sub.interest,
+            allowed_categories: allowedCategories,
+          });
+          continue;
+        }
+      } catch (_) {
+        // Optional table; do not fail campaign run if log table isn't present.
+      }
     }
 
     const selected = roundRobinByCategory(
@@ -309,6 +368,21 @@ module.exports = async (req, res) => {
       email: sub.email,
       dataVariables,
     });
+
+    if (resp.ok) {
+      try {
+        await sbInsert('recurring_email_log', {
+          email: sub.email,
+          cadence,
+          sent_at: nowIso(),
+          picks_count: selected.length,
+          interest: sub.interest,
+          pick_hash: hashPickSet(cadence, selected),
+        });
+      } catch (_) {
+        // Optional table; non-blocking
+      }
+    }
 
     sendResults.push({
       email: sub.email,
