@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const { json, sanitize, nowIso } = require('./_shared');
 const { supabaseConfig } = require('./_supabase');
+const { buildPreferencesUrl } = require('./_preferences');
 
 function norm(v) {
   return String(v || '').trim().toLowerCase();
@@ -202,9 +203,15 @@ module.exports = async (req, res) => {
 
   let submissions;
   let picks;
+  let prefRows = [];
   try {
     submissions = await sbGet('signup_submissions?select=user_email,user_name,primary_interest,update_frequency,delivery_preference,submitted_at,consent&consent=eq.YES&order=submitted_at.desc&limit=5000');
     picks = await sbGet('affiliate_links_live?select=category,title,url,blurb,rank,generated_rank,active,created_at,updated_at&active=eq.true&order=category.asc,generated_rank.asc,rank.asc&limit=200');
+    try {
+      prefRows = await sbGet('user_preferences?select=email,first_name,primary_interest,update_frequency,delivery_preference,status,updated_at&order=updated_at.desc&limit=5000');
+    } catch (_) {
+      prefRows = [];
+    }
   } catch (e) {
     return json(res, 502, {
       ok: false,
@@ -221,17 +228,35 @@ module.exports = async (req, res) => {
     latestByEmail.set(email, row);
   }
 
+  const prefByEmail = new Map();
+  for (const p of prefRows) {
+    const email = String(p.email || '').trim().toLowerCase();
+    if (!email || prefByEmail.has(email)) continue;
+    prefByEmail.set(email, p);
+  }
+
   const cadenceSubscribers = [];
   for (const row of latestByEmail.values()) {
-    const pref = cadenceFromInput(row.update_frequency);
+    const email = String(row.user_email || '').trim().toLowerCase();
+    const prefRow = prefByEmail.get(email);
+
+    const sourceCadence = prefRow?.update_frequency || row.update_frequency;
+    const pref = cadenceFromInput(sourceCadence);
     if (pref !== cadence) continue;
-    const delivery = norm(row.delivery_preference);
+
+    const deliveryRaw = prefRow?.delivery_preference || row.delivery_preference;
+    const delivery = norm(deliveryRaw);
     if (delivery && !delivery.includes('email')) continue;
+
+    const status = norm(prefRow?.status || 'active');
+    if (status && status !== 'active') continue;
+
     cadenceSubscribers.push({
-      email: String(row.user_email || '').trim().toLowerCase(),
-      firstName: sanitize(row.user_name || '', 80),
-      interest: interestFromInput(row.primary_interest),
-      subscribedAt: row.submitted_at || null,
+      email,
+      firstName: sanitize(prefRow?.first_name || row.user_name || '', 80),
+      interest: interestFromInput(prefRow?.primary_interest || row.primary_interest),
+      subscribedAt: prefRow?.updated_at || row.submitted_at || null,
+      managePreferencesUrl: buildPreferencesUrl(email),
     });
   }
 
@@ -264,6 +289,7 @@ module.exports = async (req, res) => {
     picks_per_category: Object.fromEntries(Array.from(picksByCategory.entries()).map(([k, v]) => [k, v.length])),
     high_signal_max_age_hours: Number(process.env.HIGH_SIGNAL_MAX_AGE_HOURS || 72),
     dedupe_window_hours: dedupeWindowHours,
+    preferences_rows_loaded: prefRows.length,
   };
   for (const sub of cadenceSubscribers) {
     let allowedCategories = [];
@@ -345,6 +371,8 @@ module.exports = async (req, res) => {
       currentPicksUrl: 'https://dealcompass.app/current-picks.html',
       reviewsUrl: 'https://dealcompass.app/reviews.html',
       feedbackUrl: 'https://dealcompass.app/feedback.html',
+      manage_preferences_url: sub.managePreferencesUrl,
+      manageUrl: sub.managePreferencesUrl,
       sentAt: nowIso(),
       pick_count: selected.length,
     };

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage Preferences — DealCompass</title>
+  <link rel="icon" href="/assets/logo-official.jpg" />
+  <style>
+    body { font-family: Inter, Arial, sans-serif; background:#0b1220; color:#eaf0ff; margin:0; }
+    .wrap { max-width:720px; margin:40px auto; padding:24px; }
+    .card { background:#131c31; border:1px solid #2b3757; border-radius:14px; padding:24px; }
+    h1 { margin-top:0; font-size:1.6rem; }
+    p { color:#a8b5d8; }
+    label { display:block; margin:16px 0 6px; font-weight:600; }
+    select, button { width:100%; padding:11px; border-radius:10px; border:1px solid #3a4a74; background:#0e1730; color:#eef3ff; }
+    button { margin-top:20px; background:#3f7cff; border:none; font-weight:700; cursor:pointer; }
+    .muted { color:#95a3c8; font-size:.9rem; }
+    .ok { color:#7de7a6; margin-top:12px; }
+    .err { color:#ff9a9a; margin-top:12px; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Manage your DealCompass preferences</h1>
+      <p id="emailLine" class="muted"></p>
+
+      <form id="prefsForm" class="hidden">
+        <label for="primary_interest">Categories</label>
+        <select id="primary_interest" name="primary_interest"></select>
+
+        <label for="update_frequency">Update cadence</label>
+        <select id="update_frequency" name="update_frequency">
+          <option value="weekly_digest">Weekly digest</option>
+          <option value="twice_weekly">Twice weekly</option>
+          <option value="high_signal_only">Only highest-signal drops</option>
+        </select>
+
+        <label for="delivery_preference">Delivery preference</label>
+        <select id="delivery_preference" name="delivery_preference">
+          <option value="email">Email</option>
+          <option value="email_plus_telegram">Email + Telegram when available</option>
+        </select>
+
+        <label for="status">Subscription status</label>
+        <select id="status" name="status">
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="unsubscribed">Unsubscribed</option>
+        </select>
+
+        <button type="submit">Save preferences</button>
+      </form>
+
+      <p id="statusMsg" class="muted">Loading your current preferences…</p>
+    </div>
+  </div>
+
+  <script src="/assets/category-config.js"></script>
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const token = qs.get('t') || '';
+    const form = document.getElementById('prefsForm');
+    const msg = document.getElementById('statusMsg');
+    const emailLine = document.getElementById('emailLine');
+    const interest = document.getElementById('primary_interest');
+
+    function setMsg(text, cls='muted') {
+      msg.className = cls;
+      msg.textContent = text;
+    }
+
+    function fillCategoryOptions(selected) {
+      const cfg = window.DCCategoryConfig;
+      const base = cfg ? Object.entries(cfg.categories).map(([slug, c]) => ({ value: slug, label: c.label })) : [];
+      const options = [
+        ...base,
+        { value: 'all', label: 'All categories' },
+        { value: 'new_categories', label: 'New categories as they launch' },
+      ];
+      const seen = new Set();
+      interest.innerHTML = options.filter(o => {
+        if (seen.has(o.value)) return false; seen.add(o.value); return true;
+      }).map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+
+      if (selected && !seen.has(selected)) {
+        const opt = document.createElement('option');
+        opt.value = selected; opt.textContent = selected;
+        interest.appendChild(opt);
+      }
+      interest.value = selected || 'all';
+    }
+
+    async function loadPrefs() {
+      if (!token) {
+        setMsg('This preferences link is invalid or incomplete. Open it from your latest DealCompass email.', 'err');
+        return;
+      }
+      const r = await fetch(`/api/preferences?t=${encodeURIComponent(token)}`);
+      const j = await r.json();
+      if (!r.ok || !j.ok) {
+        setMsg('This preferences link expired. Please use a fresh email link.', 'err');
+        return;
+      }
+      emailLine.textContent = `Managing preferences for ${j.email}`;
+      fillCategoryOptions(j.preferences.primary_interest || 'all');
+      document.getElementById('update_frequency').value = j.preferences.update_frequency || 'weekly_digest';
+      document.getElementById('delivery_preference').value = j.preferences.delivery_preference || 'email';
+      document.getElementById('status').value = j.preferences.status || 'active';
+      form.classList.remove('hidden');
+      setMsg('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setMsg('Saving…');
+      const payload = {
+        primary_interest: interest.value,
+        update_frequency: document.getElementById('update_frequency').value,
+        delivery_preference: document.getElementById('delivery_preference').value,
+        status: document.getElementById('status').value,
+      };
+      const r = await fetch('/api/preferences?t=' + encodeURIComponent(token), {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) {
+        setMsg('Could not save right now. Please try again in a minute.', 'err');
+        return;
+      }
+      setMsg('Preferences updated successfully.', 'ok');
+    });
+
+    loadPrefs();
+  </script>
+</body>
+</html>
