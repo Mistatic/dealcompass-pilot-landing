@@ -1,0 +1,77 @@
+<mjml>
+  <mj-head>
+    <mj-title>DealCompass Twice-Weekly Update</mj-title>
+    <mj-preview>Your mid-week and weekend DealCompass picks.</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Arial, Helvetica, sans-serif" color="#e7edff" />
+      <mj-text font-size="15px" line-height="1.65" />
+      <mj-section padding="0" />
+      <mj-button background-color="#5f8dff" color="#ffffff" border-radius="12px" font-weight="700" inner-padding="12px 18px" />
+    </mj-attributes>
+    <mj-style inline="inline">
+      .card { background:#101a2f; border:1px solid #223556; border-radius:14px; }
+      .muted { color:#9fb0d6; }
+      .brand-word { color:#edf2ff; font-size:22px; line-height:1.1; letter-spacing:-0.02em; font-weight:800; }
+    </mj-style>
+  </mj-head>
+
+  <mj-body background-color="#050911" width="640px">
+    <mj-section padding="20px 16px 8px">
+      <mj-column>
+        <mj-text align="center" padding="0">
+          <img src="https://dealcompass.app/assets/logo-official.jpg" alt="DealCompass" width="24" height="24" style="width:24px;height:24px;border-radius:6px;vertical-align:middle;margin-right:8px;display:inline-block;" />
+          <span class="brand-word" style="vertical-align:middle;display:inline-block;">DealCompass</span>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="0 16px 0">
+      <mj-column css-class="card" padding="24px 22px" background-color="#101a2f">
+        <mj-text font-size="28px" font-weight="800" line-height="1.15" padding="0 0 10px">
+          Twice-weekly update for {DATA_VARIABLE:firstName}
+        </mj-text>
+        <mj-text css-class="muted" font-size="16px" padding="0">
+          {DATA_VARIABLE:intro_line}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="12px 16px 0">
+      <mj-column css-class="card" padding="18px 20px" background-color="#0f172a">
+        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 8px">
+          Focused signal snapshot
+        </mj-text>
+        <mj-text padding="0 0 6px"><strong>Cadence:</strong> {DATA_VARIABLE:cadence_label}</mj-text>
+        <mj-text padding="0 0 6px"><strong>Interest:</strong> {DATA_VARIABLE:primaryInterest}</mj-text>
+        <mj-text padding="0"><strong>Picks included:</strong> {DATA_VARIABLE:pick_count}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="12px 16px 0">
+      <mj-column>
+        <mj-button href="{DATA_VARIABLE:currentPicksUrl}">Review current picks</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="8px 16px 0">
+      <mj-column css-class="card" padding="16px 20px" background-color="#0f172a">
+        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 8px">
+          Quick links
+        </mj-text>
+        <mj-text padding="0 0 6px"><a href="{DATA_VARIABLE:reviewsUrl}" style="color:#7ea4ff;text-decoration:none;">Our Verdicts →</a></mj-text>
+        <mj-text padding="0 0 6px"><a href="{DATA_VARIABLE:feedbackUrl}" style="color:#7ea4ff;text-decoration:none;">Share Feedback →</a></mj-text>
+        <mj-text padding="0"><a href="{DATA_VARIABLE:manage_preferences_url}" style="color:#7ea4ff;text-decoration:none;">Manage Preferences →</a></mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="16px 16px 28px">
+      <mj-column>
+        <mj-text align="center" font-size="12px" color="#7e8fb5" line-height="1.5" padding="0">
+          Sent on {DATA_VARIABLE:sentAt}
+          <br />
+          DealCompass • help@dealcompass.app
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
