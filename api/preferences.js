@@ -44,7 +44,15 @@ module.exports = async (req, res) => {
 
   if (method === 'GET') {
     try {
-      const pref = await sbGet(`user_preferences?select=email,primary_interest,update_frequency,delivery_preference,status,updated_at&email=eq.${encodeURIComponent(emailFromToken)}&limit=1`);
+      let pref = [];
+      try {
+        pref = await sbGet(`user_preferences?select=email,primary_interest,update_frequency,delivery_preference,status,updated_at&email=eq.${encodeURIComponent(emailFromToken)}&limit=1`);
+      } catch (e) {
+        // Some environments may not have this table yet; degrade gracefully.
+        const missingTable = e?.body?.code === 'PGRST205';
+        if (!missingTable) throw e;
+      }
+
       if (pref.length > 0) {
         return json(res, 200, {
           ok: true,
@@ -53,7 +61,15 @@ module.exports = async (req, res) => {
           manage_preferences_url: buildPreferencesUrl(emailFromToken),
         });
       }
-      const fallback = await sbGet(`signup_submissions?select=user_email,primary_interest,update_frequency,delivery_preference,submitted_at&user_email=eq.${encodeURIComponent(emailFromToken)}&order=submitted_at.desc&limit=1`);
+
+      let fallback = [];
+      try {
+        fallback = await sbGet(`signup_submissions?select=user_email,primary_interest,update_frequency,delivery_preference,submitted_at&user_email=eq.${encodeURIComponent(emailFromToken)}&order=submitted_at.desc&limit=1`);
+      } catch (e) {
+        const missingTable = e?.body?.code === 'PGRST205';
+        if (!missingTable) throw e;
+      }
+
       const row = fallback[0] || {};
       return json(res, 200, {
         ok: true,
