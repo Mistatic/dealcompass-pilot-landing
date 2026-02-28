@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { json, sanitize, nowIso } = require('./_shared');
 const { supabaseConfig } = require('./_supabase');
 const { buildPreferencesUrl } = require('./_preferences');
@@ -92,26 +94,48 @@ function decodeHtml(text) {
     .replace(/&gt;/g, '>');
 }
 
+function categoryLabel(slug) {
+  return String(slug || '')
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function parseCurrentPicksHtml(html) {
+  const out = new Map();
+  const re = /<a class="pick"[^>]*data-category="([^"]+)"[^>]*href="([^"]+)"[^>]*>\s*<span class="title">([\s\S]*?)<\/span><small>([\s\S]*?)<\/small>/g;
+  let m;
+  while ((m = re.exec(String(html || ''))) !== null) {
+    const category = norm(m[1]);
+    const url = sanitize(decodeHtml(m[2]), 500);
+    const title = sanitize(decodeHtml(m[3]).replace(/\s+/g, ' ').trim(), 180);
+    const blurb = sanitize(decodeHtml(m[4]).replace(/\s+/g, ' ').trim(), 280);
+    if (!category || !url || !title) continue;
+    const list = out.get(category) || [];
+    list.push({ category, url, title, blurb });
+    out.set(category, list);
+  }
+  return out;
+}
+
 async function loadWebsitePickFallback() {
+  try {
+    const localPath = path.join(process.cwd(), 'current-picks.html');
+    if (fs.existsSync(localPath)) {
+      const localHtml = fs.readFileSync(localPath, 'utf8');
+      const parsedLocal = parseCurrentPicksHtml(localHtml);
+      if (parsedLocal.size > 0) return parsedLocal;
+    }
+  } catch (_) {
+    // continue to network fallback
+  }
+
   try {
     const res = await fetch('https://www.dealcompass.app/current-picks.html', { cache: 'no-store' });
     if (!res.ok) return new Map();
     const html = await res.text();
-
-    const out = new Map();
-    const re = /<a class="pick"[^>]*data-category="([^"]+)"[^>]*href="([^"]+)"[^>]*>\s*<span class="title">([\s\S]*?)<\/span><small>([\s\S]*?)<\/small>/g;
-    let m;
-    while ((m = re.exec(html)) !== null) {
-      const category = norm(m[1]);
-      const url = sanitize(decodeHtml(m[2]), 500);
-      const title = sanitize(decodeHtml(m[3]).replace(/\s+/g, ' ').trim(), 180);
-      const blurb = sanitize(decodeHtml(m[4]).replace(/\s+/g, ' ').trim(), 280);
-      if (!category || !url || !title) continue;
-      const list = out.get(category) || [];
-      list.push({ category, url, title, blurb });
-      out.set(category, list);
-    }
-    return out;
+    return parseCurrentPicksHtml(html);
   } catch {
     return new Map();
   }
@@ -438,7 +462,7 @@ module.exports = async (req, res) => {
       categoriesLine: allowedCategories.join(', '),
       currentPicksUrl: 'https://dealcompass.app/current-picks.html',
       currentCategoryUrl: categoryBrowseUrl,
-      currentCategoryLabel: primaryCategory || 'current',
+      currentCategoryLabel: categoryLabel(primaryCategory) || 'Current',
       reviewsUrl: 'https://dealcompass.app/reviews.html',
       feedbackUrl: 'https://dealcompass.app/feedback.html',
       manage_preferences_url: sub.managePreferencesUrl,
