@@ -2,6 +2,14 @@ function norm(v) {
   return String(v || '').trim().toLowerCase();
 }
 
+function labelFromSlug(slug) {
+  return String(slug || '')
+    .split('-')
+    .filter(Boolean)
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+    .join(' ');
+}
+
 function mapInterest(v) {
   const k = norm(v);
   if (k === 'tech') {
@@ -37,14 +45,27 @@ function mapInterest(v) {
       recommended_page_url: 'https://dealcompass.app/current-picks.html',
     };
   }
+  if (k === 'new_categories' || !k) {
+    return {
+      interest_key: 'new_categories',
+      interest_label: 'New category launches',
+      interest_headline: 'We’ll keep you in the loop as new categories launch.',
+      interest_description:
+        'You’ll get updates when we expand beyond core categories and publish first-wave verdicts.',
+      recommended_page_label: 'See our latest verdicts',
+      recommended_page_url: 'https://dealcompass.app/reviews.html',
+    };
+  }
+
+  const label = labelFromSlug(k) || 'Category';
   return {
-    interest_key: 'new_categories',
-    interest_label: 'New category launches',
-    interest_headline: 'We’ll keep you in the loop as new categories launch.',
+    interest_key: k,
+    interest_label: `${label} deals`,
+    interest_headline: `We’ll prioritize high-signal ${label.toLowerCase()} picks for you.`,
     interest_description:
-      'You’ll get updates when we expand beyond core categories and publish first-wave verdicts.',
-    recommended_page_label: 'See our latest verdicts',
-    recommended_page_url: 'https://dealcompass.app/reviews.html',
+      'Expect concise, practical verdicts with clear fit guidance and price-to-value context.',
+    recommended_page_label: `Browse current ${label.toLowerCase()} picks`,
+    recommended_page_url: `https://dealcompass.app/current-picks.html?category=${encodeURIComponent(k)}`,
   };
 }
 

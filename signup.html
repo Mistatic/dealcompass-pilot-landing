@@ -298,11 +298,40 @@
     <p class="disclosure">DealCompass may earn from qualifying purchases. Contact: <a href="mailto:help@dealcompass.app">help@dealcompass.app</a></p>
   </main>
 
+  <script src="/assets/category-config.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const form = document.getElementById('signupForm');
     const statusEl = document.getElementById('status');
     const submitBtn = document.getElementById('submitBtn');
+    const interestEl = document.getElementById('primary_interest');
+
+    function initInterestOptions() {
+      const cfg = window.DCCategoryConfig;
+      const base = cfg
+        ? Object.entries(cfg.categories).map(([slug, c]) => ({ value: slug, label: c.label }))
+        : [
+            { value: 'tech', label: 'Tech' },
+            { value: 'home', label: 'Home' },
+          ];
+      const options = [
+        { value: '', label: 'Select…' },
+        ...base,
+        { value: 'all', label: 'All categories' },
+        { value: 'new_categories', label: 'New categories as they launch' },
+      ];
+      const seen = new Set();
+      interestEl.innerHTML = options
+        .filter((o) => {
+          if (seen.has(o.value)) return false;
+          seen.add(o.value);
+          return true;
+        })
+        .map((o) => `<option value="${o.value}">${o.label}</option>`)
+        .join('');
+    }
+
+    initInterestOptions();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
