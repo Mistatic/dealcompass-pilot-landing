@@ -192,6 +192,9 @@ module.exports = async (req, res) => {
   const limits = pickLimitsForCadence(cadence);
 
   const sendResults = [];
+  const diagnostics = {
+    picks_per_category: Object.fromEntries(Array.from(picksByCategory.entries()).map(([k, v]) => [k, v.length])),
+  };
   for (const sub of cadenceSubscribers) {
     let allowedCategories = [];
     if (sub.interest === 'all') {
@@ -211,7 +214,13 @@ module.exports = async (req, res) => {
     );
 
     if (!selected.length) {
-      sendResults.push({ email: sub.email, sent: false, reason: 'no_matching_picks', interest: sub.interest });
+      sendResults.push({
+        email: sub.email,
+        sent: false,
+        reason: 'no_matching_picks',
+        interest: sub.interest,
+        allowed_categories: allowedCategories,
+      });
       continue;
     }
 
@@ -270,6 +279,7 @@ module.exports = async (req, res) => {
       active_categories: allCategories,
       new_categories: newCategories,
     },
+    diagnostics,
     sample: sendResults.slice(0, 25),
   });
 };
