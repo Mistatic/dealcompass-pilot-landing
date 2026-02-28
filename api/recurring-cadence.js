@@ -83,6 +83,60 @@ function roundRobinByCategory(picksByCategory, categories, perCategory, maxTotal
   return out;
 }
 
+function decodeHtml(text) {
+  return String(text || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+async function loadWebsitePickFallback() {
+  try {
+    const res = await fetch('https://www.dealcompass.app/current-picks.html', { cache: 'no-store' });
+    if (!res.ok) return new Map();
+    const html = await res.text();
+
+    const out = new Map();
+    const re = /<a class="pick"[^>]*data-category="([^"]+)"[^>]*href="([^"]+)"[^>]*>\s*<span class="title">([\s\S]*?)<\/span><small>([\s\S]*?)<\/small>/g;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const category = norm(m[1]);
+      const url = sanitize(decodeHtml(m[2]), 500);
+      const title = sanitize(decodeHtml(m[3]).replace(/\s+/g, ' ').trim(), 180);
+      const blurb = sanitize(decodeHtml(m[4]).replace(/\s+/g, ' ').trim(), 280);
+      if (!category || !url || !title) continue;
+      const list = out.get(category) || [];
+      list.push({ category, url, title, blurb });
+      out.set(category, list);
+    }
+    return out;
+  } catch {
+    return new Map();
+  }
+}
+
+function resolvePickForEmail(pick, idx, websitePickFallback) {
+  const p = pick || {};
+  const titleBad = !p.title || /^deal pick$/i.test(String(p.title).trim());
+  const urlBad = !p.url || /\/current-picks\.html$/i.test(String(p.url).trim());
+  const blurbBad = !String(p.blurb || '').trim();
+
+  if (!titleBad && !urlBad && !blurbBad) return p;
+
+  const category = norm(p.category);
+  const candidates = websitePickFallback.get(category) || [];
+  const c = candidates[idx] || candidates[0] || {};
+
+  return {
+    ...p,
+    title: titleBad ? sanitize(c.title || p.title || 'DealCompass pick', 180) : p.title,
+    url: urlBad ? sanitize(c.url || p.url || 'https://www.dealcompass.app/current-picks.html', 500) : p.url,
+    blurb: blurbBad ? sanitize(c.blurb || p.blurb || 'View the full pick details on DealCompass.', 280) : p.blurb,
+  };
+}
+
 async function sbGet(path) {
   const { url, key, configured } = supabaseConfig();
   if (!configured) throw new Error('supabase_not_configured');
@@ -288,10 +342,12 @@ module.exports = async (req, res) => {
   const limits = pickLimitsForCadence(cadence);
   const dedupeWindowHours = Number(process.env.RECURRING_DEDUPE_WINDOW_HOURS || 20);
   const dedupeSinceIso = isoHoursAgo(dedupeWindowHours);
+  const websitePickFallback = await loadWebsitePickFallback();
 
   const sendResults = [];
   const diagnostics = {
     picks_per_category: Object.fromEntries(Array.from(picksByCategory.entries()).map(([k, v]) => [k, v.length])),
+    website_fallback_categories: websitePickFallback.size,
     high_signal_max_age_hours: Number(process.env.HIGH_SIGNAL_MAX_AGE_HOURS || 72),
     dedupe_window_hours: dedupeWindowHours,
     preferences_rows_loaded: prefRows.length,
@@ -365,6 +421,8 @@ module.exports = async (req, res) => {
       },
     }[cadence];
 
+    const selectedResolved = selected.map((p, idx) => resolvePickForEmail(p, idx, websitePickFallback));
+
     const dataVariables = {
       firstName: sub.firstName || 'there',
       cadenceKey: cadence,
@@ -379,20 +437,20 @@ module.exports = async (req, res) => {
       manage_preferences_url: sub.managePreferencesUrl,
       manageUrl: sub.managePreferencesUrl,
       sentAt: nowIso(),
-      pick_count: selected.length,
+      pick_count: selectedResolved.length,
     };
 
-    selected.forEach((p, idx) => {
+    selectedResolved.forEach((p, idx) => {
       const n = idx + 1;
       dataVariables[`pick${n}_category`] = p.category;
       dataVariables[`pick${n}_title`] = p.title;
       dataVariables[`pick${n}_url`] = p.url;
-      dataVariables[`pick${n}_blurb`] = p.blurb || 'Tap to view deal details.';
+      dataVariables[`pick${n}_blurb`] = p.blurb || 'View the full pick details on DealCompass.';
       dataVariables[`pick${n}_rank`] = String(p.rank || '');
     });
 
     if (dryRun) {
-      sendResults.push({ email: sub.email, sent: true, dry_run: true, picks: selected.length, interest: sub.interest });
+      sendResults.push({ email: sub.email, sent: true, dry_run: true, picks: selectedResolved.length, interest: sub.interest });
       continue;
     }
 
@@ -408,9 +466,9 @@ module.exports = async (req, res) => {
           email: sub.email,
           cadence,
           sent_at: nowIso(),
-          picks_count: selected.length,
+          picks_count: selectedResolved.length,
           interest: sub.interest,
-          pick_hash: hashPickSet(cadence, selected),
+          pick_hash: hashPickSet(cadence, selectedResolved),
         });
       } catch (_) {
         // Optional table; non-blocking
@@ -422,7 +480,7 @@ module.exports = async (req, res) => {
       sent: resp.ok,
       status: resp.status,
       interest: sub.interest,
-      picks: selected.length,
+      picks: selectedResolved.length,
     });
   }
 
