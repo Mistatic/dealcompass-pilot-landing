@@ -96,6 +96,12 @@ Optional:
 - `RECURRING_CADENCE_SECRET` (protect manual trigger calls)
 - `HIGH_SIGNAL_MAX_AGE_HOURS` (default: `72`, filters high-signal to recent picks)
 - `RECURRING_ALERT_WEBHOOK_URL` (JSON webhook for run summaries/failures)
+- `RECURRING_DEDUPE_WINDOW_HOURS` (default: `20`, cadence send guard window)
+
+Optional Supabase table for idempotency/send history:
+- `recurring_email_log(email text, cadence text, sent_at timestamptz, picks_count int, interest text, pick_hash text)`
+- If present, API enforces recent-send guard and logs successful sends.
+- If absent, API continues safely without hard failure.
 
 ## QA checklist
 - Submit test signups for each enum combination (or representative matrix).
