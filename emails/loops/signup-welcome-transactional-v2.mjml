@@ -72,7 +72,7 @@
         </mj-text>
         <mj-text padding="0 0 6px"><a href="https://dealcompass.app/reviews.html" style="color:#7ea4ff;text-decoration:none;">Our Verdicts →</a></mj-text>
         <mj-text padding="0 0 6px"><a href="https://dealcompass.app/feedback.html" style="color:#7ea4ff;text-decoration:none;">Share Feedback →</a></mj-text>
-        <mj-text padding="0"><a href="{{manageUrl}}" style="color:#7ea4ff;text-decoration:none;">Manage Preferences →</a></mj-text>
+        <mj-text padding="0"><a href="{DATA_VARIABLE:manage_preferences_url}" style="color:#7ea4ff;text-decoration:none;">Manage Preferences →</a></mj-text>
       </mj-column>
     </mj-section>
 
