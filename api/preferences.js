@@ -1,5 +1,5 @@
-const { json, readBody, sanitize, postJson, nowIso } = require('./_shared');
-const { supabaseConfig, supabaseUpsert } = require('./_supabase');
+const { json, readBody, sanitize, postJson, nowIso, makeSubmissionId } = require('./_shared');
+const { supabaseConfig, supabaseInsert, supabaseUpsert } = require('./_supabase');
 const {
   verifyPreferencesToken,
   buildPreferencesUrl,
@@ -106,10 +106,38 @@ module.exports = async (req, res) => {
     updated_at: nowIso(),
   };
 
+  let storedIn = 'user_preferences';
   try {
     await supabaseUpsert('user_preferences', row, 'email');
   } catch (e) {
-    return json(res, 502, { ok: false, error: 'preferences_update_failed', detail: e.body || e.message || null });
+    const missingTable = e?.body?.code === 'PGRST205';
+    if (!missingTable) {
+      return json(res, 502, { ok: false, error: 'preferences_update_failed', detail: e.body || e.message || null });
+    }
+
+    // Fallback for environments where user_preferences isn't provisioned yet.
+    // Persist latest preference-like fields into signup_submissions so reads
+    // and cadence fallbacks remain functional.
+    const submittedAt = nowIso();
+    const fallbackRow = {
+      submission_id: makeSubmissionId('prefs'),
+      submitted_at: submittedAt,
+      form_type: 'preferences_update',
+      user_email: emailFromToken,
+      user_name: null,
+      primary_interest: patch.primary_interest || null,
+      update_frequency: patch.update_frequency || null,
+      delivery_preference: patch.delivery_preference || null,
+      consent: 'YES',
+      source: 'dealcompass_preferences_center',
+    };
+
+    try {
+      await supabaseInsert('signup_submissions', fallbackRow);
+      storedIn = 'signup_submissions';
+    } catch (e2) {
+      return json(res, 502, { ok: false, error: 'preferences_update_failed', detail: e2.body || e2.message || null });
+    }
   }
 
   const loopsKey = String(process.env.LOOPS_API_KEY || '').trim();
@@ -135,6 +163,7 @@ module.exports = async (req, res) => {
   return json(res, 200, {
     ok: true,
     email: emailFromToken,
+    stored_in: storedIn,
     preferences: { email: emailFromToken, ...patch },
     manage_preferences_url: buildPreferencesUrl(emailFromToken),
   });
