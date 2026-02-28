@@ -31,7 +31,7 @@ function interestFromInput(v) {
 
 function pickLimitsForCadence(cadence) {
   if (cadence === 'high_signal_only') {
-    return { perCategory: 1, maxTotal: 4, maxRank: 3 };
+    return { perCategory: 1, maxTotal: 4, maxRank: 2 };
   }
   if (cadence === 'twice_weekly') {
     return { perCategory: 2, maxTotal: 6, maxRank: 99999 };
@@ -39,10 +39,29 @@ function pickLimitsForCadence(cadence) {
   return { perCategory: 3, maxTotal: 8, maxRank: 99999 };
 }
 
-function roundRobinByCategory(picksByCategory, categories, perCategory, maxTotal, maxRank) {
+function parseIsoMs(v) {
+  const t = Date.parse(String(v || ''));
+  return Number.isFinite(t) ? t : null;
+}
+
+function cadenceFilter(picks, cadence, maxRank) {
+  const maxAgeHours = Number(process.env.HIGH_SIGNAL_MAX_AGE_HOURS || 72);
+  const now = Date.now();
+  return (picks || []).filter((p) => {
+    const rankOk = Number(p.rank || 9999) <= maxRank;
+    if (!rankOk) return false;
+    if (cadence !== 'high_signal_only') return true;
+    const t = parseIsoMs(p.updatedAt);
+    if (t == null) return false;
+    const ageHours = (now - t) / 36e5;
+    return ageHours >= 0 && ageHours <= maxAgeHours;
+  });
+}
+
+function roundRobinByCategory(picksByCategory, categories, perCategory, maxTotal, maxRank, cadence) {
   const queues = categories
     .map((cat) => {
-      const list = (picksByCategory.get(cat) || []).filter((p) => Number(p.rank || 9999) <= maxRank);
+      const list = cadenceFilter(picksByCategory.get(cat) || [], cadence, maxRank);
       return { cat, list: list.slice(0, perCategory), i: 0 };
     })
     .filter((q) => q.list.length > 0);
@@ -93,6 +112,18 @@ async function loopsTransactionalSend(apiKey, payload) {
   let body = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = text || null; }
   return { ok: res.ok, status: res.status, body };
+}
+
+async function postRunAlert(payload) {
+  const url = String(process.env.RECURRING_ALERT_WEBHOOK_URL || '').trim();
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (_) {}
 }
 
 module.exports = async (req, res) => {
@@ -194,6 +225,7 @@ module.exports = async (req, res) => {
   const sendResults = [];
   const diagnostics = {
     picks_per_category: Object.fromEntries(Array.from(picksByCategory.entries()).map(([k, v]) => [k, v.length])),
+    high_signal_max_age_hours: Number(process.env.HIGH_SIGNAL_MAX_AGE_HOURS || 72),
   };
   for (const sub of cadenceSubscribers) {
     let allowedCategories = [];
@@ -210,7 +242,8 @@ module.exports = async (req, res) => {
       allowedCategories,
       limits.perCategory,
       limits.maxTotal,
-      limits.maxRank
+      limits.maxRank,
+      cadence
     );
 
     if (!selected.length) {
@@ -224,9 +257,30 @@ module.exports = async (req, res) => {
       continue;
     }
 
+    const cadenceCopy = {
+      weekly_digest: {
+        email_subject: 'Your weekly DealCompass picks',
+        cadence_label: 'Weekly Digest',
+        intro_line: 'A weekly summary of the best category-matched picks.',
+      },
+      twice_weekly: {
+        email_subject: 'DealCompass mid-week and weekend picks',
+        cadence_label: 'Twice Weekly',
+        intro_line: 'Two focused updates each week with fresh picks.',
+      },
+      high_signal_only: {
+        email_subject: 'High-signal DealCompass alert',
+        cadence_label: 'High Signal Only',
+        intro_line: 'Only top-ranked, recently-updated opportunities.',
+      },
+    }[cadence];
+
     const dataVariables = {
       firstName: sub.firstName || 'there',
       cadenceKey: cadence,
+      cadence_label: cadenceCopy.cadence_label,
+      email_subject: cadenceCopy.email_subject,
+      intro_line: cadenceCopy.intro_line,
       primaryInterest: sub.interest,
       categoriesLine: allowedCategories.join(', '),
       currentPicksUrl: 'https://dealcompass.app/current-picks.html',
@@ -267,6 +321,18 @@ module.exports = async (req, res) => {
 
   const sent = sendResults.filter((r) => r.sent).length;
   const failed = sendResults.filter((r) => !r.sent).length;
+
+  if (!dryRun) {
+    await postRunAlert({
+      service: 'dealcompass-recurring-cadence',
+      cadence,
+      sent,
+      failed,
+      subscribers_considered: cadenceSubscribers.length,
+      timestamp: nowIso(),
+      sample_failures: sendResults.filter((r) => !r.sent).slice(0, 5),
+    });
+  }
 
   return json(res, 200, {
     ok: true,
