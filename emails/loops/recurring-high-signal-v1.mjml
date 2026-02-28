@@ -38,18 +38,20 @@
 
     <mj-section padding="12px 16px 0">
       <mj-column css-class="card" padding="18px 20px" background-color="#0f172a">
-        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 8px">
-          High-signal details
+        <mj-text font-size="13px" color="#9fb0d6" text-transform="uppercase" letter-spacing="0.08em" font-weight="700" padding="0 0 10px">
+          High-signal pick
         </mj-text>
-        <mj-text padding="0 0 6px"><strong>Primary interest:</strong> {DATA_VARIABLE:primaryInterest}</mj-text>
-        <mj-text padding="0 0 6px"><strong>Included categories:</strong> {DATA_VARIABLE:categoriesLine}</mj-text>
-        <mj-text padding="0"><strong>Picks included:</strong> {DATA_VARIABLE:pick_count}</mj-text>
+        <mj-text padding="0 0 8px">
+          <a href="{DATA_VARIABLE:pick1_url}" style="color:#cfe0ff;text-decoration:none;"><strong>{DATA_VARIABLE:pick1_title}</strong></a>
+          <span style="color:#9fb0d6;"> ({DATA_VARIABLE:pick1_category})</span>
+        </mj-text>
+        <mj-text padding="0" css-class="muted">{DATA_VARIABLE:pick1_blurb}</mj-text>
       </mj-column>
     </mj-section>
 
     <mj-section padding="12px 16px 0">
       <mj-column>
-        <mj-button href="{DATA_VARIABLE:currentPicksUrl}">Open high-signal picks</mj-button>
+        <mj-button href="{DATA_VARIABLE:pick1_url}">Open this pick</mj-button>
       </mj-column>
     </mj-section>
 

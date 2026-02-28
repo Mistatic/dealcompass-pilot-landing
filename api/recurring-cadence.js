@@ -387,7 +387,7 @@ module.exports = async (req, res) => {
       dataVariables[`pick${n}_category`] = p.category;
       dataVariables[`pick${n}_title`] = p.title;
       dataVariables[`pick${n}_url`] = p.url;
-      dataVariables[`pick${n}_blurb`] = p.blurb;
+      dataVariables[`pick${n}_blurb`] = p.blurb || 'Tap to view deal details.';
       dataVariables[`pick${n}_rank`] = String(p.rank || '');
     });
 
