@@ -186,9 +186,9 @@ module.exports = async (req, res) => {
   if (!loopsKey) return json(res, 500, { ok: false, error: 'missing_loops_api_key' });
 
   const templateIdMap = {
-    weekly_digest: String(process.env.LOOPS_RECURRING_TEMPLATE_WEEKLY || process.env.LOOPS_SIGNUP_WELCOME_TRANSACTIONAL_ID || '').trim(),
-    twice_weekly: String(process.env.LOOPS_RECURRING_TEMPLATE_TWICE_WEEKLY || process.env.LOOPS_SIGNUP_WELCOME_TRANSACTIONAL_ID || '').trim(),
-    high_signal_only: String(process.env.LOOPS_RECURRING_TEMPLATE_HIGH_SIGNAL || process.env.LOOPS_SIGNUP_WELCOME_TRANSACTIONAL_ID || '').trim(),
+    weekly_digest: String(process.env.LOOPS_RECURRING_TEMPLATE_WEEKLY || '').trim(),
+    twice_weekly: String(process.env.LOOPS_RECURRING_TEMPLATE_TWICE_WEEKLY || '').trim(),
+    high_signal_only: String(process.env.LOOPS_RECURRING_TEMPLATE_HIGH_SIGNAL || '').trim(),
   };
   const transactionalId = templateIdMap[cadence];
   if (!transactionalId) {
