@@ -34,9 +34,9 @@ function pickLimitsForCadence(cadence) {
     return { perCategory: 1, maxTotal: 4, maxRank: 3 };
   }
   if (cadence === 'twice_weekly') {
-    return { perCategory: 2, maxTotal: 6, maxRank: 999 };
+    return { perCategory: 2, maxTotal: 6, maxRank: 99999 };
   }
-  return { perCategory: 3, maxTotal: 8, maxRank: 999 };
+  return { perCategory: 3, maxTotal: 8, maxRank: 99999 };
 }
 
 function roundRobinByCategory(picksByCategory, categories, perCategory, maxTotal, maxRank) {
@@ -138,7 +138,7 @@ module.exports = async (req, res) => {
   let picks;
   try {
     submissions = await sbGet('signup_submissions?select=user_email,user_name,primary_interest,update_frequency,delivery_preference,submitted_at,consent&consent=eq.YES&order=submitted_at.desc&limit=5000');
-    picks = await sbGet('affiliate_links_live?select=category,title,url,blurb,rank,active,created_at,updated_at&active=eq.true&order=category.asc,rank.asc&limit=200');
+    picks = await sbGet('affiliate_links_live?select=category,title,url,blurb,rank,generated_rank,active,created_at,updated_at&active=eq.true&order=category.asc,generated_rank.asc,rank.asc&limit=200');
   } catch (e) {
     return json(res, 502, {
       ok: false,
@@ -174,12 +174,14 @@ module.exports = async (req, res) => {
     const category = norm(p.category);
     if (!category) continue;
     const list = picksByCategory.get(category) || [];
+    const rawRank = p.rank ?? p.generated_rank;
+    const numericRank = Number(rawRank);
     list.push({
       category,
       title: sanitize(p.title || 'Deal pick', 180),
       url: sanitize(p.url || 'https://dealcompass.app/current-picks.html', 500),
       blurb: sanitize(p.blurb || '', 280),
-      rank: Number(p.rank || 9999),
+      rank: Number.isFinite(numericRank) && numericRank > 0 ? numericRank : (list.length + 1),
       updatedAt: p.updated_at || p.created_at || null,
     });
     picksByCategory.set(category, list);
