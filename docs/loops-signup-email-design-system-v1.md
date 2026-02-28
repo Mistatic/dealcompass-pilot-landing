@@ -68,8 +68,40 @@ Use one unified DealCompass email visual system for all sends going forward:
      - Cadence: weekly_digest/twice_weekly/high_signal_only
      - Delivery: email/email_plus_telegram
 
+## Recurring cadence engine (production)
+- API route: `/api/recurring-cadence`
+- Cadence query values:
+  - `weekly_digest`
+  - `twice_weekly`
+  - `high_signal_only`
+- Schedule (Vercel Cron, UTC):
+  - Weekly: Monday 13:00
+  - Twice weekly: Tuesday + Friday 13:00
+  - High signal: Daily 13:30
+
+### Category-safe targeting contract
+- `tech` / `home` / future specific slug → only that category
+- `all` (scalable replacement for legacy `both`) → mixed active categories
+- `new_categories` → only categories outside `CORE_CATEGORY_SLUGS` (default `tech,home`)
+- Legacy `both` values are normalized to `all` in backend
+
+### Required env vars for recurring sends
+- `LOOPS_API_KEY`
+- `LOOPS_RECURRING_TEMPLATE_WEEKLY`
+- `LOOPS_RECURRING_TEMPLATE_TWICE_WEEKLY`
+- `LOOPS_RECURRING_TEMPLATE_HIGH_SIGNAL`
+
+Optional:
+- `CORE_CATEGORY_SLUGS` (default: `tech,home`)
+- `RECURRING_CADENCE_SECRET` (protect manual trigger calls)
+
 ## QA checklist
 - Submit test signups for each enum combination (or representative matrix).
 - Verify API response includes `signup_profile` and `loops` status blocks.
 - In Loops contact profile, confirm mapped fields persisted.
 - Trigger event journey and verify email copy matches selected options.
+- Trigger dry runs:
+  - `/api/recurring-cadence?cadence=weekly_digest&dry_run=1`
+  - `/api/recurring-cadence?cadence=twice_weekly&dry_run=1`
+  - `/api/recurring-cadence?cadence=high_signal_only&dry_run=1`
+- Confirm dry-run totals and sample rows match expected segment + category rules.
