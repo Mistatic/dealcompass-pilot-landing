@@ -246,7 +246,7 @@ module.exports = async (req, res) => {
             addToAudience: true,
             dataVariables: {
               firstName: displayName,
-              primaryInterest: primaryInterest || 'tech',
+              primaryInterest: primaryInterest || 'all',
               primaryGoal: primaryGoal || 'best_value',
               requestedCategories: requestedCategories || 'none',
               updateFrequency: updateFrequency || 'weekly_digest',

@@ -34,6 +34,23 @@
     categories.tech = DEFAULT_CATEGORIES.tech;
   }
 
+  function titleCaseSlug(slug) {
+    return cleanSlug(slug)
+      .split('-')
+      .filter(Boolean)
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+  }
+
+  function ensureCategory(slug) {
+    const key = cleanSlug(slug);
+    if (!key) return null;
+    if (!categories[key]) {
+      categories[key] = { label: titleCaseSlug(key) || key, heroSub: '' };
+    }
+    return key;
+  }
+
   const defaultSlug = Object.keys(categories)[0];
 
   function isKnown(slug) {
@@ -43,7 +60,9 @@
   function getSelectedCategory(search) {
     const rawSlug = new URLSearchParams(search || window.location.search).get('category') || defaultSlug;
     const slug = cleanSlug(rawSlug);
-    return isKnown(slug) ? slug : defaultSlug;
+    if (isKnown(slug)) return slug;
+    // Allow newly-introduced slugs to work immediately (even before config copy is added).
+    return ensureCategory(slug) || defaultSlug;
   }
 
   function withCategory(url, category) {
