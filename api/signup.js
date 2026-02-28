@@ -9,6 +9,11 @@ const {
   makeSubmissionId,
 } = require('./_shared');
 const { supabaseConfig, supabaseInsert } = require('./_supabase');
+const { buildSignupEmailProfile } = require('./_signup_email_profile');
+
+function cleanUndefined(obj) {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== ''));
+}
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'method_not_allowed' });
@@ -46,6 +51,14 @@ module.exports = async (req, res) => {
   if (!primaryInterest) return json(res, 400, { ok: false, error: 'missing_primary_interest' });
   if (!primaryGoal) return json(res, 400, { ok: false, error: 'missing_primary_goal' });
   if (!consent) return json(res, 400, { ok: false, error: 'consent_required' });
+
+  const signupEmailProfile = buildSignupEmailProfile({
+    primary_interest: primaryInterest,
+    primary_goal: primaryGoal,
+    update_frequency: updateFrequency,
+    delivery_preference: deliveryPreference,
+    requested_categories: requestedCategories,
+  });
 
   const submissionId = makeSubmissionId('signup');
   const submittedAt = nowIso();
@@ -112,37 +125,126 @@ module.exports = async (req, res) => {
     storedIn = 'webhook';
   }
 
-  // Newsletter sync via Loops (Buttondown replacement).
+  // Newsletter + welcome automation via Loops.
+  const loops = {
+    contact_sync: { attempted: false },
+    signup_event: { attempted: false },
+    welcome_transactional: { attempted: false },
+  };
+
   const loopsKey = String(process.env.LOOPS_API_KEY || '').trim();
   if (loopsKey) {
+    const loopsHeaders = { Authorization: `Bearer ${loopsKey}` };
     const userGroup = campaignChannel
       ? `dealcompass:${campaignChannel}`
       : 'dealcompass:general';
 
-    await postJson(
-      'https://app.loops.so/api/v1/contacts/update',
-      {
-        email,
-        firstName: firstName || undefined,
-        source: 'dealcompass_native_form',
-        userGroup,
-        subscribed: true,
+    loops.contact_sync.attempted = true;
+    try {
+      const contactResp = await postJson(
+        'https://app.loops.so/api/v1/contacts/update',
+        cleanUndefined({
+          email,
+          firstName: firstName || undefined,
+          source: 'dealcompass_native_form',
+          userGroup,
+          subscribed: true,
 
-        campaign_id: campaignId || undefined,
-        campaign_channel: campaignChannel || undefined,
-        campaign_variant: campaignVariant || undefined,
-        primary_interest: primaryInterest || undefined,
-        primary_goal: primaryGoal || undefined,
-        requested_categories: requestedCategories || undefined,
-        update_frequency: updateFrequency || undefined,
-        delivery_preference: deliveryPreference || undefined,
-        biggest_pain: biggestPain || undefined,
-      },
-      {
-        Authorization: `Bearer ${loopsKey}`,
+          campaign_id: campaignId || undefined,
+          campaign_channel: campaignChannel || undefined,
+          campaign_variant: campaignVariant || undefined,
+          primary_interest: primaryInterest || undefined,
+          primary_goal: primaryGoal || undefined,
+          requested_categories: requestedCategories || undefined,
+          update_frequency: updateFrequency || undefined,
+          delivery_preference: deliveryPreference || undefined,
+          biggest_pain: biggestPain || undefined,
+
+          // Signup-driven content profile fields for Loops personalization
+          ...signupEmailProfile,
+        }),
+        loopsHeaders
+      );
+      loops.contact_sync.ok = contactResp.ok;
+      loops.contact_sync.status = contactResp.status;
+    } catch (e) {
+      loops.contact_sync.ok = false;
+      loops.contact_sync.error = sanitize(e.message || 'loops_contact_sync_failed', 160);
+    }
+
+    const signupEventName = sanitize(process.env.LOOPS_SIGNUP_EVENT_NAME || 'dealcompass_signup', 80);
+    if (signupEventName) {
+      loops.signup_event.attempted = true;
+      try {
+        const eventResp = await postJson(
+          'https://app.loops.so/api/v1/events/send',
+          {
+            email,
+            eventName: signupEventName,
+            eventProperties: cleanUndefined({
+              submission_id: submissionId,
+              submitted_at: submittedAt,
+              campaign_id: campaignId || undefined,
+              campaign_channel: campaignChannel || undefined,
+              campaign_variant: campaignVariant || undefined,
+              primary_interest: primaryInterest || undefined,
+              primary_goal: primaryGoal || undefined,
+              requested_categories: requestedCategories || undefined,
+              update_frequency: updateFrequency || undefined,
+              delivery_preference: deliveryPreference || undefined,
+              ...signupEmailProfile,
+            }),
+          },
+          loopsHeaders
+        );
+        loops.signup_event.ok = eventResp.ok;
+        loops.signup_event.status = eventResp.status;
+      } catch (e) {
+        loops.signup_event.ok = false;
+        loops.signup_event.error = sanitize(e.message || 'loops_signup_event_failed', 160);
       }
-    );
+    }
+
+    const signupTransactionalId = sanitize(process.env.LOOPS_SIGNUP_WELCOME_TRANSACTIONAL_ID, 160);
+    if (signupTransactionalId) {
+      loops.welcome_transactional.attempted = true;
+      const displayName = firstName || 'there';
+      try {
+        const transactionalResp = await postJson(
+          'https://app.loops.so/api/v1/transactional',
+          {
+            email,
+            transactionalId: signupTransactionalId,
+            addToAudience: true,
+            dataVariables: {
+              firstName: displayName,
+              primaryInterest: primaryInterest || 'tech',
+              primaryGoal: primaryGoal || 'best_value',
+              requestedCategories: requestedCategories || 'none',
+              updateFrequency: updateFrequency || 'weekly_digest',
+              manageUrl: 'https://dealcompass.app/signup.html',
+              feedbackUrl: 'https://dealcompass.app/feedback.html',
+              reviewsUrl: 'https://dealcompass.app/reviews.html',
+              currentPicksUrl: 'https://dealcompass.app/current-picks.html',
+              ...signupEmailProfile,
+            },
+          },
+          loopsHeaders
+        );
+        loops.welcome_transactional.ok = transactionalResp.ok;
+        loops.welcome_transactional.status = transactionalResp.status;
+      } catch (e) {
+        loops.welcome_transactional.ok = false;
+        loops.welcome_transactional.error = sanitize(e.message || 'loops_transactional_failed', 160);
+      }
+    }
   }
 
-  return json(res, 200, { ok: true, submission_id: submissionId, storage: storedIn });
+  return json(res, 200, {
+    ok: true,
+    submission_id: submissionId,
+    storage: storedIn,
+    signup_profile: signupEmailProfile,
+    loops,
+  });
 };
