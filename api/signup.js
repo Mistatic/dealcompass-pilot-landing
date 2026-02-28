@@ -8,8 +8,9 @@ const {
   nowIso,
   makeSubmissionId,
 } = require('./_shared');
-const { supabaseConfig, supabaseInsert } = require('./_supabase');
+const { supabaseConfig, supabaseInsert, supabaseUpsert } = require('./_supabase');
 const { buildSignupEmailProfile } = require('./_signup_email_profile');
+const { buildPreferencesUrl } = require('./_preferences');
 
 function cleanUndefined(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== ''));
@@ -64,6 +65,7 @@ module.exports = async (req, res) => {
     delivery_preference: deliveryPreference,
     requested_categories: requestedCategories,
   });
+  const managePreferencesUrl = buildPreferencesUrl(email);
 
   const submissionId = makeSubmissionId('signup');
   const submittedAt = nowIso();
@@ -130,6 +132,25 @@ module.exports = async (req, res) => {
     storedIn = 'webhook';
   }
 
+  if (hasSupabase) {
+    try {
+      await supabaseUpsert(
+        'user_preferences',
+        {
+          email,
+          first_name: firstName || null,
+          primary_interest: primaryInterest || 'all',
+          update_frequency: updateFrequency || 'weekly_digest',
+          delivery_preference: deliveryPreference || 'email',
+          status: 'active',
+          source: 'signup',
+          updated_at: submittedAt,
+        },
+        'email'
+      );
+    } catch (_) {}
+  }
+
   // Newsletter + welcome automation via Loops.
   const loops = {
     contact_sync: { attempted: false },
@@ -164,6 +185,7 @@ module.exports = async (req, res) => {
           update_frequency: updateFrequency || undefined,
           delivery_preference: deliveryPreference || undefined,
           biggest_pain: biggestPain || undefined,
+          manage_preferences_url: managePreferencesUrl,
 
           // Signup-driven content profile fields for Loops personalization
           ...signupEmailProfile,
@@ -197,6 +219,7 @@ module.exports = async (req, res) => {
               requested_categories: requestedCategories || undefined,
               update_frequency: updateFrequency || undefined,
               delivery_preference: deliveryPreference || undefined,
+              manage_preferences_url: managePreferencesUrl,
               ...signupEmailProfile,
             }),
           },
@@ -227,7 +250,8 @@ module.exports = async (req, res) => {
               primaryGoal: primaryGoal || 'best_value',
               requestedCategories: requestedCategories || 'none',
               updateFrequency: updateFrequency || 'weekly_digest',
-              manageUrl: 'https://dealcompass.app/signup.html',
+              manageUrl: managePreferencesUrl,
+              manage_preferences_url: managePreferencesUrl,
               feedbackUrl: 'https://dealcompass.app/feedback.html',
               reviewsUrl: 'https://dealcompass.app/reviews.html',
               currentPicksUrl: 'https://dealcompass.app/current-picks.html',

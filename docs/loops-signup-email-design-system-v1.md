@@ -103,10 +103,27 @@ Optional Supabase table for idempotency/send history:
 - If present, API enforces recent-send guard and logs successful sends.
 - If absent, API continues safely without hard failure.
 
+## Preferences center (production)
+- Public page: `/preferences.html`
+- API route: `/api/preferences`
+- Tokenized link model:
+  - `manage_preferences_url` is generated server-side and sent to Loops as contact/event/data variable.
+  - Link carries signed token (`?t=...`) based on `PREFS_TOKEN_SECRET`.
+- Canonical preference store: `public.user_preferences`
+- Signup API upserts `user_preferences`; preferences API updates `user_preferences` + Loops contact properties.
+
+Required env:
+- `PREFS_TOKEN_SECRET`
+- `SITE_BASE_URL` (recommended, default `https://dealcompass.app`)
+
 ## QA checklist
 - Submit test signups for each enum combination (or representative matrix).
 - Verify API response includes `signup_profile` and `loops` status blocks.
-- In Loops contact profile, confirm mapped fields persisted.
+- In Loops contact profile, confirm mapped fields persisted including `manage_preferences_url`.
+- Open `/preferences.html?t=<token>` and confirm GET loads current values.
+- Save preference changes and confirm:
+  - `user_preferences` row updates
+  - Loops contact fields update (`primary_interest`, `update_frequency`, `delivery_preference`, `preference_status`).
 - Trigger event journey and verify email copy matches selected options.
 - Trigger dry runs:
   - `/api/recurring-cadence?cadence=weekly_digest&dry_run=1`
