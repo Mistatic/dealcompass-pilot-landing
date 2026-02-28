@@ -94,6 +94,8 @@ Use one unified DealCompass email visual system for all sends going forward:
 Optional:
 - `CORE_CATEGORY_SLUGS` (default: `tech,home`)
 - `RECURRING_CADENCE_SECRET` (protect manual trigger calls)
+- `HIGH_SIGNAL_MAX_AGE_HOURS` (default: `72`, filters high-signal to recent picks)
+- `RECURRING_ALERT_WEBHOOK_URL` (JSON webhook for run summaries/failures)
 
 ## QA checklist
 - Submit test signups for each enum combination (or representative matrix).
