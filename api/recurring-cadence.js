@@ -196,6 +196,8 @@ module.exports = async (req, res) => {
   }
 
   const dryRun = String(q.dry_run || '').trim() === '1';
+  const targetEmail = norm(q.email || q.test_email || '');
+  const forceTarget = String(q.force_target || '').trim() === '1';
   const coreCategories = String(process.env.CORE_CATEGORY_SLUGS || 'tech,home')
     .split(',')
     .map((x) => norm(x))
@@ -238,11 +240,13 @@ module.exports = async (req, res) => {
   const cadenceSubscribers = [];
   for (const row of latestByEmail.values()) {
     const email = String(row.user_email || '').trim().toLowerCase();
+    if (targetEmail && email !== targetEmail) continue;
+
     const prefRow = prefByEmail.get(email);
 
     const sourceCadence = prefRow?.update_frequency || row.update_frequency;
     const pref = cadenceFromInput(sourceCadence);
-    if (pref !== cadence) continue;
+    if (!forceTarget && pref !== cadence) continue;
 
     const deliveryRaw = prefRow?.delivery_preference || row.delivery_preference;
     const delivery = norm(deliveryRaw);
