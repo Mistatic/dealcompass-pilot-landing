@@ -100,7 +100,11 @@
       const r = await fetch(`/api/preferences?t=${encodeURIComponent(token)}`);
       const j = await r.json();
       if (!r.ok || !j.ok) {
-        setMsg('This preferences link expired. Please use a fresh email link.', 'err');
+        if (j?.error === 'invalid_or_expired_token') {
+          setMsg('This preferences link expired. Please use a fresh email link.', 'err');
+        } else {
+          setMsg('Preferences are temporarily unavailable. Please try again in a minute.', 'err');
+        }
         return;
       }
       emailLine.textContent = `Managing preferences for ${j.email}`;
