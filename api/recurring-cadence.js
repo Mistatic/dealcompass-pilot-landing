@@ -423,6 +423,11 @@ module.exports = async (req, res) => {
 
     const selectedResolved = selected.map((p, idx) => resolvePickForEmail(p, idx, websitePickFallback));
 
+    const primaryCategory = norm(selectedResolved[0]?.category || '');
+    const categoryBrowseUrl = primaryCategory
+      ? `https://dealcompass.app/current-picks.html?category=${encodeURIComponent(primaryCategory)}`
+      : 'https://dealcompass.app/current-picks.html';
+
     const dataVariables = {
       firstName: sub.firstName || 'there',
       cadenceKey: cadence,
@@ -432,6 +437,8 @@ module.exports = async (req, res) => {
       primaryInterest: sub.interest,
       categoriesLine: allowedCategories.join(', '),
       currentPicksUrl: 'https://dealcompass.app/current-picks.html',
+      currentCategoryUrl: categoryBrowseUrl,
+      currentCategoryLabel: primaryCategory || 'current',
       reviewsUrl: 'https://dealcompass.app/reviews.html',
       feedbackUrl: 'https://dealcompass.app/feedback.html',
       manage_preferences_url: sub.managePreferencesUrl,
