@@ -9,6 +9,7 @@ const {
   makeSubmissionId,
 } = require('./_shared');
 const { supabaseConfig, supabaseInsert } = require('./_supabase');
+const { buildSignupEmailProfile } = require('./_signup_email_profile');
 
 function cleanUndefined(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== ''));
@@ -50,6 +51,14 @@ module.exports = async (req, res) => {
   if (!primaryInterest) return json(res, 400, { ok: false, error: 'missing_primary_interest' });
   if (!primaryGoal) return json(res, 400, { ok: false, error: 'missing_primary_goal' });
   if (!consent) return json(res, 400, { ok: false, error: 'consent_required' });
+
+  const signupEmailProfile = buildSignupEmailProfile({
+    primary_interest: primaryInterest,
+    primary_goal: primaryGoal,
+    update_frequency: updateFrequency,
+    delivery_preference: deliveryPreference,
+    requested_categories: requestedCategories,
+  });
 
   const submissionId = makeSubmissionId('signup');
   const submittedAt = nowIso();
@@ -150,6 +159,9 @@ module.exports = async (req, res) => {
           update_frequency: updateFrequency || undefined,
           delivery_preference: deliveryPreference || undefined,
           biggest_pain: biggestPain || undefined,
+
+          // Signup-driven content profile fields for Loops personalization
+          ...signupEmailProfile,
         }),
         loopsHeaders
       );
@@ -180,6 +192,7 @@ module.exports = async (req, res) => {
               requested_categories: requestedCategories || undefined,
               update_frequency: updateFrequency || undefined,
               delivery_preference: deliveryPreference || undefined,
+              ...signupEmailProfile,
             }),
           },
           loopsHeaders
@@ -211,6 +224,9 @@ module.exports = async (req, res) => {
               updateFrequency: updateFrequency || 'weekly_digest',
               manageUrl: 'https://dealcompass.app/signup.html',
               feedbackUrl: 'https://dealcompass.app/feedback.html',
+              reviewsUrl: 'https://dealcompass.app/reviews.html',
+              currentPicksUrl: 'https://dealcompass.app/current-picks.html',
+              ...signupEmailProfile,
             },
           },
           loopsHeaders
@@ -228,6 +244,7 @@ module.exports = async (req, res) => {
     ok: true,
     submission_id: submissionId,
     storage: storedIn,
+    signup_profile: signupEmailProfile,
     loops,
   });
 };

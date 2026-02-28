@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#122033;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f7fb;padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #dfe7f5;">
+            <tr>
+              <td style="background:linear-gradient(135deg,#2f5cff,#6288ff);padding:24px;color:#ffffff;">
+                <div style="font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.9;">DealCompass</div>
+                <h1 style="margin:8px 0 0;font-size:28px;line-height:1.2;">Welcome, {{firstName}}.</h1>
+                <p style="margin:10px 0 0;font-size:15px;line-height:1.5;opacity:.95;">{{interest_headline}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px;">
+                <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">Thanks for signing up. Your preferences are now set, and we’ll tailor updates around what you selected in signup.</p>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #dfe7f5;border-radius:12px;background:#f8fbff;margin:0 0 16px;">
+                  <tr><td style="padding:14px 16px;font-size:14px;line-height:1.5;">
+                    <div><strong>Interest:</strong> {{interest_label}}</div>
+                    <div><strong>Goal:</strong> {{goal_label}}</div>
+                    <div><strong>Cadence:</strong> {{cadence_label}}</div>
+                    <div><strong>Delivery:</strong> {{delivery_label}}</div>
+                  </td></tr>
+                </table>
+
+                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">{{goal_focus_line}}</p>
+                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">{{cadence_line}}</p>
+                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">{{delivery_line}}</p>
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">{{requested_categories_line}}</p>
+
+                <p style="margin:0 0 20px;">
+                  <a href="{{recommended_page_url}}" style="display:inline-block;background:#2f5cff;color:#ffffff;text-decoration:none;font-weight:700;padding:11px 16px;border-radius:10px;">{{recommended_page_label}}</a>
+                </p>
+
+                <p style="margin:0 0 8px;font-size:14px;color:#51637f;">Quick links:</p>
+                <ul style="margin:0;padding-left:18px;color:#334a68;font-size:14px;line-height:1.7;">
+                  <li><a href="{{currentPicksUrl}}" style="color:#2f5cff;">Current Picks</a></li>
+                  <li><a href="{{reviewsUrl}}" style="color:#2f5cff;">Our Verdicts</a></li>
+                  <li><a href="{{feedbackUrl}}" style="color:#2f5cff;">Share Feedback</a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px;background:#f8fbff;border-top:1px solid #dfe7f5;font-size:12px;color:#6d7f99;line-height:1.5;">
+                You’re receiving this because you signed up on DealCompass. Manage preferences at {{manageUrl}}.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
