@@ -143,6 +143,9 @@
       .nav-pill { flex: 1; text-align: center; }
     }
 
+  
+    .verdict-disclaimer { margin: 18px 0 8px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(180,200,255,.14); background: rgba(255,255,255,.03); color: #cbd5e1; font-size: .92rem; line-height: 1.45; }
+    .verdict-disclaimer a { text-decoration: underline; color: #dbe5ff; }
   </style>
   <script type="application/ld+json">
 {
@@ -217,12 +220,17 @@
       </div>
       <div class="topbar-right">
         <nav aria-label="Primary">
-          <a class="nav-pill" href="/">Current Picks</a>
+          <a class="nav-pill" id="currentPicksNav" href="/current-picks.html">Current Picks</a>
           <a class="nav-pill" href="/past-picks.html">Past Picks</a>
           <a class="nav-pill" href="/reviews.html">Our Verdicts</a>
         </nav>
       </div>
     </header>
+    <section class="verdict-disclaimer" aria-label="verdict disclaimer">
+      Note: This page is an honest product verdict and may not reflect an active sale right now.
+      For currently discounted links, view <a id="currentDealsLink" href="/current-picks.html">Current Picks</a>.
+    </section>
+
 
     <section class="hero">
       <h1>YUNZII AL71 75% Mechanical Keyboard — DealCompass Analysis</h1>
@@ -272,7 +280,7 @@
     categorySelect.value = ['tech', 'home'].includes(cat) ? cat : 'tech';
 
     categorySelect.addEventListener('change', () => {
-      const u = new URL('/', window.location.origin);
+      const u = new URL('/current-picks.html', window.location.origin);
       u.searchParams.set('category', categorySelect.value);
       window.location.href = u.toString();
     });

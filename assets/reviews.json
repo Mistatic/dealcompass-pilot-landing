@@ -1,6 +1,106 @@
 {
   "reviews": [
     {
+      "slug": "lokithor-jc400-9-in-1-battery-charger-jump-starter-analysis",
+      "title": "LOKITHOR JC400 9-in-1 Battery Charger and Jump Starter (2500A, 12V) — DealCompass Analysis",
+      "product": "LOKITHOR JC400 9-in-1 Battery Charger and Jump Starter (2500A, 12V)",
+      "category": "Automotive",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4039sHq",
+      "summary": "A strong emergency-car-kit pick if you want one tool that can both jump-start reliably and reduce the odds of being stranded between service stops.",
+      "path": "/reviews/lokithor-jc400-9-in-1-battery-charger-jump-starter-analysis.html"
+    },
+    {
+      "slug": "viofo-a119m-pro-4k-hdr-mini-dash-cam-analysis",
+      "title": "VIOFO A119M Pro 4K HDR Mini Dash Cam — DealCompass Analysis",
+      "product": "VIOFO A119M Pro 4K HDR Mini Dash Cam",
+      "category": "Automotive",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/3OSo3Tz",
+      "summary": "A practical evidence-first dash cam pick if your priority is readable incident footage without paying flagship dual-camera pricing.",
+      "path": "/reviews/viofo-a119m-pro-4k-hdr-mini-dash-cam-analysis.html"
+    },
+    {
+      "slug": "chi-lava-ceramic-flat-iron-1-inch-analysis",
+      "title": "CHI Lava Ceramic 1-inch Flat Iron Hair Straightener — DealCompass Analysis",
+      "product": "CHI Lava Ceramic 1-inch Flat Iron Hair Straightener",
+      "category": "Beauty",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4lltlDz",
+      "summary": "A premium-feel styling pick for users who want smoother passes and less tugging than entry-level irons.",
+      "path": "/reviews/chi-lava-ceramic-flat-iron-1-inch-analysis.html"
+    },
+    {
+      "slug": "olay-retinol-cleansing-melts-face-wash-analysis",
+      "title": "Olay Retinol Cleansing Melts Fragrance-Free Face Wash — DealCompass Analysis",
+      "product": "Olay Retinol Cleansing Melts Fragrance-Free Face Wash",
+      "category": "Beauty",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/478mZkP",
+      "summary": "A convenient travel-friendly cleanser format for users who want a gentle, fragrance-free routine with less bottle clutter.",
+      "path": "/reviews/olay-retinol-cleansing-melts-face-wash-analysis.html"
+    },
+    {
+      "slug": "cincom-leg-massager-heat-compression-boots-analysis",
+      "title": "CINCOM Leg Massager with Heat and Compression Boots — DealCompass Analysis",
+      "product": "CINCOM Leg Massager with Heat and Compression Boots",
+      "category": "Fitness",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4rTX9cw",
+      "summary": "A recovery-focused pick for people who want guided compression sessions at home after long standing shifts or hard lower-body training.",
+      "path": "/reviews/cincom-leg-massager-heat-compression-boots-analysis.html"
+    },
+    {
+      "slug": "monozel-cordless-handheld-vacuum-18000pa-analysis",
+      "title": "MONOZEL Cordless Handheld Vacuum Cleaner 18000Pa (2-in-1) — DealCompass Analysis",
+      "product": "MONOZEL Cordless Handheld Vacuum Cleaner 18000Pa (2-in-1)",
+      "category": "Home",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4b33QSJ",
+      "summary": "A practical quick-clean tool for cars, stairs, and spot messes where dragging out a full-size vacuum is overkill.",
+      "path": "/reviews/monozel-cordless-handheld-vacuum-18000pa-analysis.html"
+    },
+    {
+      "slug": "night-cat-pop-up-camping-tent-2-person-analysis",
+      "title": "Night Cat Pop-up Camping Tent (2 Person, Waterproof) — DealCompass Analysis",
+      "product": "Night Cat Pop-up Camping Tent (2 Person, Waterproof)",
+      "category": "Outdoors",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4kZbX7a",
+      "summary": "A speed-setup tent pick for casual camping trips where reducing setup friction matters more than ultralight pack metrics.",
+      "path": "/reviews/night-cat-pop-up-camping-tent-2-person-analysis.html"
+    },
+    {
+      "slug": "fsitego-self-cleaning-cat-litter-box-analysis",
+      "title": "Fsitego Self Cleaning Cat Litter Box (Extra Large) — DealCompass Analysis",
+      "product": "Fsitego Self Cleaning Cat Litter Box (Extra Large)",
+      "category": "Pet",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4siCSgS",
+      "summary": "A high-convenience litter management pick for multi-cat homes that want to reduce daily scooping workload.",
+      "path": "/reviews/fsitego-self-cleaning-cat-litter-box-analysis.html"
+    },
+    {
+      "slug": "samsung-galaxy-buds-4-pro-2026-analysis",
+      "title": "Samsung Galaxy Buds 4 Pro (2026) with Gift Card — DealCompass Analysis",
+      "product": "Samsung Galaxy Buds 4 Pro (2026) with Gift Card",
+      "category": "Tech",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4bhi2sk",
+      "summary": "A premium everyday-earbud pick for users who want strong call clarity and modern ANC without stepping into ultra-luxury pricing.",
+      "path": "/reviews/samsung-galaxy-buds-4-pro-2026-analysis.html"
+    },
+    {
+      "slug": "orico-m2-nvme-ssd-enclosure-usb31-gen2-analysis",
+      "title": "ORICO M.2 NVMe SSD Enclosure (USB 3.1 Gen 2, 10Gbps) — DealCompass Analysis",
+      "product": "ORICO M.2 NVMe SSD Enclosure (USB 3.1 Gen 2, 10Gbps)",
+      "category": "Tech",
+      "published_at": "2026-03-01",
+      "affiliate_url": "https://amzn.to/4aZPJxo",
+      "summary": "A useful speed-up accessory for creators and power users moving large files between laptops, consoles, and external workflows.",
+      "path": "/reviews/orico-m2-nvme-ssd-enclosure-usb31-gen2-analysis.html"
+    },
+    {
       "slug": "logitech-ergo-m575s-trackball-review",
       "title": "Logitech Ergo M575S Wireless Trackball Mouse — DealCompass Analysis",
       "product": "Logitech Ergo M575S Wireless Trackball Mouse",
