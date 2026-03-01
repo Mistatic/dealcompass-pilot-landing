@@ -270,7 +270,7 @@
     categorySelect.value = ['tech', 'home'].includes(cat) ? cat : 'home';
 
     categorySelect.addEventListener('change', () => {
-      const u = new URL('/', window.location.origin);
+      const u = new URL('/current-picks.html', window.location.origin);
       u.searchParams.set('category', categorySelect.value);
       window.location.href = u.toString();
     });

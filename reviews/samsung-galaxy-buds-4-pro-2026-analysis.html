@@ -142,7 +142,7 @@
     const known = ['tech','home','beauty','fitness','automotive','outdoors','pet'];
     categorySelect.value = known.includes(cat) ? cat : 'tech';
     categorySelect.addEventListener('change', () => {
-      const u = new URL('/', window.location.origin);
+      const u = new URL('/current-picks.html', window.location.origin);
       u.searchParams.set('category', categorySelect.value);
       window.location.href = u.toString();
     });
