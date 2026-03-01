@@ -90,7 +90,7 @@
       </div>
       <div class="topbar-right">
         <nav aria-label="Primary">
-          <a class="nav-pill" href="/">Current Picks</a>
+          <a class="nav-pill" id="currentPicksNav" href="/current-picks.html">Current Picks</a>
           <a class="nav-pill" href="/past-picks.html">Past Picks</a>
           <a class="nav-pill" href="/reviews.html">Our Verdicts</a>
         </nav>
@@ -98,7 +98,7 @@
     </header>
     <section class="verdict-disclaimer" aria-label="verdict disclaimer">
       Note: This page is an honest product verdict and may not reflect an active sale right now.
-      For currently discounted links, view <a href="/current-picks.html">Current Picks</a>.
+      For currently discounted links, view <a id="currentDealsLink" href="/current-picks.html">Current Picks</a>.
     </section>
 
 
@@ -149,6 +149,12 @@
     const cat = params.get('category') || 'home';
     const known = ['tech','home','beauty','fitness','automotive','outdoors','pet'];
     categorySelect.value = known.includes(cat) ? cat : 'home';
+
+    const currentPicksNav = document.getElementById('currentPicksNav');
+    const currentDealsLink = document.getElementById('currentDealsLink');
+    const currentPicksHref = `/current-picks.html?category=${encodeURIComponent(categorySelect.value)}`;
+    if (currentPicksNav) currentPicksNav.href = currentPicksHref;
+    if (currentDealsLink) currentDealsLink.href = currentPicksHref;
     categorySelect.addEventListener('change', () => {
       const u = new URL('/current-picks.html', window.location.origin);
       u.searchParams.set('category', categorySelect.value);

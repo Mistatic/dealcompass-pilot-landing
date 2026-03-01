@@ -164,7 +164,7 @@
     <p class="sub">Practical DealCompass analysis from current and past picks, with clear fit notes, tradeoffs, and direct links.</p>
     <p class="sub" id="verdictsDisclaimer" style="margin-top:-14px; font-size:0.98rem; color:#b6c2e6;">
       Note: Some reviewed products may not have an active sale at the moment. These verdicts are our honest product evaluations.
-      For live discounted links, check <a href="/current-picks.html" style="text-decoration:underline;">Current Picks</a>.
+      For live discounted links, check <a id="currentDealsLink" href="/current-picks.html" style="text-decoration:underline;">Current Picks</a>.
     </p>
     <section id="reviews" class="cards" aria-live="polite"></section>
   </main>
@@ -192,7 +192,10 @@
       }
       const homeNav = document.getElementById('homeNav');
       const pastPicksNav = document.getElementById('pastPicksNav');
-      if (homeNav) homeNav.href = Category.withCategory('/current-picks.html', selectedCategory);
+      const currentDealsLink = document.getElementById('currentDealsLink');
+      const currentPicksHref = Category.withCategory('/current-picks.html', selectedCategory);
+      if (homeNav) homeNav.href = currentPicksHref;
+      if (currentDealsLink) currentDealsLink.href = currentPicksHref;
       if (pastPicksNav) pastPicksNav.href = Category.withCategory('/past-picks.html', selectedCategory);
       const heading = document.querySelector('h1');
       if (heading) heading.textContent = `${CATEGORY_CONFIG[selectedCategory].label} Verdicts`;
