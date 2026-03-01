@@ -257,7 +257,6 @@
     </p>
   </main>
 
-<script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
@@ -1007,12 +1006,12 @@
   ranked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
     const activeBlurb = (row.blurb || '').trim();
-    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${activeBlurb}`, selectedCategory);
+    const useCase = classifyUseCase(`${row.cleanTitle} ${activeBlurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');
-    if (blurbNode) blurbNode.textContent = activeBlurb || blurbNode.textContent || '';
+    if (blurbNode) blurbNode.textContent = activeBlurb;
 
     // remove old meta/cta if script reruns
     row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach(el => el.remove());
