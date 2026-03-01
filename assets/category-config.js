@@ -7,6 +7,26 @@
     home: {
       label: 'Home',
       heroSub: 'DealCompass finds high-value home deals with clear buy/no-buy context and practical fit guidance.'
+    },
+    beauty: {
+      label: 'Beauty',
+      heroSub: 'DealCompass surfaces high-value beauty picks with practical fit notes, ingredient/form-factor context, and clear buy/no-buy guidance.'
+    },
+    fitness: {
+      label: 'Fitness',
+      heroSub: 'DealCompass filters fitness deals by real-world utility so you can pick reliable gear without wasting time on hype.'
+    },
+    automotive: {
+      label: 'Automotive',
+      heroSub: 'DealCompass highlights automotive essentials and upgrades with straightforward value checks and ownership-focused recommendations.'
+    },
+    outdoors: {
+      label: 'Outdoors',
+      heroSub: 'DealCompass finds practical outdoor gear deals and explains which picks actually hold up for frequent use.'
+    },
+    pet: {
+      label: 'Pet',
+      heroSub: 'DealCompass curates high-value pet products with comfort, durability, and day-to-day usability in focus.'
     }
   };
 

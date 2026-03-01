@@ -257,7 +257,6 @@
     </p>
   </main>
 
-<script src="/assets/blurb-engine.js"></script>
 <script>
 (() => {
   const CAMPAIGN = "DEAL-PUBLIC-PILOT-20260223";
@@ -273,19 +272,69 @@
     }
   }
 
+  function categoryBadgeFallback(category = 'tech') {
+    const slug = String(category || 'tech').toLowerCase();
+    const label = window.DCCategoryConfig?.categories?.[slug]?.label
+      || slug.charAt(0).toUpperCase() + slug.slice(1);
+    return `Best for ${label} Picks`;
+  }
+
+  const USE_CASE_RULES = {
+    tech: [
+      [/gaming|controller/, 'Best for Gaming'],
+      [/keyboard|mouse|trackball|touchpad/, 'Best for Input Upgrades'],
+      [/hub|dock|usb-c|adapter/, 'Best for Desk Connectivity'],
+      [/ssd|nvme|storage|enclosure/, 'Best for Fast Storage'],
+      [/headphone|earbud|speaker|open-ear|bone conduction/, 'Best for Audio'],
+      [/light|lamp|led/, 'Best for Workspace Lighting'],
+    ],
+    home: [
+      [/vacuum|robot|mop|steam/, 'Best for Cleaning'],
+      [/air purifier|humidifier|dehumidifier/, 'Best for Air Quality'],
+      [/heater|fan/, 'Best for Comfort'],
+      [/storage|organizer|shelf|rack/, 'Best for Organization'],
+      [/kitchen|fryer|cookware|toaster|blender/, 'Best for Kitchen Use'],
+    ],
+    beauty: [
+      [/retinol|niacinamide|salicylic|serum|cleanser/, 'Best for Skincare'],
+      [/dryer|straightener|styler|ionic/, 'Best for Hair Care'],
+      [/spf|sunscreen/, 'Best for Sun Protection'],
+      [/brush|makeup/, 'Best for Makeup Routines'],
+    ],
+    fitness: [
+      [/massager|compression|recovery/, 'Best for Recovery'],
+      [/dumbbell|band|elliptical|trainer|workout/, 'Best for Strength Training'],
+      [/scale|tracker|monitor/, 'Best for Progress Tracking'],
+    ],
+    automotive: [
+      [/jump starter|battery|jumper/, 'Best for Battery Emergencies'],
+      [/dash cam|camera/, 'Best for Incident Recording'],
+      [/inflator|compressor|tire/, 'Best for Tire Maintenance'],
+      [/mount|holder|navigation/, 'Best for In-Car Navigation'],
+      [/cooler|refrigerator|fridge/, 'Best for Road Trips'],
+    ],
+    outdoors: [
+      [/tent|camp|backpack/, 'Best for Camping'],
+      [/flashlight|headlamp|lantern|led/, 'Best for Night Visibility'],
+      [/waterproof|rainproof|insulated/, 'Best for Weather Protection'],
+      [/tool|multitool|knife|shovel/, 'Best for Field Utility'],
+    ],
+    pet: [
+      [/feeder|bowl|fountain|water/, 'Best for Feeding & Hydration'],
+      [/litter|clean|odor/, 'Best for Cleanup'],
+      [/collar|leash|harness|crate|bed/, 'Best for Daily Pet Care'],
+      [/toy|training|interactive/, 'Best for Enrichment'],
+    ],
+  };
+
   function classifyUseCase(text, category = 'tech') {
-    const t = text.toLowerCase();
-    if (category === 'home') {
-      if (t.includes('vacuum') || t.includes('robot')) return 'Best for Cleaning';
-      if (t.includes('air purifier') || t.includes('humidifier') || t.includes('dehumidifier')) return 'Best for Air Quality';
-      if (t.includes('heater') || t.includes('fan')) return 'Best for Comfort';
-      if (t.includes('storage') || t.includes('organizer')) return 'Best for Organization';
-      return 'Best for Home Essentials';
+    const t = String(text || '').toLowerCase();
+    const slug = String(category || 'tech').toLowerCase();
+    const rules = USE_CASE_RULES[slug] || [];
+    for (const [pattern, label] of rules) {
+      if (pattern.test(t)) return label;
     }
-    if (t.includes('gaming') || t.includes('controller')) return 'Best for Gaming';
-    if (t.includes('keyboard') || t.includes('mouse')) return 'Best for Everyday Use';
-    if (t.includes('hub') || t.includes('dock') || t.includes('usb-c')) return 'Best for Laptop Setups';
-    return 'Best for Tech Upgrades';
+    return categoryBadgeFallback(slug);
   }
 
   function hashText(text) {
@@ -1006,17 +1055,13 @@
   };
   ranked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const generatedBlurb = window.DCBlurbEngine.generateBlurb(row.cleanTitle, {
-      category: selectedCategory,
-      state: diversityState
-    });
-    const useCase = window.DCBlurbEngine.classifyUseCase(`${row.cleanTitle} ${generatedBlurb}`, selectedCategory);
+    const activeBlurb = (row.blurb || '').trim();
+    const useCase = classifyUseCase(`${row.cleanTitle} ${activeBlurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');
-    if (blurbNode) blurbNode.textContent = generatedBlurb;
-    row.blurb = generatedBlurb;
+    if (blurbNode) blurbNode.textContent = activeBlurb;
 
     // remove old meta/cta if script reruns
     row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach(el => el.remove());
