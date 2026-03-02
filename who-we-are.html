@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Who We Are | DealCompass</title>
+  <meta name="description" content="Learn what DealCompass does, how we pick products, and what high-signal picks mean in plain English." />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="icon" type="image/png" href="/assets/favicon-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050911;
+      --bg-soft: #0a1020;
+      --surface: rgba(20, 27, 45, 0.7);
+      --surface-border: rgba(180, 200, 255, 0.08);
+      --text: #edf2ff;
+      --muted: #94a3c8;
+      --brand: #5f8dff;
+      --brand-glow: rgba(95, 141, 255, 0.25);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 15% 0%, rgba(95, 141, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(120, 100, 255, 0.08) 0%, transparent 40%);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
+    a:hover { opacity: 0.9; }
+    .wrap { width: min(100%, 1080px); margin: 0 auto; padding: 20px 16px 80px; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 10px 14px; border: 1px solid var(--surface-border); border-radius: 999px;
+      background: rgba(10, 16, 32, 0.6); backdrop-filter: blur(12px);
+      position: sticky; top: 16px; z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: -0.02em; }
+    .brand-logo { height: 32px; width: 32px; border-radius: 8px; display: block; object-fit: cover; }
+    .topbar-right nav { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    .nav-pill {
+      font-size: 0.8rem; font-weight: 700; color: #cbd5e1; padding: 10px 18px;
+      border-radius: 999px; transition: all 0.2s ease;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      white-space: nowrap; line-height: 1; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .nav-pill:hover {
+      color: #fff; background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.2); transform: translateY(-1px);
+    }
+
+    .hero {
+      margin-top: 32px; padding: 40px 24px;
+      border: 1px solid var(--surface-border); border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(20, 27, 45, 0.4) 0%, rgba(10, 16, 32, 0.0) 100%);
+    }
+    .eyebrow {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: 14px; display: inline-block;
+      background: rgba(95, 141, 255, 0.1); padding: 4px 10px; border-radius: 6px;
+    }
+    h1 {
+      margin: 0 0 14px; font-size: clamp(2rem, 4.6vw, 3rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.03em;
+      background: linear-gradient(to bottom right, #fff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sub { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 72ch; }
+
+    .section {
+      margin-top: 22px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+    }
+    .section-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0 0 8px; }
+    p { margin: 0 0 10px; color: #cbd5e1; }
+    ul { margin: 8px 0 0 18px; padding: 0; color: #cbd5e1; }
+    li { margin: 8px 0; }
+
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-top: 8px; }
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .card h3 { margin: 0 0 6px; font-size: 1rem; color: #fff; }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+
+    .selector-panel {
+      margin-top: 12px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+    }
+    .selector-wrap { position: relative; }
+    .landing-select {
+      appearance: none; -webkit-appearance: none;
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 12px 40px 12px 14px;
+      font: inherit;
+      font-weight: 600;
+      outline: none;
+    }
+    .landing-select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+    .selector-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3c8;
+      pointer-events: none;
+    }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border-radius: 12px; font-weight: 700; font-size: 0.9rem; line-height: 1;
+      padding: 12px 16px; transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand), #7c9cff); color: #fff;
+      box-shadow: 0 4px 14px var(--brand-glow);
+    }
+    .btn-ghost { background: rgba(255,255,255,0.04); color: #dbe7ff; border-color: rgba(255,255,255,0.14); }
+
+    .disclosure {
+      margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--surface-border);
+      text-align: center; font-size: 0.8rem; color: #475569;
+    }
+    .disclosure a { color: #64748b; text-decoration: underline; }
+
+    @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 12px; }
+      .topbar-left { justify-content: space-between; }
+      .topbar-right nav { justify-content: center; width: 100%; display: flex; gap: 4px; }
+      .nav-pill { flex: 1; text-align: center; }
+      .hero { padding: 32px 16px; }
+      .selector-panel { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar" aria-label="DealCompass navigation">
+      <div class="topbar-left">
+        <a class="brand" href="/" aria-label="DealCompass home">
+          <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
+          <span>DealCompass</span>
+        </a>
+      </div>
+      <div class="topbar-right">
+        <nav aria-label="Primary">
+          <a class="nav-pill" href="/current-picks.html">Current Picks</a>
+          <a class="nav-pill" href="/affiliate-offers.html">Service Offers</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">ABOUT DEALCOMPASS</p>
+      <h1>Who we are, what we do, and how we pick</h1>
+      <p class="sub">We built DealCompass to save people time. Instead of digging through endless listings, you get a ranked shortlist focused on value and confidence.</p>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What DealCompass does</h2>
+      <p>We scan a large number of product opportunities and narrow them down to a short list worth your attention.</p>
+      <ul>
+        <li>We prioritize strong value over hype.</li>
+        <li>We rank picks so you can compare options quickly.</li>
+        <li>We keep each category list simple and easy to scan.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What “high-signal picks” means</h2>
+      <p>High-signal picks are products that stand out for clear, practical reasons:</p>
+      <ul>
+        <li><strong>Good value:</strong> the price-to-value looks meaningfully better than typical options.</li>
+        <li><strong>Confidence signals:</strong> we have enough evidence to trust the pick belongs in the shortlist.</li>
+        <li><strong>Category strength:</strong> it compares well against other options in the same category.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">How to read our confidence labels</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>High confidence</h3>
+          <p class="muted">Top-ranked picks in the category right now.</p>
+        </article>
+        <article class="card">
+          <h3>Reliable pick</h3>
+          <p class="muted">Strong value picks with solid confidence.</p>
+        </article>
+        <article class="card">
+          <h3>Worth a look</h3>
+          <p class="muted">Good depth picks that may fit specific needs or timing.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Start here</h2>
+      <p>Ready to browse? Pick a category first, then jump into current picks.</p>
+      <div class="selector-panel">
+        <div class="selector-wrap">
+          <select id="whoCategorySelect" class="landing-select" aria-label="Select category"></select>
+          <span class="selector-arrow" aria-hidden="true">▾</span>
+        </div>
+        <a class="btn btn-primary" id="whoBrowseBtn" href="/current-picks.html?category=tech">View Current Picks →</a>
+        <a class="btn btn-ghost" href="/signup.html">Get Updates →</a>
+      </div>
+    </section>
+
+    <p class="disclosure">DealCompass may earn from qualifying purchases. Contact: <a href="mailto:help@dealcompass.app">help@dealcompass.app</a></p>
+  </main>
+
+  <script src="/assets/category-config.js"></script>
+  <script>
+    (() => {
+      const Category = window.DCCategoryConfig;
+      if (!Category) return;
+      const selected = Category.getSelectedCategory();
+      const select = document.getElementById('whoCategorySelect');
+      const browseBtn = document.getElementById('whoBrowseBtn');
+
+      const syncLink = (slug) => {
+        const next = Category.isKnown(slug) ? slug : Category.defaultSlug;
+        if (browseBtn) browseBtn.href = Category.withCategory('/current-picks.html', next);
+      };
+
+      if (select) {
+        Category.applyOptions(select, selected);
+        syncLink(select.value || selected);
+        select.addEventListener('change', () => syncLink(select.value));
+      } else {
+        syncLink(selected);
+      }
+    })();
+  </script>
+</body>
+</html>
