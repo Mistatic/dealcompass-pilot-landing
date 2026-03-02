@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Who We Are | DealCompass</title>
+  <meta name="description" content="Learn what DealCompass does, how we choose picks, and what we mean by high-signal value." />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <style>
+    :root {
+      --bg:#020617;
+      --panel:#0f172a;
+      --border:#1e293b;
+      --text:#e2e8f0;
+      --muted:#94a3b8;
+      --brand:#38bdf8;
+      --brand-2:#22d3ee;
+      --radius:16px;
+      --radius-lg:20px;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #0b1328 0%, #020617 58%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 24px 20px 64px; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background: rgba(15,23,42,.86); border:1px solid var(--border);
+      border-radius: 999px; padding: 10px 14px; position: sticky; top: 14px; backdrop-filter: blur(10px);
+    }
+    .brand { display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-weight:700; }
+    .brand-logo { width:32px; height:32px; border-radius:10px; object-fit:cover; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    .nav-pill {
+      text-decoration:none; color:var(--muted); border:1px solid var(--border);
+      border-radius:999px; padding:8px 12px; font-size:.88rem; font-weight:600;
+      background:rgba(15,23,42,.55);
+    }
+    .nav-pill:hover { color:#fff; border-color:#334155; }
+    .hero { margin-top: 28px; background: linear-gradient(135deg, rgba(56,189,248,.14), rgba(34,211,238,.08)); border:1px solid rgba(56,189,248,.3); border-radius: var(--radius-lg); padding: 30px; }
+    h1 { margin:0 0 12px; font-size: clamp(1.8rem, 3.5vw, 2.6rem); line-height:1.2; color:#fff; }
+    .sub { margin:0; color:#cbd5e1; max-width: 76ch; }
+    .section { margin-top: 22px; background: rgba(15,23,42,.82); border:1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    h2 { margin:0 0 10px; font-size:1.25rem; color:#fff; }
+    p { margin:0 0 10px; color:#cbd5e1; }
+    ul { margin:8px 0 0 18px; padding:0; color:#cbd5e1; }
+    li { margin:8px 0; }
+    .cards { display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:12px; margin-top:10px; }
+    .card { border:1px solid #243244; border-radius:14px; padding:14px; background:rgba(2,6,23,.6); }
+    .card h3 { margin:0 0 6px; font-size:1rem; color:#fff; }
+    .muted { color:var(--muted); font-size:.92rem; }
+    .cta-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn { text-decoration:none; border-radius:12px; padding:10px 14px; font-weight:700; font-size:.95rem; }
+    .btn-primary { color:#04111f; background:linear-gradient(135deg,var(--brand),var(--brand-2)); }
+    .btn-ghost { color:#dbeafe; border:1px solid #334155; background:#0b1220; }
+    .footnote { margin-top:20px; text-align:center; color:#64748b; font-size:.82rem; }
+
+    @media (max-width: 900px) { .cards { grid-template-columns:1fr; } }
+    @media (max-width: 720px) {
+      .topbar { border-radius:16px; flex-direction:column; align-items:stretch; }
+      nav { width:100%; }
+      .nav-pill { flex:1; text-align:center; }
+      .hero, .section { padding:20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar" aria-label="DealCompass navigation">
+      <a class="brand" href="/" aria-label="DealCompass home">
+        <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
+        <span>DealCompass</span>
+      </a>
+      <nav aria-label="Primary">
+        <a class="nav-pill" href="/current-picks.html">Current Picks</a>
+        <a class="nav-pill" href="/affiliate-offers.html">Service Offers</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>Who we are, what we do, and how we pick products</h1>
+      <p class="sub">DealCompass helps you skip the endless scrolling and make faster buying decisions. We look for practical products at strong value, then rank the best options so you can shop with more confidence.</p>
+    </section>
+
+    <section class="section">
+      <h2>What DealCompass does</h2>
+      <p>We review large sets of product opportunities and narrow them down to a short, useful list.</p>
+      <ul>
+        <li>We focus on picks that solve everyday needs.</li>
+        <li>We rank products by value and confidence, not hype.</li>
+        <li>We keep category lists simple: clear top picks, easy to scan.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>What we mean by “high-signal picks”</h2>
+      <p>A high-signal pick is a product that checks the boxes people actually care about:</p>
+      <ul>
+        <li><strong>Strong value:</strong> The price looks meaningfully good for what you get.</li>
+        <li><strong>Reliable context:</strong> We can verify enough confidence signals to trust it belongs on the list.</li>
+        <li><strong>Practical fit:</strong> It solves a real, common problem for the category.</li>
+        <li><strong>List quality:</strong> It earns its spot vs. other options in the same category.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>How to read our confidence grades</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>High confidence</h3>
+          <p class="muted">Top-ranked picks in the category. Best balance of value and overall confidence right now.</p>
+        </article>
+        <article class="card">
+          <h3>Reliable pick</h3>
+          <p class="muted">Strong options that still deliver good value, with slightly less confidence than the top tier.</p>
+        </article>
+        <article class="card">
+          <h3>Worth a look</h3>
+          <p class="muted">Solid depth picks that may be great for specific needs or if pricing is especially favorable.</p>
+        </article>
+      </div>
+      <p style="margin-top:12px;" class="muted">In short: we try to make the decision faster by giving you a ranked shortlist instead of a giant product wall.</p>
+    </section>
+
+    <section class="section">
+      <h2>Quick next step</h2>
+      <p>If you want to see this in action, jump to the current picks and browse your category.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/current-picks.html">View Current Picks →</a>
+        <a class="btn btn-ghost" href="/signup.html">Get Updates →</a>
+      </div>
+    </section>
+
+    <p class="footnote">DealCompass may earn from qualifying purchases. Contact: help@dealcompass.app</p>
+  </main>
+</body>
+</html>
