@@ -27,6 +27,14 @@
     pet: {
       label: 'Pet',
       heroSub: 'DealCompass curates high-value pet products with comfort, durability, and day-to-day usability in focus.'
+    },
+    "health-household": {
+      label: 'Health & Household',
+      heroSub: 'DealCompass highlights health and household essentials with practical value checks, repeat-use context, and clear buy/no-buy guidance.'
+    },
+    "tools-home-improvement": {
+      label: 'Tools & Home Improvement',
+      heroSub: 'DealCompass surfaces dependable tools and home-improvement picks with use-case clarity, durability context, and value-first recommendations.'
     }
   };
 
