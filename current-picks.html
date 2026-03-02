@@ -396,6 +396,7 @@
     </p>
   </main>
 
+<script src="/assets/blurb-engine.js"></script>
 <script src="/assets/category-config.js"></script>
 <script>
 (() => {
@@ -419,6 +420,22 @@
     const label = window.DCCategoryConfig?.categories?.[slug]?.label
       || slug.charAt(0).toUpperCase() + slug.slice(1);
     return `Best for ${label} Picks`;
+  }
+
+  function isPlaceholderTitle(title) {
+    const t = String(title || '').trim();
+    return /^(amazon\s+(?:item|product)|dealcompass\s+pick)\b/i.test(t);
+  }
+
+  function needsBlurbRefresh(blurb) {
+    const b = String(blurb || '').toLowerCase().trim();
+    if (!b) return true;
+    return /best when you need a dependable everyday option\.?|chosen for|practical daily|repeatable way|workflow consistency|low-regret|high-signal shortlist/.test(b);
+  }
+
+  function topPickDecisionCopy(title, blurb, category) {
+    const useCase = classifyUseCase(`${title} ${blurb}`, category);
+    return `${useCase}. Choose this first when you want a low-risk pick before comparing alternatives.`;
   }
 
   const USE_CASE_RULES = {
@@ -467,6 +484,18 @@
       [/collar|leash|harness|crate|bed/, 'Best for Daily Pet Care'],
       [/toy|training|interactive/, 'Best for Enrichment'],
     ],
+    'health-household': [
+      [/blood pressure|monitor|pulse|thermometer/, 'Best for Home Monitoring'],
+      [/bandage|first aid|wound|sterile/, 'Best for First Aid'],
+      [/toothbrush|floss|oral/, 'Best for Oral Care'],
+      [/pill organizer|vitamin|supplement/, 'Best for Daily Routine'],
+    ],
+    'tools-home-improvement': [
+      [/drill|impact|driver|bit|wrench|socket/, 'Best for Repair Jobs'],
+      [/laser level|measure|stud finder|line/, 'Best for Precise Alignment'],
+      [/multimeter|oscilloscope|voltage|tester/, 'Best for Electrical Checks'],
+      [/flashlight|work light|led/, 'Best for Jobsite Visibility'],
+    ],
   };
 
   function classifyUseCase(text, category = 'tech') {
@@ -479,22 +508,27 @@
     return categoryBadgeFallback(slug);
   }
 
-  function scoreDeal(title, blurb, url, originalRank) {
+  function scoreDeal(title, blurb, url, originalRank, category = 'tech') {
     const t = `${title} ${blurb}`.toLowerCase();
+    const slug = String(category || 'tech').toLowerCase();
     let score = 50;
 
     // Utility signal
     if (/ergonomic|comfort|reduce|fatigue|workflow|productivity|utility/.test(t)) score += 12;
-    if (/reliable|balanced|value|strong value|day-to-day|useful/.test(t)) score += 10;
+    if (/reliable|balanced|value|strong value|day-to-day|useful|durable|dependable/.test(t)) score += 10;
     if (/best|top|high-signal|high-value/.test(t)) score += 6;
 
     // Category fit signal
     if (/keyboard|mouse|usb-c|hub|dock|stand|controller/.test(t)) score += 8;
     if (/robot vacuum|vacuum/.test(t)) score += 4;
+    if (slug === 'health-household' && /blood pressure|thermometer|first aid|bandage|toothbrush|oral|pill organizer|monitor/.test(t)) score += 10;
+    if (slug === 'tools-home-improvement' && /drill|impact|laser level|measure|multimeter|oscilloscope|work light|flashlight|tool/.test(t)) score += 10;
 
     // Trust/fit penalties
     if (/ebay/.test(t) || /refurbished|used/.test(t)) score -= 10;
     if (/candidate slot|refreshing/.test(t)) score -= 30;
+    if (isPlaceholderTitle(title)) score -= 35;
+    if (needsBlurbRefresh(blurb)) score -= 8;
 
     // Slight preference to prior top ranks unless strong counter-signal exists
     score += Math.max(0, 5 - originalRank);
@@ -552,15 +586,23 @@
     const cleanTitle = rawTitle.replace(/^\s*\d+\)\s*/, '').trim();
     const href = pick.getAttribute('href') || '';
     if (!cleanTitle) return;
-    const key = `${href}|${cleanTitle.toLowerCase()}`;
-    if (seen.has(key)) return;
-    seen.add(key);
-    const blurb = pick.querySelector('small')?.textContent || '';
-    const score = scoreDeal(cleanTitle, blurb, href, i + 1);
+
     const explicitCategory = (pick.dataset.category || '').trim().toLowerCase();
     const category = Category.isKnown(explicitCategory)
       ? explicitCategory
       : topLevelCategoryFromTitle(cleanTitle);
+
+    // Staging safety: hide unresolved placeholder names in the newly-added categories.
+    if ((category === 'health-household' || category === 'tools-home-improvement') && isPlaceholderTitle(cleanTitle)) {
+      return;
+    }
+
+    const key = `${href}|${cleanTitle.toLowerCase()}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    const blurb = pick.querySelector('small')?.textContent || '';
+    const score = scoreDeal(cleanTitle, blurb, href, i + 1, category);
     deduped.push({ pick, titleNode, cleanTitle, blurb, score, originalRank: i + 1, category });
   });
   const ranked = deduped.sort((a, b) => b.score - a.score || a.originalRank - b.originalRank);
@@ -573,7 +615,7 @@
     const topReason = document.getElementById('topPickReason');
     const topLink = document.getElementById('topPickLink');
     topTitle.textContent = top.cleanTitle;
-    topReason.textContent = 'Top utility-to-value pick this cycle.';
+    topReason.textContent = topPickDecisionCopy(top.cleanTitle, top.blurb || '', selectedCategory);
     topLink.href = top.pick.getAttribute('href') || '#';
     topCard.hidden = false;
   } else {
@@ -594,7 +636,15 @@
   
   filteredRanked.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const activeBlurb = (row.blurb || '').trim();
+    let activeBlurb = (row.blurb || '').trim();
+    if (needsBlurbRefresh(activeBlurb)) {
+      activeBlurb = window.DCBlurbEngine?.generateBlurb?.(row.cleanTitle, {
+        category: selectedCategory,
+        state: diversityState
+      }) || `Choose this when you need a dependable ${CATEGORY_CONFIG[selectedCategory]?.label || selectedCategory} option.`;
+    } else {
+      diversityState.blurbs.push(activeBlurb);
+    }
     const useCase = classifyUseCase(`${row.cleanTitle} ${activeBlurb}`, selectedCategory);
     const confidence = confidenceLabel(row.score, idx);
 
