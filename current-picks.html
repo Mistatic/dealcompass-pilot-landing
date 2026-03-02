@@ -592,8 +592,8 @@
       ? explicitCategory
       : topLevelCategoryFromTitle(cleanTitle);
 
-    // Staging safety: hide unresolved placeholder names in the newly-added categories.
-    if ((category === 'health-household' || category === 'tools-home-improvement') && isPlaceholderTitle(cleanTitle)) {
+    // Render guard backup only: skip rows that cannot safely render as outbound picks.
+    if (!href || href === '#' || /^javascript:/i.test(href)) {
       return;
     }
 
