@@ -56,6 +56,19 @@
       padding:10px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
       background: rgba(255,255,255,.03);
     }
+    .category-wrapper { position: relative; display: inline-flex; align-items: center; }
+    .category-select {
+      appearance: none; -webkit-appearance: none;
+      background: rgba(255,255,255,0.06); color: #fff;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 8px 34px 8px 12px;
+      font-weight: 600; font-size: 0.85rem; font-family: inherit;
+      cursor: pointer; outline: none;
+    }
+    .category-arrow {
+      position: absolute; right: 10px; pointer-events: none;
+      color: #94a3c8; font-size: 0.75rem;
+    }
     h1 {
       margin: 34px 0 10px;
       font-size: clamp(2rem, 4.8vw, 2.7rem);
@@ -117,10 +130,14 @@
         <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
         <span>DealCompass</span>
       </a>
-      <nav aria-label="Primary" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-        <a class="pill" href="/current-picks.html">Current Picks</a>
-        <a class="pill" href="/past-picks.html">Past Picks</a>
-        <a class="pill" href="/reviews.html">Our Verdicts</a>
+      <nav aria-label="Primary" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center;">
+        <div class="category-wrapper">
+          <select id="categorySelect" class="category-select" aria-label="Select category"></select>
+          <span class="category-arrow" aria-hidden="true">▾</span>
+        </div>
+        <a class="pill" id="currentPicksNav" href="/current-picks.html">Current Picks</a>
+        <a class="pill" id="pastPicksNav" href="/past-picks.html">Past Picks</a>
+        <a class="pill" id="verdictsNav" href="/reviews.html">Our Verdicts</a>
       </nav>
     </header>
 
@@ -157,5 +174,32 @@
 
     <p class="foot">Last reviewed: March 1, 2026 • This page is separate from time-sensitive discount picks. For active product discounts, use Current Picks.</p>
   </main>
+  <script src="/assets/category-config.js"></script>
+  <script>
+    (() => {
+      const Category = window.DCCategoryConfig;
+      if (!Category) return;
+      const selected = Category.getSelectedCategory();
+      const select = document.getElementById('categorySelect');
+      const currentPicksNav = document.getElementById('currentPicksNav');
+      const pastPicksNav = document.getElementById('pastPicksNav');
+      const verdictsNav = document.getElementById('verdictsNav');
+
+      const sync = (slug) => {
+        const next = Category.isKnown(slug) ? slug : Category.defaultSlug;
+        if (currentPicksNav) currentPicksNav.href = Category.withCategory('/current-picks.html', next);
+        if (pastPicksNav) pastPicksNav.href = Category.withCategory('/past-picks.html', next);
+        if (verdictsNav) verdictsNav.href = Category.withCategory('/reviews.html', next);
+      };
+
+      if (select) {
+        Category.applyOptions(select, selected);
+        sync(select.value || selected);
+        select.addEventListener('change', () => sync(select.value));
+      } else {
+        sync(selected);
+      }
+    })();
+  </script>
 </body>
 </html>
