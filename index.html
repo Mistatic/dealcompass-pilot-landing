@@ -245,9 +245,6 @@
       </div>
       <div class="topbar-right">
         <nav aria-label="Primary">
-          <a class="nav-pill" id="topCurrentPicksNav" href="/current-picks.html?category=tech">Current Picks</a>
-          <a class="nav-pill" id="topPastPicksNav" href="/past-picks.html?category=tech">Past Picks</a>
-          <a class="nav-pill" id="topVerdictsNav" href="/reviews.html?category=tech">Our Verdicts</a>
           <a class="nav-pill" href="/affiliate-offers.html">Service Offers</a>
         </nav>
       </div>
@@ -299,16 +296,9 @@
       const select = document.getElementById('landingCategorySelect');
       const browseBtn = document.getElementById('landingBrowseBtn');
       const verdictsBtn = document.getElementById('landingVerdictsBtn');
-      const topCurrentPicksNav = document.getElementById('topCurrentPicksNav');
-      const topPastPicksNav = document.getElementById('topPastPicksNav');
-      const topVerdictsNav = document.getElementById('topVerdictsNav');
 
       const syncLinks = (slug) => {
         if (slug === COMING_SOON_VALUE) {
-          const keepSlug = Category.isKnown(selected) ? selected : fallback;
-          if (topCurrentPicksNav) topCurrentPicksNav.href = Category.withCategory('/current-picks.html', keepSlug);
-          if (topPastPicksNav) topPastPicksNav.href = Category.withCategory('/past-picks.html', keepSlug);
-          if (topVerdictsNav) topVerdictsNav.href = Category.withCategory('/reviews.html', keepSlug);
           if (browseBtn) {
             browseBtn.href = '/coming-soon.html';
             browseBtn.textContent = 'See what’s coming →';
@@ -322,7 +312,6 @@
 
         const next = Category.isKnown(slug) ? slug : fallback;
         const currentHref = Category.withCategory('/current-picks.html', next);
-        const pastHref = Category.withCategory('/past-picks.html', next);
         const verdictsHref = Category.withCategory('/reviews.html', next);
 
         if (browseBtn) {
@@ -333,9 +322,6 @@
           verdictsBtn.href = verdictsHref;
           verdictsBtn.textContent = 'View verdicts →';
         }
-        if (topCurrentPicksNav) topCurrentPicksNav.href = currentHref;
-        if (topPastPicksNav) topPastPicksNav.href = pastHref;
-        if (topVerdictsNav) topVerdictsNav.href = verdictsHref;
       };
 
       if (select) {
