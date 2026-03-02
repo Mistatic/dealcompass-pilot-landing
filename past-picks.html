@@ -285,46 +285,18 @@
             return;
           }
 
-          const diversityState = {
-            blurbs: [],
-            patterns: [],
-            usedRoleTemplates: new Set(),
-            usedRoleLines: new Set(),
-            usedPrimaryClauses: new Set(),
-            usedAnglesByCategory: { hub: new Set() },
-            lastOpeningBigram: ''
-          };
-
-          const needsBlurbRefresh = (blurb) => {
-            const b = String(blurb || '').toLowerCase().trim();
-            if (!b) return true;
-            return /chosen for|practical daily|repeatable way|workflow consistency|low-regret|high-signal shortlist/.test(b);
-          };
-
           meta.textContent = `${filteredItems.length} ${CATEGORY_CONFIG[selectedCategory].label.toLowerCase()} picks`;
-          
+
           root.innerHTML = filteredItems.map((p) => {
             let cleanTitle = String(p.title || '').replace(/^\s*\d+\)\s*/, '').trim();
             if (!cleanTitle || cleanTitle.toLowerCase() === 'dealcompass archived pick') {
               const m = String(p.url || '').match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
               if (m) cleanTitle = `Amazon Product ${m[1].toUpperCase()}`;
             }
-            
-            let blurb = String(p.blurb || '').trim();
-            if (needsBlurbRefresh(blurb)) {
-               blurb = window.DCBlurbEngine.generateBlurb(cleanTitle, {
-                 category: selectedCategory,
-                 state: diversityState
-               });
-            } else {
-               // Update state so subsequent gens respect this existing one
-               diversityState.blurbs.push(blurb);
-            }
 
             return `
               <a class="pick" href="${escapeHtml(p.url)}" target="_blank" rel="nofollow sponsored noopener">
                 <span class="title">${escapeHtml(cleanTitle)}</span>
-                <small>${escapeHtml(blurb)}</small>
                 <span class="pick-cta">See pick details →</span>
               </a>
             `;
