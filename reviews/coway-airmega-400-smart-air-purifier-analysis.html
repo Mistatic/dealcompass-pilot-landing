@@ -277,6 +277,12 @@
     const cat = params.get('category') || 'home';
     categorySelect.value = ['tech', 'home'].includes(cat) ? cat : 'home';
 
+    const currentPicksNav = document.getElementById('currentPicksNav');
+    const currentDealsLink = document.getElementById('currentDealsLink');
+    const currentPicksHref = `/current-picks.html?category=${encodeURIComponent(categorySelect.value)}`;
+    if (currentPicksNav) currentPicksNav.href = currentPicksHref;
+    if (currentDealsLink) currentDealsLink.href = currentPicksHref;
+
     categorySelect.addEventListener('change', () => {
       const u = new URL('/current-picks.html', window.location.origin);
       u.searchParams.set('category', categorySelect.value);

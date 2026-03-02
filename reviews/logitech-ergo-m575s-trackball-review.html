@@ -283,6 +283,12 @@
     const cat = params.get('category') || 'tech';
     categorySelect.value = ['tech', 'home'].includes(cat) ? cat : 'tech';
 
+    const currentPicksNav = document.getElementById('currentPicksNav');
+    const currentDealsLink = document.getElementById('currentDealsLink');
+    const currentPicksHref = `/current-picks.html?category=${encodeURIComponent(categorySelect.value)}`;
+    if (currentPicksNav) currentPicksNav.href = currentPicksHref;
+    if (currentDealsLink) currentDealsLink.href = currentPicksHref;
+
     categorySelect.addEventListener('change', () => {
       // Redirect to homepage with filtered category
       const u = new URL('/current-picks.html', window.location.origin);
