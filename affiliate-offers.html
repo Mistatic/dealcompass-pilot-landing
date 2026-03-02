@@ -102,6 +102,11 @@
       padding: 10px 12px;
     }
     .foot { margin-top: 22px; color: var(--muted); font-size: .85rem; }
+    @media (max-width: 768px) {
+      .topbar { flex-direction: column; align-items: stretch; border-radius: 16px; gap: 10px; }
+      .topbar nav { justify-content: center !important; }
+      .pill { flex: 1; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -111,7 +116,11 @@
         <img src="/assets/logo-official.jpg" alt="" class="brand-logo" width="32" height="32" />
         <span>DealCompass</span>
       </a>
-      <a class="pill" href="/current-picks.html">Current Picks</a>
+      <nav aria-label="Primary" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+        <a class="pill" href="/current-picks.html">Current Picks</a>
+        <a class="pill" href="/past-picks.html">Past Picks</a>
+        <a class="pill" href="/reviews.html">Our Verdicts</a>
+      </nav>
     </header>
 
     <h1>Offers from Our Affiliates</h1>
