@@ -191,6 +191,7 @@
       background: rgba(255,255,255,0.05); color: #94a3c8;
     }
     .chip-confidence { color: #86efac; background: rgba(134, 239, 172, 0.1); }
+    .pick small { display: none; }
     
     .pick-cta {
       font-size: 0.85rem; font-weight: 700; color: var(--brand);
@@ -548,6 +549,9 @@
     const cleanTitle = rawTitle.replace(/^\s*\d+\)\s*/, '').trim();
     const href = pick.getAttribute('href') || '';
     if (!cleanTitle) return;
+    if (/^product\s+pick\s+[a-z0-9]{10}$/i.test(cleanTitle)) return;
+    if (/^shop\s+[a-z0-9]{10}$/i.test(cleanTitle)) return;
+    if (/^low\s+prices\s+on\b/i.test(cleanTitle)) return;
     const key = `${href}|${cleanTitle.toLowerCase()}`;
     if (seen.has(key)) return;
     seen.add(key);
@@ -587,13 +591,12 @@
 
   filteredRows.slice(1).forEach((row, idx) => {
     const rank = idx + 2;
-    const activeBlurb = (row.blurb || '').trim();
-    const useCase = classifyUseCase(`${row.cleanTitle} ${activeBlurb}`, selectedCategory);
+    const useCase = classifyUseCase(row.cleanTitle, selectedCategory);
     const confidence = confidenceLabelFromMetadata(row.pick, rank);
 
     row.titleNode.textContent = `${rank}) ${row.cleanTitle}`;
     const blurbNode = row.pick.querySelector('small');
-    if (blurbNode) blurbNode.textContent = activeBlurb;
+    if (blurbNode) blurbNode.remove();
 
     row.pick.querySelectorAll('.pick-meta, .pick-cta').forEach((el) => el.remove());
 
