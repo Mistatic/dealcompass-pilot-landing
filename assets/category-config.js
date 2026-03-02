@@ -27,12 +27,26 @@
     pet: {
       label: 'Pet',
       heroSub: 'DealCompass curates high-value pet products with comfort, durability, and day-to-day usability in focus.'
+    },
+    health: {
+      label: 'Health',
+      heroSub: 'DealCompass highlights practical health picks with clear utility notes and day-to-day fit guidance.'
+    },
+    tools: {
+      label: 'Tools',
+      heroSub: 'DealCompass surfaces dependable tools and home-improvement picks with straightforward value checks.'
     }
+  };
+
+  const CANONICAL_SLUGS = Object.keys(DEFAULT_CATEGORIES);
+  const CATEGORY_ALIASES = {
+    'health-household': 'health',
+    'tools-home-improvement': 'tools'
   };
 
   const raw = (window.DEALCOMPASS_CATEGORY_CONFIG && typeof window.DEALCOMPASS_CATEGORY_CONFIG === 'object')
     ? window.DEALCOMPASS_CATEGORY_CONFIG
-    : DEFAULT_CATEGORIES;
+    : {};
 
   const cleanSlug = (slug) => String(slug || '')
     .toLowerCase()
@@ -40,54 +54,35 @@
     .replace(/[^a-z0-9-]/g, '');
 
   const categories = {};
-  Object.entries(raw).forEach(([slug, cfg]) => {
-    const key = cleanSlug(slug);
-    if (!key) return;
-    categories[key] = {
-      label: String(cfg?.label || key).trim() || key,
-      heroSub: String(cfg?.heroSub || '').trim()
+  CANONICAL_SLUGS.forEach((slug) => {
+    const cfg = raw[slug] || DEFAULT_CATEGORIES[slug];
+    categories[slug] = {
+      label: String(cfg?.label || DEFAULT_CATEGORIES[slug].label).trim() || DEFAULT_CATEGORIES[slug].label,
+      heroSub: String(cfg?.heroSub || DEFAULT_CATEGORIES[slug].heroSub || '').trim()
     };
   });
 
-  // Safety fallback
-  if (!Object.keys(categories).length) {
-    categories.tech = DEFAULT_CATEGORIES.tech;
-  }
+  const defaultSlug = categories.tech ? 'tech' : CANONICAL_SLUGS[0];
 
-  function titleCaseSlug(slug) {
-    return cleanSlug(slug)
-      .split('-')
-      .filter(Boolean)
-      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-      .join(' ');
+  function canonicalizeSlug(slug) {
+    const cleaned = cleanSlug(slug);
+    if (!cleaned) return '';
+    return CATEGORY_ALIASES[cleaned] || cleaned;
   }
-
-  function ensureCategory(slug) {
-    const key = cleanSlug(slug);
-    if (!key) return null;
-    if (!categories[key]) {
-      categories[key] = { label: titleCaseSlug(key) || key, heroSub: '' };
-    }
-    return key;
-  }
-
-  const defaultSlug = Object.keys(categories)[0];
 
   function isKnown(slug) {
-    return !!categories[cleanSlug(slug)];
+    return !!categories[canonicalizeSlug(slug)];
   }
 
   function getSelectedCategory(search) {
     const rawSlug = new URLSearchParams(search || window.location.search).get('category') || defaultSlug;
-    const slug = cleanSlug(rawSlug);
-    if (isKnown(slug)) return slug;
-    // Allow newly-introduced slugs to work immediately (even before config copy is added).
-    return ensureCategory(slug) || defaultSlug;
+    const slug = canonicalizeSlug(rawSlug);
+    return isKnown(slug) ? slug : defaultSlug;
   }
 
   function withCategory(url, category) {
     const u = new URL(url, window.location.origin);
-    const selected = isKnown(category) ? cleanSlug(category) : defaultSlug;
+    const selected = isKnown(category) ? canonicalizeSlug(category) : defaultSlug;
     u.searchParams.set('category', selected);
     return `${u.pathname}${u.search}`;
   }
@@ -97,7 +92,7 @@
     selectEl.innerHTML = Object.entries(categories)
       .map(([slug, cfg]) => `<option value="${slug}">${cfg.label}</option>`)
       .join('');
-    selectEl.value = isKnown(selected) ? selected : defaultSlug;
+    selectEl.value = isKnown(selected) ? canonicalizeSlug(selected) : defaultSlug;
   }
 
   window.DCCategoryConfig = {
@@ -106,6 +101,7 @@
     isKnown,
     getSelectedCategory,
     withCategory,
-    applyOptions
+    applyOptions,
+    canonicalizeSlug
   };
 })();
