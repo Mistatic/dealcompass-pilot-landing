@@ -473,9 +473,13 @@ module.exports = async (req, res) => {
 
     selectedResolved.forEach((p, idx) => {
       const n = idx + 1;
+      const pickCategory = norm(p.category);
+      const pickCategoryUrl = pickCategory
+        ? `https://dealcompass.app/current-picks.html?category=${encodeURIComponent(pickCategory)}`
+        : 'https://dealcompass.app/current-picks.html';
       dataVariables[`pick${n}_category`] = p.category;
       dataVariables[`pick${n}_title`] = p.title;
-      dataVariables[`pick${n}_url`] = p.url;
+      dataVariables[`pick${n}_url`] = pickCategoryUrl;
       dataVariables[`pick${n}_blurb`] = p.blurb || 'View the full pick details on DealCompass.';
       dataVariables[`pick${n}_rank`] = String(p.rank || '');
     });
