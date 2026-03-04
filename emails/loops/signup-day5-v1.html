@@ -14,24 +14,24 @@
             <tr>
               <td style="background:#101a2f;border:1px solid #223556;border-radius:14px;padding:24px;">
                 <h1 style="margin:0 0 10px;font-size:28px;line-height:1.2;color:#edf2ff;">Help shape what we build next</h1>
-                <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#bfd0f8;">Hi {{firstName}}, thanks again for joining DealCompass.</p>
+                <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#bfd0f8;">Hi {DATA_VARIABLE:firstName}, thanks again for joining DealCompass.</p>
 
                 <p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#c9d8fb;">Right now your profile says:</p>
 
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #28416b;border-radius:12px;background:#0f172a;margin:0 0 16px;">
                   <tr><td style="padding:14px 16px;font-size:14px;line-height:1.65;color:#c9d8fb;">
-                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Interest:</strong> {{interest_label}}</div>
-                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Goal:</strong> {{goal_label}}</div>
-                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Cadence:</strong> {{cadence_label}}</div>
-                    <div><strong style="color:#edf2ff;">Delivery:</strong> {{delivery_label}}</div>
+                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Interest:</strong> {DATA_VARIABLE:interest_label}</div>
+                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Goal:</strong> {DATA_VARIABLE:goal_label}</div>
+                    <div style="margin-bottom:6px;"><strong style="color:#edf2ff;">Cadence:</strong> {DATA_VARIABLE:cadence_label}</div>
+                    <div><strong style="color:#edf2ff;">Delivery:</strong> {DATA_VARIABLE:delivery_label}</div>
                   </td></tr>
                 </table>
 
-                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#c9d8fb;">{{requested_categories_line}}</p>
+                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#c9d8fb;">{DATA_VARIABLE:requested_categories_line}</p>
                 <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#c9d8fb;">If this should change, send a quick update and we’ll tune your experience.</p>
 
                 <p style="margin:0 0 16px;">
-                  <a href="{{feedbackUrl}}" style="display:inline-block;background:#5f8dff;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:12px;">Share feedback</a>
+                  <a href="{DATA_VARIABLE:feedbackUrl}" style="display:inline-block;background:#5f8dff;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:12px;">Share feedback</a>
                 </p>
 
                 <p style="margin:0;font-size:14px;line-height:1.6;color:#9fb0d6;">We use this input directly for category expansion and verdict depth priorities.</p>
